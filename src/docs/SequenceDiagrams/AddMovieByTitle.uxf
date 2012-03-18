@@ -138,7 +138,7 @@ retrieveMovieInformation (movieTile)</panel_attributes>
       <w>340</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;.
+    <panel_attributes>lt=&lt;&lt;-
 promptForList()</panel_attributes>
     <additional_attributes>30;50;320;50</additional_attributes>
   </element>
