@@ -27,12 +27,12 @@
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>200</x>
-      <y>130</y>
+      <y>100</y>
       <w>50</w>
-      <h>680</h>
+      <h>710</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;660</additional_attributes>
+    <additional_attributes>30;30;30;690</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
