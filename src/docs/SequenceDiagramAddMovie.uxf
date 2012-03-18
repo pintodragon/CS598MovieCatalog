@@ -4,8 +4,8 @@
   <element>
     <type>com.umlet.element.Actor</type>
     <coordinates>
-      <x>100</x>
-      <y>120</y>
+      <x>30</x>
+      <y>60</y>
       <w>100</w>
       <h>120</h>
     </coordinates>
@@ -15,43 +15,32 @@
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>120</x>
-      <y>200</y>
+      <x>50</x>
+      <y>100</y>
       <w>50</w>
-      <h>80</h>
+      <h>650</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.SeqObjectActive</type>
-    <coordinates>
-      <x>140</x>
-      <y>260</y>
-      <w>20</w>
-      <h>290</h>
-    </coordinates>
-    <panel_attributes/>
-    <additional_attributes/>
+    <additional_attributes>30;30;30;630</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>130</x>
-      <y>240</y>
-      <w>290</w>
+      <x>50</x>
+      <y>330</y>
+      <w>340</w>
       <h>70</h>
     </coordinates>
     <panel_attributes>submitBarCode (barCodeImage)
 lt=&lt;&lt;-
 </panel_attributes>
-    <additional_attributes>270;50;30;50</additional_attributes>
+    <additional_attributes>320;50;30;50</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>310</x>
-      <y>190</y>
+      <x>600</x>
+      <y>110</y>
       <w>190</w>
       <h>30</h>
     </coordinates>
@@ -61,41 +50,30 @@ lt=&lt;&lt;-
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>380</x>
-      <y>190</y>
+      <x>670</x>
+      <y>110</y>
       <w>50</w>
-      <h>90</h>
+      <h>310</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;70</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.SeqObjectActive</type>
-    <coordinates>
-      <x>400</x>
-      <y>260</y>
-      <w>20</w>
-      <h>290</h>
-    </coordinates>
-    <panel_attributes/>
-    <additional_attributes/>
+    <additional_attributes>30;30;30;290</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>380</x>
-      <y>520</y>
+      <x>670</x>
+      <y>420</y>
       <w>50</w>
-      <h>80</h>
+      <h>330</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>30;30;30;310</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Actor</type>
     <coordinates>
-      <x>660</x>
-      <y>120</y>
+      <x>890</x>
+      <y>50</y>
       <w>100</w>
       <h>120</h>
     </coordinates>
@@ -105,21 +83,21 @@ lt=&lt;&lt;-
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>680</x>
-      <y>200</y>
+      <x>910</x>
+      <y>90</y>
       <w>50</w>
-      <h>80</h>
+      <h>150</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>30;30;30;130</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>700</x>
-      <y>260</y>
+      <x>930</x>
+      <y>220</y>
       <w>20</w>
-      <h>280</h>
+      <h>370</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -127,88 +105,192 @@ lt=&lt;&lt;-
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>390</x>
-      <y>280</y>
-      <w>330</w>
+      <x>360</x>
+      <y>450</y>
+      <w>590</w>
       <h>70</h>
     </coordinates>
     <panel_attributes>retrieveMovieInformation (movieUPC)
 lt=&lt;&lt;-
 </panel_attributes>
-    <additional_attributes>310;50;30;50</additional_attributes>
+    <additional_attributes>570;50;30;50</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>390</x>
-      <y>330</y>
-      <w>330</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
-movieInformation
-</panel_attributes>
-    <additional_attributes>30;50;310;50</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>130</x>
-      <y>360</y>
-      <w>290</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
-movieInformation
-</panel_attributes>
-    <additional_attributes>30;50;270;50</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>120</x>
+      <x>360</x>
       <y>520</y>
-      <w>50</w>
-      <h>80</h>
+      <w>590</w>
+      <h>70</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;60;30;30</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;-
+movieInformation
+</panel_attributes>
+    <additional_attributes>30;50;570;50</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>680</x>
-      <y>510</y>
+      <x>910</x>
+      <y>560</y>
       <w>50</w>
-      <h>80</h>
+      <h>190</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>30;30;30;170</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>130</x>
-      <y>420</y>
-      <w>290</w>
+      <x>50</x>
+      <y>550</y>
+      <w>340</w>
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
 selectList (movieTitle)
 </panel_attributes>
-    <additional_attributes>270;50;30;50</additional_attributes>
+    <additional_attributes>320;50;30;50</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>130</x>
-      <y>470</y>
-      <w>290</w>
+      <x>50</x>
+      <y>610</y>
+      <w>340</w>
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
 updatedList
 </panel_attributes>
-    <additional_attributes>30;50;270;50</additional_attributes>
+    <additional_attributes>30;50;320;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>290</x>
+      <y>110</y>
+      <w>190</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>_:MovieManagementSystem_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.SeqObjectActive</type>
+    <coordinates>
+      <x>690</x>
+      <y>400</y>
+      <w>20</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>350</x>
+      <y>110</y>
+      <w>50</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>30;30;30;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.SeqObjectActive</type>
+    <coordinates>
+      <x>370</x>
+      <y>230</y>
+      <w>20</w>
+      <h>460</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>350</x>
+      <y>660</y>
+      <w>50</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>30;70;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>360</x>
+      <y>350</y>
+      <w>350</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+getUPCFromBarCode (barCodeImage)</panel_attributes>
+    <additional_attributes>330;50;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>360</x>
+      <y>400</y>
+      <w>350</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+movieUPC
+</panel_attributes>
+    <additional_attributes>30;50;330;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.InteractionFrame</type>
+    <coordinates>
+      <x>50</x>
+      <y>180</y>
+      <w>930</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>if: title search</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>50</x>
+      <y>200</y>
+      <w>340</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>submitBarCode (movieTitle)
+lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>320;50;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>360</x>
+      <y>230</y>
+      <w>590</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>retrieveMovieInformation (movieTile)
+lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>570;50;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.InteractionFrame</type>
+    <coordinates>
+      <x>50</x>
+      <y>320</y>
+      <w>920</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>if: bar code scanned</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>
