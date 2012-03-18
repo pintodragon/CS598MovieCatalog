@@ -3,4 +3,5 @@
 .project
 bin
 *.class
-
+~$*.docx
+~*.tmp
