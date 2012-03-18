@@ -31,9 +31,8 @@
       <w>340</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>submitBarCode (barCodeImage)
-lt=&lt;&lt;-
-</panel_attributes>
+    <panel_attributes>lt=&lt;&lt;-
+addMovie (barCodeImage)</panel_attributes>
     <additional_attributes>320;50;30;50</additional_attributes>
   </element>
   <element>
@@ -110,9 +109,8 @@ lt=&lt;&lt;-
       <w>590</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>retrieveMovieInformation (movieUPC)
-lt=&lt;&lt;-
-</panel_attributes>
+    <panel_attributes>lt=&lt;&lt;-
+retrieveMovieInformation (movieUPC)</panel_attributes>
     <additional_attributes>570;50;30;50</additional_attributes>
   </element>
   <element>
@@ -123,7 +121,7 @@ lt=&lt;&lt;-
       <w>590</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
+    <panel_attributes>lt=&lt;&lt;.
 movieInformation
 </panel_attributes>
     <additional_attributes>30;50;570;50</additional_attributes>
@@ -160,7 +158,7 @@ selectedList
       <w>340</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
+    <panel_attributes>lt=&lt;&lt;.
 updatedList
 </panel_attributes>
     <additional_attributes>30;50;320;50</additional_attributes>
@@ -240,7 +238,7 @@ getUPCFromBarCode (barCodeImage)</panel_attributes>
       <w>350</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
+    <panel_attributes>lt=&lt;&lt;.
 movieUPC
 </panel_attributes>
     <additional_attributes>30;50;330;50</additional_attributes>
@@ -264,9 +262,8 @@ movieUPC
       <w>340</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>submitBarCode (movieTitle)
-lt=&lt;&lt;-
-</panel_attributes>
+    <panel_attributes>lt=&lt;&lt;-
+addMovie (movieTitle)</panel_attributes>
     <additional_attributes>320;50;30;50</additional_attributes>
   </element>
   <element>
@@ -277,9 +274,8 @@ lt=&lt;&lt;-
       <w>590</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>retrieveMovieInformation (movieTile)
-lt=&lt;&lt;-
-</panel_attributes>
+    <panel_attributes>lt=&lt;&lt;-
+retrieveMovieInformation (movieTile)</panel_attributes>
     <additional_attributes>570;50;30;50</additional_attributes>
   </element>
   <element>
@@ -301,7 +297,7 @@ lt=&lt;&lt;-
       <w>340</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
+    <panel_attributes>lt=&lt;&lt;.
 promptForList()</panel_attributes>
     <additional_attributes>30;50;320;50</additional_attributes>
   </element>

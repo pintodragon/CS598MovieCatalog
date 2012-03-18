@@ -132,7 +132,7 @@ synchronizeWithServer (listOfModifiedSinceLastSync)</panel_attributes>
       <w>700</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
+    <panel_attributes>lt=&lt;&lt;.
 serverListOfModifiedSinceLastSync</panel_attributes>
     <additional_attributes>30;50;680;50</additional_attributes>
   </element>
@@ -144,7 +144,7 @@ serverListOfModifiedSinceLastSync</panel_attributes>
       <w>310</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
+    <panel_attributes>lt=&lt;&lt;.
 synchronizationDone</panel_attributes>
     <additional_attributes>30;50;290;50</additional_attributes>
   </element>
@@ -246,7 +246,7 @@ getChangesSinceLastSync ()</panel_attributes>
       <w>290</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
+    <panel_attributes>lt=&lt;&lt;.
 changesSinceLastSync</panel_attributes>
     <additional_attributes>30;50;270;50</additional_attributes>
   </element>
@@ -292,7 +292,7 @@ getChangesSinceLastSync ()</panel_attributes>
       <w>510</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
+    <panel_attributes>lt=&lt;&lt;.
 changesSinceLastSync</panel_attributes>
     <additional_attributes>30;50;490;50</additional_attributes>
   </element>

@@ -20,7 +20,7 @@
       <w>190</w>
       <h>30</h>
     </coordinates>
-    <panel_attributes>_:MovieManagementSystem_</panel_attributes>
+    <panel_attributes>_:ListManagementSystem_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -65,7 +65,7 @@
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
-viewMovieInformation (movieTitle)</panel_attributes>
+viewListInformation (listTitle)</panel_attributes>
     <additional_attributes>290;50;30;50</additional_attributes>
   </element>
   <element>
@@ -73,11 +73,11 @@ viewMovieInformation (movieTitle)</panel_attributes>
     <coordinates>
       <x>490</x>
       <y>260</y>
-      <w>298</w>
+      <w>282</w>
       <h>100</h>
     </coordinates>
     <panel_attributes>lt=&gt;&gt;
-retrieveMovieInformation (movieTitle)</panel_attributes>
+retrieveListInformation (listTitle)</panel_attributes>
     <additional_attributes>30;30;160;30;160;80;30;80</additional_attributes>
   </element>
   <element>
@@ -89,7 +89,7 @@ retrieveMovieInformation (movieTitle)</panel_attributes>
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
-displayMovieInformation</panel_attributes>
+displayListInformation</panel_attributes>
     <additional_attributes>30;50;290;50</additional_attributes>
   </element>
   <element>
