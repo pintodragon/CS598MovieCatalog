@@ -32,7 +32,7 @@
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
-addMovie (barCodeImage)</panel_attributes>
+addMovie (barcodeImage)</panel_attributes>
     <additional_attributes>320;50;30;50</additional_attributes>
   </element>
   <element>
@@ -43,7 +43,7 @@ addMovie (barCodeImage)</panel_attributes>
       <w>190</w>
       <h>30</h>
     </coordinates>
-    <panel_attributes>_:BarCodeProcessing_</panel_attributes>
+    <panel_attributes>_:BarcodeProcessing_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -110,7 +110,7 @@ addMovie (barCodeImage)</panel_attributes>
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
-retrieveMovieInformation (movieUPC)</panel_attributes>
+getMovieInformation (movieUPC)</panel_attributes>
     <additional_attributes>570;50;30;50</additional_attributes>
   </element>
   <element>
@@ -227,7 +227,7 @@ updatedList
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
-getUPCFromBarCode (barCodeImage)</panel_attributes>
+getUPCFromBarcode (barcodeImage)</panel_attributes>
     <additional_attributes>330;50;30;50</additional_attributes>
   </element>
   <element>
@@ -252,7 +252,7 @@ movieUPC
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
-promptForList()</panel_attributes>
+promptForList(currentListsInSystem)</panel_attributes>
     <additional_attributes>30;50;320;50</additional_attributes>
   </element>
 </diagram>

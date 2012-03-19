@@ -45,7 +45,7 @@ movieInformation
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
-selectedList
+submitNewList(listTitle)
 </panel_attributes>
     <additional_attributes>320;50;30;50</additional_attributes>
   </element>
