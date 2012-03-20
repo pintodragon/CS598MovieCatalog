@@ -1,8 +1,11 @@
 package edu.sunyit.chryslj.database;
 
+import java.util.Arrays;
+import java.util.List;
+
 import android.database.sqlite.SQLiteDatabase;
 
-public class MediaFormatTable
+public class MediaFormatTable implements DatabaseTable
 {
 	public static final String TABLE_FORMATS = "mediaFormats";
 	public static final String TABLE_FORMATS_BACKUP = TABLE_FORMATS + "_backup";
@@ -25,12 +28,20 @@ public class MediaFormatTable
 	private static final String COPY_TABLE_BACK = "INSERT INTO " +
 	        TABLE_FORMATS + " SELECT * FROM " + TABLE_FORMATS_BACKUP + ";";
 
-	public static void onCreate(SQLiteDatabase database)
+	@Override
+	public List<String> getColumnNames()
+	{
+		return Arrays.asList(COLUMN_ID, COLUMN_TITLE, COLUMN_NAME);
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase database)
 	{
 		database.execSQL(TABLE_CREATE);
 	}
 
-	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
+	@Override
+	public void onUpgrade(SQLiteDatabase database, int oldVersion,
 	        int newVersion)
 	{
 		// Create a backup of the previous table.

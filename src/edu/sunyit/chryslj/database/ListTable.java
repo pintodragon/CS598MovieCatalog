@@ -1,8 +1,11 @@
 package edu.sunyit.chryslj.database;
 
+import java.util.Arrays;
+import java.util.List;
+
 import android.database.sqlite.SQLiteDatabase;
 
-public class ListTable
+public class ListTable implements DatabaseTable
 {
 	public static final String TABLE_LISTS = "lists";
 	public static final String TABLE_LISTS_BACKUP = TABLE_LISTS + "_backup";
@@ -22,12 +25,20 @@ public class ListTable
 	private static final String COPY_TABLE_BACK = "INSERT INTO " + TABLE_LISTS +
 	        " SELECT * FROM " + TABLE_LISTS_BACKUP + ";";
 
-	public static void onCreate(SQLiteDatabase database)
+	@Override
+	public List<String> getColumnNames()
+	{
+		return Arrays.asList(COLUMN_ID, COLUMN_TITLE);
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase database)
 	{
 		database.execSQL(TABLE_CREATE);
 	}
 
-	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
+	@Override
+	public void onUpgrade(SQLiteDatabase database, int oldVersion,
 	        int newVersion)
 	{
 		// Create a backup of the previous table.

@@ -1,8 +1,11 @@
 package edu.sunyit.chryslj.database;
 
+import java.util.Arrays;
+import java.util.List;
+
 import android.database.sqlite.SQLiteDatabase;
 
-public class ListMovieAssociationTable
+public class ListMovieAssociationTable implements DatabaseTable
 {
 	public static final String TABLE_ASSOCIATIONS = "lists";
 	public static final String TABLE_ASSOCIATIONS_BACKUP = TABLE_ASSOCIATIONS +
@@ -32,12 +35,20 @@ public class ListMovieAssociationTable
 	        TABLE_ASSOCIATIONS + " SELECT * FROM " + TABLE_ASSOCIATIONS_BACKUP +
 	        ";";
 
-	public static void onCreate(SQLiteDatabase database)
+	@Override
+	public List<String> getColumnNames()
+	{
+		return Arrays.asList(COLUMN_ID, COLUMN_MOVIEID, COLUMN_LISTID);
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase database)
 	{
 		database.execSQL(TABLE_CREATE);
 	}
 
-	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
+	@Override
+	public void onUpgrade(SQLiteDatabase database, int oldVersion,
 	        int newVersion)
 	{
 		// Create a backup of the previous table.

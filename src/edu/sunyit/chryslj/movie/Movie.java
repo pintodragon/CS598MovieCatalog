@@ -1,5 +1,7 @@
 package edu.sunyit.chryslj.movie;
 
+import java.util.List;
+
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.MovieRaiting;
 
@@ -11,6 +13,7 @@ public class Movie
 	private int personalRaiting;
 	private MediaFormat format;
 	private Short runTime;
+	private List<String> associatedLists;
 
 	/**
 	 * @return the title
@@ -112,6 +115,23 @@ public class Movie
 	public void setRunTime(Short runTime)
 	{
 		this.runTime = runTime;
+	}
+
+	/**
+	 * @return the associatedLists
+	 */
+	public List<String> getAssociatedLists()
+	{
+		return associatedLists;
+	}
+
+	/**
+	 * @param associatedLists
+	 *            the associatedLists to set
+	 */
+	public void setAssociatedLists(List<String> associatedLists)
+	{
+		this.associatedLists = associatedLists;
 	}
 
 	/**

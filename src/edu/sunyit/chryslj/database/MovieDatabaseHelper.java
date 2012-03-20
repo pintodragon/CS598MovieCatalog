@@ -1,5 +1,7 @@
 package edu.sunyit.chryslj.database;
 
+import java.util.List;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,20 +14,27 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper
 	private static final String DATABASE_NAME = "csMovieCatalog.db";
 	private static final int DATABASE_VERSION = 1;
 
+	List<DatabaseTable> tables;
+
 	public MovieDatabaseHelper(Context context)
 	{
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	}
+
+	public MovieDatabaseHelper(Context context, List<DatabaseTable> tables)
+	{
+		this(context);
+		this.tables = tables;
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase database)
 	{
 		database.execSQL(ENABLE_FOREIGN_KEYS);
-		MediaFormatTable.onCreate(database);
-		RatingTable.onCreate(database);
-		MovieTable.onCreate(database);
-		ListTable.onCreate(database);
-		ListMovieAssociationTable.onCreate(database);
+		for (DatabaseTable table : tables)
+		{
+			table.onCreate(database);
+		}
 	}
 
 	@Override
@@ -34,11 +43,10 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper
 	{
 		Log.w(LOG_TAG, "Upgrading database from version " + oldVersion +
 		        " to " + newVersion + ", data will be preserved.");
-		MediaFormatTable.onUpgrade(database, oldVersion, newVersion);
-		RatingTable.onUpgrade(database, oldVersion, newVersion);
-		MovieTable.onUpgrade(database, oldVersion, newVersion);
-		ListTable.onUpgrade(database, oldVersion, newVersion);
-		ListMovieAssociationTable.onUpgrade(database, oldVersion, newVersion);
+		for (DatabaseTable table : tables)
+		{
+			table.onUpgrade(database, oldVersion, newVersion);
+		}
 	}
 
 }
