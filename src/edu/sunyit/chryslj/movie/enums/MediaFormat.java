@@ -6,18 +6,18 @@ public enum MediaFormat
 	DVD("DVD", "Digital Versatile Disc"),
 	BLURAY("Blu-ray", "Blue Ray");
 
-	private String shortHand;
+	private String title;
 	private String name;
 
-	MediaFormat(String shortHand, String name)
+	MediaFormat(String title, String name)
 	{
-		this.shortHand = shortHand;
+		this.title = title;
 		this.name = name;
 	}
 
-	public String getShortHand()
+	public String getTitle()
 	{
-		return shortHand;
+		return title;
 	}
 
 	public String getName()

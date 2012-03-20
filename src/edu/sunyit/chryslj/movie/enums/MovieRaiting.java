@@ -8,23 +8,28 @@ public enum MovieRaiting
 	R("R", "Restricted. Children Under 17 Require Accompanying Parent or Adult Guardian."),
 	NC17("NC-17", "No One 17 and Under Admitted.");
 
-	private String shortHand;
-	private String briefDescription;
+	private String title;
+	private String description;
 
-	MovieRaiting(String shortHand, String briefDescription)
+	MovieRaiting(String title, String description)
 	{
-		this.shortHand = shortHand;
-		this.briefDescription = briefDescription;
+		this.title = title;
+		this.description = description;
 	}
 
-	public String getBriefDescription()
+	public String getTitle()
 	{
-		return briefDescription;
+		return title;
+	}
+
+	public String getDescription()
+	{
+		return description;
 	}
 
 	@Override
 	public String toString()
 	{
-		return shortHand;
+		return title;
 	}
 }
