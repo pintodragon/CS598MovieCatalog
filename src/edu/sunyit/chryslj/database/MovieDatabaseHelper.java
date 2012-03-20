@@ -24,6 +24,8 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper
 		MediaFormatTable.onCreate(database);
 		RatingTable.onCreate(database);
 		MovieTable.onCreate(database);
+		ListTable.onCreate(database);
+		ListMovieAssociationTable.onCreate(database);
 	}
 
 	@Override
@@ -35,6 +37,8 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper
 		MediaFormatTable.onUpgrade(database, oldVersion, newVersion);
 		RatingTable.onUpgrade(database, oldVersion, newVersion);
 		MovieTable.onUpgrade(database, oldVersion, newVersion);
+		ListTable.onUpgrade(database, oldVersion, newVersion);
+		ListMovieAssociationTable.onUpgrade(database, oldVersion, newVersion);
 	}
 
 }
