@@ -119,12 +119,13 @@ public class MovieManagementSystem
 	{
 		// TODO Magic numbers!!!!
 		Movie movie = new Movie();
-		movie.setTitle(cursor.getString(0));
-		movie.setRated(Rating.values()[cursor.getInt(1)]);
-		movie.setGenre(Genre.values()[cursor.getInt(2)]);
-		movie.setPersonalRaiting(cursor.getInt(3));
-		movie.setFormat(MediaFormat.values()[cursor.getInt(4)]);
-		movie.setRunTime(cursor.getShort(5));
+		movie.setId(cursor.getInt(0));
+		movie.setTitle(cursor.getString(1));
+		movie.setRated(Rating.values()[cursor.getInt(2)]);
+		movie.setGenre(Genre.values()[cursor.getInt(3)]);
+		movie.setPersonalRaiting(cursor.getInt(4));
+		movie.setFormat(MediaFormat.values()[cursor.getInt(5)]);
+		movie.setRunTime(cursor.getShort(6));
 
 		Log.i(TAG, "Movie: " + movie.toString());
 

@@ -8,6 +8,7 @@ import edu.sunyit.chryslj.movie.enums.Rating;
 
 public class Movie
 {
+	private int id = 0;
 	private String title = "";
 	private Rating rated;
 	private Genre genre;
@@ -133,6 +134,24 @@ public class Movie
 	public void setAssociatedLists(List<String> associatedLists)
 	{
 		this.associatedLists = associatedLists;
+	}
+
+	/**
+	 * @param id
+	 *            the associatedLists to set
+	 */
+	public int getId()
+	{
+		return id;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(int id)
+	{
+		this.id = id;
 	}
 
 	/**

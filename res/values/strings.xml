@@ -3,5 +3,8 @@
 
     <string name="hello">Testing</string>
     <string name="app_name">MovieCatalog</string>
+    <string name="quit">Quit</string>
+    <string name="add_new">Add New</string>
+    <string name="delete">Delete</string>
 
 </resources>
