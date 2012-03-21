@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
+import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
@@ -40,7 +41,7 @@ public class MovieCatalogActivity extends ListActivity
 		Movie movie = new Movie();
 		movie.setTitle("Testing");
 		movie.setRated(Rating.G);
-		movie.setGenre("Why isn't this an enum?");
+		movie.setGenre(Genre.COMEDY);
 		movie.setPersonalRaiting(2);
 		movie.setFormat(MediaFormat.DVD);
 		movie.setRunTime((short) 10);

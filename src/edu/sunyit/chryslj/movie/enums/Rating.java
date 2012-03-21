@@ -4,9 +4,9 @@ public enum Rating
 {
 	G(0, "G", "General Audiences. All Ages Admitted."),
 	PG(1, "PG", "Parental Guidance Suggested. Some Material May Not Be Suitable For Children."),
-	PG13(2, "PG-13", "Parents Strongly Cautioned. Some Material May Be Inappropriate For Children Under 13."),
+	PG_13(2, "PG-13", "Parents Strongly Cautioned. Some Material May Be Inappropriate For Children Under 13."),
 	R(3, "R", "Restricted. Children Under 17 Require Accompanying Parent or Adult Guardian."),
-	NC17(4, "NC-17", "No One 17 and Under Admitted.");
+	NC_17(4, "NC-17", "No One 17 and Under Admitted.");
 
 	private int id;
 	private String title;

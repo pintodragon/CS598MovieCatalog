@@ -10,12 +10,14 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import edu.sunyit.chryslj.database.GenreTable;
 import edu.sunyit.chryslj.database.ListMovieAssociationTable;
 import edu.sunyit.chryslj.database.ListTable;
 import edu.sunyit.chryslj.database.MediaFormatTable;
 import edu.sunyit.chryslj.database.MovieDatabaseHelper;
 import edu.sunyit.chryslj.database.MovieTable;
 import edu.sunyit.chryslj.database.RatingTable;
+import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
@@ -29,6 +31,7 @@ public class MovieManagementSystem
 
 	private MediaFormatTable mediaFormatTable = new MediaFormatTable();
 	private RatingTable ratingTable = new RatingTable();
+	private GenreTable genreTable = new GenreTable();
 	private MovieTable movieTable = new MovieTable();
 	private ListTable listTable = new ListTable();
 	private ListMovieAssociationTable associationTable = new ListMovieAssociationTable();
@@ -36,8 +39,8 @@ public class MovieManagementSystem
 	public MovieManagementSystem(Context context)
 	{
 		dbHelper = new MovieDatabaseHelper(context, Arrays.asList(
-		        mediaFormatTable, ratingTable, movieTable, listTable,
-		        associationTable));
+		        mediaFormatTable, ratingTable, genreTable, movieTable,
+		        listTable, associationTable));
 	}
 
 	public void open() throws SQLException
@@ -54,8 +57,8 @@ public class MovieManagementSystem
 	{
 		ContentValues values = new ContentValues();
 		values.put(MovieTable.COLUMN_TITLE, newMovie.getTitle());
-		values.put(MovieTable.COLUMN_RATED, newMovie.getRated().ordinal());
-		values.put(MovieTable.COLUMN_GENRE, newMovie.getGenre());
+		values.put(MovieTable.COLUMN_RATED, newMovie.getRated().getId());
+		values.put(MovieTable.COLUMN_GENRE, newMovie.getGenre().getId());
 		values.put(MovieTable.COLUMN_PERSONALRATING,
 		        newMovie.getPersonalRaiting());
 		values.put(MovieTable.COLUMN_FORMAT, newMovie.getFormat().ordinal());
@@ -118,7 +121,7 @@ public class MovieManagementSystem
 		Movie movie = new Movie();
 		movie.setTitle(cursor.getString(0));
 		movie.setRated(Rating.values()[cursor.getInt(1)]);
-		movie.setGenre(cursor.getString(2));
+		movie.setGenre(Genre.values()[cursor.getInt(2)]);
 		movie.setPersonalRaiting(cursor.getInt(3));
 		movie.setFormat(MediaFormat.values()[cursor.getInt(4)]);
 		movie.setRunTime(cursor.getShort(5));

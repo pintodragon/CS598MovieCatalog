@@ -2,6 +2,7 @@ package edu.sunyit.chryslj.movie;
 
 import java.util.List;
 
+import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
@@ -9,7 +10,7 @@ public class Movie
 {
 	private String title = "";
 	private Rating rated;
-	private String genre = "";
+	private Genre genre;
 	private int personalRaiting;
 	private MediaFormat format;
 	private Short runTime;
@@ -52,7 +53,7 @@ public class Movie
 	/**
 	 * @return the genre
 	 */
-	public String getGenre()
+	public Genre getGenre()
 	{
 		return genre;
 	}
@@ -61,7 +62,7 @@ public class Movie
 	 * @param genre
 	 *            the genre to set
 	 */
-	public void setGenre(String genre)
+	public void setGenre(Genre genre)
 	{
 		this.genre = genre;
 	}
