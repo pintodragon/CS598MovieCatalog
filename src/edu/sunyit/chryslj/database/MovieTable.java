@@ -1,8 +1,5 @@
 package edu.sunyit.chryslj.database;
 
-import java.util.Arrays;
-import java.util.List;
-
 import android.database.sqlite.SQLiteDatabase;
 
 public class MovieTable implements DatabaseTable
@@ -38,11 +35,11 @@ public class MovieTable implements DatabaseTable
 	        TABLE_MOVIES + " SELECT * FROM " + TABLE_MOVIES_BACKUP + ";";
 
 	@Override
-	public List<String> getColumnNames()
+	public String[] getColumnNames()
 	{
-		return Arrays.asList(COLUMN_ID, COLUMN_TITLE, COLUMN_RATED,
+		return new String[] { COLUMN_ID, COLUMN_TITLE, COLUMN_RATED,
 		        COLUMN_GENRE, COLUMN_PERSONALRATING, COLUMN_FORMAT,
-		        COLUMN_RUNTIME);
+		        COLUMN_RUNTIME };
 	}
 
 	@Override

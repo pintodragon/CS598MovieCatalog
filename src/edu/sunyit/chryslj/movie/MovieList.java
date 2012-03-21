@@ -1,6 +1,6 @@
 package edu.sunyit.chryslj.movie;
 
-public class List
+public class MovieList
 {
 	private String title = "";
 

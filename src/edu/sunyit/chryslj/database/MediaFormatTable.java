@@ -1,8 +1,5 @@
 package edu.sunyit.chryslj.database;
 
-import java.util.Arrays;
-import java.util.List;
-
 import android.database.sqlite.SQLiteDatabase;
 
 public class MediaFormatTable implements DatabaseTable
@@ -29,9 +26,9 @@ public class MediaFormatTable implements DatabaseTable
 	        TABLE_FORMATS + " SELECT * FROM " + TABLE_FORMATS_BACKUP + ";";
 
 	@Override
-	public List<String> getColumnNames()
+	public String[] getColumnNames()
 	{
-		return Arrays.asList(COLUMN_ID, COLUMN_TITLE, COLUMN_NAME);
+		return new String[] { COLUMN_ID, COLUMN_TITLE, COLUMN_NAME };
 	}
 
 	@Override

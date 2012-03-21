@@ -1,8 +1,5 @@
 package edu.sunyit.chryslj.database;
 
-import java.util.Arrays;
-import java.util.List;
-
 import android.database.sqlite.SQLiteDatabase;
 
 public class ListTable implements DatabaseTable
@@ -26,14 +23,15 @@ public class ListTable implements DatabaseTable
 	        " SELECT * FROM " + TABLE_LISTS_BACKUP + ";";
 
 	@Override
-	public List<String> getColumnNames()
+	public String[] getColumnNames()
 	{
-		return Arrays.asList(COLUMN_ID, COLUMN_TITLE);
+		return new String[] { COLUMN_ID, COLUMN_TITLE };
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase database)
 	{
+		// TODO Add default lists
 		database.execSQL(TABLE_CREATE);
 	}
 

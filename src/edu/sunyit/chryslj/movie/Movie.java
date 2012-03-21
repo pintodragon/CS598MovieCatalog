@@ -3,12 +3,12 @@ package edu.sunyit.chryslj.movie;
 import java.util.List;
 
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
-import edu.sunyit.chryslj.movie.enums.MovieRaiting;
+import edu.sunyit.chryslj.movie.enums.Rating;
 
 public class Movie
 {
 	private String title = "";
-	private MovieRaiting rated;
+	private Rating rated;
 	private String genre = "";
 	private int personalRaiting;
 	private MediaFormat format;
@@ -35,7 +35,7 @@ public class Movie
 	/**
 	 * @return the rated
 	 */
-	public MovieRaiting getRated()
+	public Rating getRated()
 	{
 		return rated;
 	}
@@ -44,7 +44,7 @@ public class Movie
 	 * @param rated
 	 *            the rated to set
 	 */
-	public void setRated(MovieRaiting rated)
+	public void setRated(Rating rated)
 	{
 		this.rated = rated;
 	}
