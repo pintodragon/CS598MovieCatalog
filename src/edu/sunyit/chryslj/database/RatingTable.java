@@ -19,13 +19,11 @@ public class RatingTable implements DatabaseTable
 	private static final String DROP_TABLE = "DROP TABLE " + TABLE_RATINGS +
 	        ";";
 
-	@Override
 	public String[] getColumnNames()
 	{
 		return new String[] { COLUMN_ID, COLUMN_TITLE, COLUMN_DESCRIPTION };
 	}
 
-	@Override
 	public void onCreate(SQLiteDatabase database)
 	{
 		database.execSQL(TABLE_CREATE);
@@ -33,7 +31,6 @@ public class RatingTable implements DatabaseTable
 		insertRatings(database);
 	}
 
-	@Override
 	public void onUpgrade(SQLiteDatabase database, int oldVersion,
 	        int newVersion)
 	{
