@@ -2,6 +2,7 @@ package edu.sunyit.chryslj.movie;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -53,8 +54,20 @@ public class MovieManagementSystem
 		dbHelper.close();
 	}
 
-	public Movie createMovie(Movie newMovie)
+	// private Movie aquireMovieInformation(String title)
+	// {
+	// return null;
+	// }
+	//
+	// private Movie aquireMovieInformation(int barcode)
+	// {
+	// return null;
+	// }
+
+	public boolean addMovie(Movie newMovie)
 	{
+		boolean movieAdded = true;
+
 		ContentValues values = new ContentValues();
 		values.put(MovieTable.COLUMN_TITLE, newMovie.getTitle());
 		values.put(MovieTable.COLUMN_RATED, newMovie.getRated().getId());
@@ -64,27 +77,58 @@ public class MovieManagementSystem
 		values.put(MovieTable.COLUMN_FORMAT, newMovie.getFormat().ordinal());
 		values.put(MovieTable.COLUMN_RUNTIME, newMovie.getRunTime());
 
-		Movie storedMovie = null;
+		database.beginTransaction();
 		try
 		{
 			long insertId = database.insertOrThrow(MovieTable.TABLE_MOVIES,
 			        null, values);
 
+			if (insertId == -1)
+			{
+				movieAdded = false;
+			}
+
 			Log.i(TAG, "InsertedId: " + insertId);
-			// TODO For testing
-			Cursor cursor = database.query(MovieTable.TABLE_MOVIES,
-			        movieTable.getColumnNames(), MovieTable.COLUMN_ID + " = " +
-			                insertId, null, null, null, null);
-			cursor.moveToFirst();
-			storedMovie = cursorToMovie(cursor);
-			cursor.close();
+			database.setTransactionSuccessful();
 		}
 		catch (SQLException sqlException)
 		{
-			Log.e(TAG, "SqlException: " + sqlException.getMessage());
+			Log.e(TAG, "Unable to add \"" + newMovie.getTitle() +
+			        "\" to the database." + sqlException.getMessage());
+			movieAdded = false;
+		}
+		finally
+		{
+			database.endTransaction();
 		}
 
-		return storedMovie;
+		return movieAdded;
+	}
+
+	public boolean removeMovie(Movie movie)
+	{
+		boolean movieRemoved = true;
+
+		database.beginTransaction();
+		database.delete(MovieTable.TABLE_MOVIES, MovieTable.COLUMN_ID + " = " +
+		        movie.getId(), null);
+		database.setTransactionSuccessful();
+		database.endTransaction();
+
+		return movieRemoved;
+	}
+
+	// TODO do something if it fails
+	public boolean removeMovie(List<Movie> movies)
+	{
+		boolean moviesRemoved = true;
+
+		for (Movie movie : movies)
+		{
+			moviesRemoved = removeMovie(movie);
+		}
+
+		return moviesRemoved;
 	}
 
 	public List<Movie> getAllMovies()
@@ -105,15 +149,46 @@ public class MovieManagementSystem
 		return movies;
 	}
 
-	// private Movie getMovieInformation(String title)
-	// {
-	// return null;
-	// }
-	//
-	// private Movie getMovieInformation(int barcode)
-	// {
-	// return null;
-	// }
+	public boolean addList(MovieList list)
+	{
+		boolean listAdded = true;
+
+		return listAdded;
+	}
+
+	public boolean removeList(MovieList list)
+	{
+		boolean listRemoved = true;
+
+		return listRemoved;
+	}
+
+	public boolean removeList(List<MovieList> lists)
+	{
+		boolean listsRemoved = true;
+
+		for (MovieList list : lists)
+		{
+			listsRemoved = removeList(list);
+		}
+
+		return listsRemoved;
+	}
+
+	public List<MovieList> getAllLists()
+	{
+		return null;
+	}
+
+	public String promptForList(List<MovieList> currentLists)
+	{
+		return null;
+	}
+
+	public Collection<String> getChangesSinceLastSync()
+	{
+		return null;
+	}
 
 	private Movie cursorToMovie(Cursor cursor)
 	{
