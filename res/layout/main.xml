@@ -10,17 +10,18 @@
         android:layout_height="wrap_content" >
 
         <Button
-            android:id="@+id/add"
+            android:id="@+id/add_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_new" 
             android:onClick="onClick"/>
 
         <Button
-            android:id="@+id/delete"
+            android:id="@+id/delete_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/delete" />
+            android:text="@string/delete"
+            android:onClick="onClick" />
         
     </LinearLayout>
 

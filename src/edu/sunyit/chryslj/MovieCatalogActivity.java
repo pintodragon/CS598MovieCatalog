@@ -61,9 +61,16 @@ public class MovieCatalogActivity extends ListActivity
 		@SuppressWarnings("unchecked")
 		ArrayAdapter<Movie> adapter = (ArrayAdapter<Movie>) getListAdapter();
 
+		Log.d(TAG, "ViewId: " + R.id.delete_movie);
 		switch (view.getId())
 		{
-			case R.id.add:
+			case R.id.delete_movie:
+				Log.d(TAG, "Delete: " + selectedItem);
+				movieMangSystem
+				        .removeMovie(adapter.getItem((int) selectedItem));
+				adapter.remove(adapter.getItem((int) selectedItem));
+				break;
+			case R.id.add_movie:
 				Movie movie = new Movie();
 				movie.setTitle("Testing");
 				movie.setRated(Rating.G);
@@ -75,11 +82,6 @@ public class MovieCatalogActivity extends ListActivity
 				{
 					adapter.add(movie);
 				}
-				break;
-			case R.id.delete:
-				Log.i(TAG, "Delete: " + selectedItem);
-				movieMangSystem
-				        .removeMovie(adapter.getItem((int) selectedItem));
 				break;
 		}
 
