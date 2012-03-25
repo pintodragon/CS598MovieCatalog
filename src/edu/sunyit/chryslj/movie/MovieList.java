@@ -2,7 +2,25 @@ package edu.sunyit.chryslj.movie;
 
 public class MovieList
 {
+	private int id = 0;
 	private String title = "";
+
+	/**
+	 * @return the title
+	 */
+	public int getId()
+	{
+		return id;
+	}
+
+	/**
+	 * @param title
+	 *            the title to set
+	 */
+	public void setId(int id)
+	{
+		this.id = id;
+	}
 
 	/**
 	 * @return the title
