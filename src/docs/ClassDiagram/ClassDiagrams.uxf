@@ -60,7 +60,7 @@ runTime : Short
 --
 aquireImage () : Bitmap
 convertToGrayScale (Bitmap image) : Bitmap
-generateHistogram (Bitmap image) : Bitmap
+generateBinaryImage (Bitmap image) : Bitmap
 determineType Bitmap image) : BarcodeType
 interpretCode (Bitmap image, BarcodeType type) : Long</panel_attributes>
     <additional_attributes/>
