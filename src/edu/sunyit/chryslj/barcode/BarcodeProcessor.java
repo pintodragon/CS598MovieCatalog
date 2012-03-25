@@ -24,6 +24,11 @@ public class BarcodeProcessor
 	private Camera deviceCamera = null;
 	private Parameters cameraParameters = null;
 
+	// TODO FOR TESTING ONLY.
+	public BarcodeProcessor()
+	{
+	}
+
 	/**
 	 * 
 	 * @param cameraHolder
@@ -119,17 +124,13 @@ public class BarcodeProcessor
 	}
 
 	/**
-	 * Using Otsu's algorithm to generate an image with only two values. This
-	 * helps reduce the work needed to detect edges, or in our case to detect
-	 * lines of a barcode.
 	 * 
-	 * @see <a href="http://en.wikipedia.org/wiki/Otsu's_method">Otsu's
-	 *      method</a>
 	 * @param image
 	 * @return
 	 */
-	private Bitmap generateBinaryImage(Bitmap image)
+	public Bitmap generateBinaryImage(Bitmap image)
 	{
+		// TODO great candidate for a new thread
 		int width = image.getWidth();
 		int height = image.getHeight();
 
@@ -143,21 +144,27 @@ public class BarcodeProcessor
 		{
 			for (int row = 0; row < height; row++)
 			{
-				int newColor;
-				if (grayBMP.getPixel(column, row) > binaryThreshold)
+				int newRed;
+				int newGreen;
+				int newBlue;
+				int pixelValue = getPixelValue(grayBMP.getPixel(column, row));
+				if (pixelValue > binaryThreshold)
 				{
-					newColor = Color.WHITE;
+					newRed = 255;
+					newGreen = 255;
+					newBlue = 255;
 				}
 				else
 				{
-					newColor = Color.BLACK;
+					newRed = 0;
+					newGreen = 0;
+					newBlue = 0;
 				}
-				binaryImage.setPixel(column, row, newColor);
+
+				binaryImage.setPixel(column, row,
+				        Color.rgb(newRed, newGreen, newBlue));
 			}
 		}
-
-		image.recycle();
-		grayBMP.recycle();
 
 		return binaryImage;
 	}
@@ -169,8 +176,7 @@ public class BarcodeProcessor
 	 */
 	private int[] generateImageHistogram(Bitmap image)
 	{
-		// An RGB 565 image has 32*64*32 possible pixel values.
-		int[] histogram = new int[32 * 64 * 32];
+		int[] histogram = new int[256];
 
 		for (int index = 0; index < histogram.length; index++)
 		{
@@ -182,7 +188,9 @@ public class BarcodeProcessor
 			for (int row = 0; row < image.getHeight(); row++)
 			{
 				int colorIndex = image.getPixel(column, row);
-				histogram[colorIndex]++;
+				int piexlValue = getPixelValue(colorIndex);
+
+				histogram[piexlValue]++;
 			}
 		}
 
@@ -191,56 +199,77 @@ public class BarcodeProcessor
 
 	/**
 	 * 
+	 * @param pixel
+	 * @return
+	 */
+	private int getPixelValue(int pixel)
+	{
+		int r = Color.red(pixel);
+		int g = Color.green(pixel);
+		int b = Color.blue(pixel);
+
+		return (int) ((r + g + b) / 3);
+	}
+
+	/**
+	 * Using Otsu's algorithm to generate an image with only two values. This
+	 * helps reduce the work needed to detect edges, or in our case to detect
+	 * lines of a barcode.
+	 * 
+	 * @see <a href="http://en.wikipedia.org/wiki/Otsu's_method">Otsu's
+	 *      method</a>
 	 * @param grayBMP
 	 * @return
 	 */
 	private int otsuBinaryThreashold(Bitmap grayBMP)
 	{
 		int binaryThreshold = 0;
+		float sum = 0;
+		float sumB = 0;
+		int backgroundWeight = 0;
+		int foregroundWegiht = 0;
+		float maxVariance = 0;
+
 		int[] histogram = generateImageHistogram(grayBMP);
 		int numberOfPixels = grayBMP.getWidth() * grayBMP.getHeight();
 
-		float sumClassA = 0;
 		for (int index = 0; index < histogram.length; index++)
 		{
-			sumClassA += index * histogram[index];
+			sum += index * histogram[index];
 		}
 
-		float sumClassB = 0;
-		int classAProp = 0;
-		int classBProp = 0;
-
-		float maxVariance = 0;
-
 		for (int index = 0; index < histogram.length; index++)
 		{
-			classAProp += histogram[index];
-
-			if (classAProp == 0)
+			backgroundWeight += histogram[index];
+			// Make sure the background weight isn't 0. Do not want to divide
+			// by zero later on.
+			if (backgroundWeight == 0)
 			{
-				// Do not want to divide by 0
 				continue;
 			}
 
-			classBProp = numberOfPixels - classAProp;
-
-			if (classBProp == 0)
+			foregroundWegiht = numberOfPixels - backgroundWeight;
+			// Check if we have gone through the entire image.
+			if (foregroundWegiht == 0)
 			{
-				// Done
 				break;
 			}
 
-			sumClassB += (float) (index * histogram[index]);
-			float meanClassA = sumClassB / classAProp;
-			float meanClassB = (sumClassA - sumClassB) / classBProp;
+			sumB += (float) (index * histogram[index]);
 
-			float varianceBetweenClasses = (float) classAProp *
-			        (float) classBProp * (meanClassA - meanClassB) *
-			        (meanClassA - meanClassB);
+			float backgroundMean = sumB / backgroundWeight;
+			float foregroundMean = (sum - sumB) / foregroundWegiht;
 
-			if (varianceBetweenClasses > maxVariance)
+			// Calculate the variance between the classes
+			float weightDiff = (backgroundMean - foregroundMean);
+			// Otsu: w1(t)*w2(t)*[u1(t) - u2(t)]^2
+			float betweenVariance = (float) backgroundWeight *
+			        (float) foregroundWegiht * weightDiff * weightDiff;
+
+			// See if there is a new max variance
+			if (betweenVariance > maxVariance)
 			{
-				maxVariance = varianceBetweenClasses;
+				maxVariance = betweenVariance;
 				binaryThreshold = index;
 			}
 		}
