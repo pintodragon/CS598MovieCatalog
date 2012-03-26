@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import edu.sunyit.chryslj.barcode.BarcodeProcessor;
+import edu.sunyit.chryslj.barcode.UPCABarcode;
 
 public class TestBMPActivity extends Activity
 {
@@ -32,6 +33,8 @@ public class TestBMPActivity extends Activity
 			Bitmap binImage = bp.generateBinaryImage(myBitmap);
 			ImageView myImage = (ImageView) findViewById(R.id.binary);
 			myImage.setImageBitmap(binImage);
+			UPCABarcode upacAB = new UPCABarcode();
+			upacAB.decodeImage(binImage);
 			// myImage.setVisibility(ImageView.VISIBLE);
 			Log.i(TAG, "Image exists");
 		}

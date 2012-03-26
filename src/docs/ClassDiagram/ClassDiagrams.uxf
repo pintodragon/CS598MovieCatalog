@@ -62,7 +62,7 @@ aquireImage () : Bitmap
 convertToGrayScale (Bitmap image) : Bitmap
 generateBinaryImage (Bitmap image) : Bitmap
 determineType Bitmap image) : BarcodeType
-interpretCode (Bitmap image, BarcodeType type) : Long</panel_attributes>
+decodeImage (Bitmap image, BarcodeType type) : Long</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -139,7 +139,7 @@ interpretCode (Bitmap image, BarcodeType type) : Long</panel_attributes>
       <w>210</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>BarcodeInterface
+    <panel_attributes>BarcodeDecoder
 --
  
 --</panel_attributes>

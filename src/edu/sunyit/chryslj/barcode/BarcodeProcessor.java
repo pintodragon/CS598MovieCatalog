@@ -83,7 +83,7 @@ public class BarcodeProcessor
 	 * @param type
 	 * @return
 	 */
-	public long interpretCode(Bitmap image, BarcodeType type)
+	public long decodeImage(Bitmap image, BarcodeDecoder type)
 	{
 		// TODO
 		return 0;
@@ -94,7 +94,7 @@ public class BarcodeProcessor
 	 * @param image
 	 * @return
 	 */
-	public BarcodeType determineType(Bitmap image)
+	public BarcodeDecoder determineType(Bitmap image)
 	{
 		// TODO
 		return null;
