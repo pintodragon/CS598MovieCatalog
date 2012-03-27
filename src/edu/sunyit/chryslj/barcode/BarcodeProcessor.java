@@ -216,6 +216,10 @@ public class BarcodeProcessor
 	 * helps reduce the work needed to detect edges, or in our case to detect
 	 * lines of a barcode.
 	 * 
+	 * This is the global version which during testing worked if the image had
+	 * consistent lighting. If there was a brighter part of the image due to
+	 * camera flash parts of the barcode were unreadable.
+	 * 
 	 * @see <a href="http://en.wikipedia.org/wiki/Otsu's_method">Otsu's
 	 *      method</a>
 	 * @param grayBMP
