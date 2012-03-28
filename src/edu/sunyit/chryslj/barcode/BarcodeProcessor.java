@@ -105,7 +105,7 @@ public class BarcodeProcessor
 	 * @param colorBMP
 	 * @return
 	 */
-	private Bitmap convertToGrayScale(Bitmap colorBMP)
+	private int[] convertToGrayScale(Bitmap colorBMP)
 	{
 		int width = colorBMP.getWidth();
 		int height = colorBMP.getHeight();
@@ -120,7 +120,13 @@ public class BarcodeProcessor
 		paint.setColorFilter(f);
 		c.drawBitmap(colorBMP, 0, 0, paint);
 
-		return grayBMP;
+		int[] pixelData = new int[width * height];
+		grayBMP.getPixels(pixelData, 0, width, 0, 0, width, height);
+
+		colorBMP.recycle();
+		grayBMP.recycle();
+
+		return pixelData;
 	}
 
 	/**
@@ -134,8 +140,8 @@ public class BarcodeProcessor
 		int width = image.getWidth();
 		int height = image.getHeight();
 
-		Bitmap grayBMP = convertToGrayScale(image);
-		int binaryThreshold = otsuBinaryThreashold(grayBMP);
+		int[] grayPixelData = convertToGrayScale(image);
+		int binaryThreshold = otsuBinaryThreashold(grayPixelData);
 
 		Bitmap binaryImage = Bitmap.createBitmap(width, height,
 		        Bitmap.Config.RGB_565);
@@ -147,7 +153,8 @@ public class BarcodeProcessor
 				int newRed;
 				int newGreen;
 				int newBlue;
-				int pixelValue = getPixelValue(grayBMP.getPixel(column, row));
+				int pixelValue = getPixelValue(grayPixelData[column +
+				        (row * width)]);
 				if (pixelValue > binaryThreshold)
 				{
 					newRed = 255;
@@ -174,7 +181,7 @@ public class BarcodeProcessor
 	 * @param image
 	 * @return
 	 */
-	private int[] generateImageHistogram(Bitmap image)
+	private int[] generateImageHistogram(int[] pixelData)
 	{
 		int[] histogram = new int[256];
 
@@ -183,15 +190,12 @@ public class BarcodeProcessor
 			histogram[index] = 0;
 		}
 
-		for (int column = 0; column < image.getWidth(); column++)
+		for (int pixelIndex = 0; pixelIndex < pixelData.length; pixelIndex++)
 		{
-			for (int row = 0; row < image.getHeight(); row++)
-			{
-				int colorIndex = image.getPixel(column, row);
-				int piexlValue = getPixelValue(colorIndex);
+			int colorIndex = pixelData[pixelIndex];
+			int piexlValue = getPixelValue(colorIndex);
 
-				histogram[piexlValue]++;
-			}
+			histogram[piexlValue]++;
 		}
 
 		return histogram;
@@ -225,7 +229,7 @@ public class BarcodeProcessor
 	 * @param grayBMP
 	 * @return
 	 */
-	private int otsuBinaryThreashold(Bitmap grayBMP)
+	private int otsuBinaryThreashold(int[] grayPixelData)
 	{
 		int binaryThreshold = 0;
 		float sum = 0;
@@ -234,8 +238,8 @@ public class BarcodeProcessor
 		int foregroundWegiht = 0;
 		float maxVariance = 0;
 
-		int[] histogram = generateImageHistogram(grayBMP);
-		int numberOfPixels = grayBMP.getWidth() * grayBMP.getHeight();
+		int[] histogram = generateImageHistogram(grayPixelData);
+		int numberOfPixels = grayPixelData.length;
 
 		for (int index = 0; index < histogram.length; index++)
 		{

@@ -35,7 +35,7 @@ public class TestBMPActivity extends Activity
 			myImage.setImageBitmap(binImage);
 			UPCABarcode upacAB = new UPCABarcode();
 			upacAB.decodeImage(binImage);
-			// myImage.setVisibility(ImageView.VISIBLE);
+			myImage.setVisibility(ImageView.VISIBLE);
 			Log.i(TAG, "Image exists");
 		}
 		else
