@@ -13,34 +13,34 @@ import edu.sunyit.chryslj.barcode.UPCABarcode;
 
 public class TestBMPActivity extends Activity
 {
-	private static final String TAG = TestBMPActivity.class.getName();
+    private static final String TAG = TestBMPActivity.class.getName();
 
-	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.image_test);
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.image_test);
 
-		File imgFile = new File("/sdcard/clearbarcode.jpg");
+        File imgFile = new File("/sdcard/clearbarcode.jpg");
 
-		if (imgFile.exists())
-		{
-			Bitmap myBitmap = BitmapFactory.decodeFile(imgFile
-			        .getAbsolutePath());
+        if (imgFile.exists())
+        {
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile
+                    .getAbsolutePath());
 
-			BarcodeProcessor bp = new BarcodeProcessor();
+            BarcodeProcessor bp = new BarcodeProcessor();
 
-			Bitmap binImage = bp.generateBinaryImage(myBitmap);
-			ImageView myImage = (ImageView) findViewById(R.id.binary);
-			myImage.setImageBitmap(binImage);
-			UPCABarcode upacAB = new UPCABarcode();
-			upacAB.decodeImage(binImage);
-			myImage.setVisibility(ImageView.VISIBLE);
-			Log.i(TAG, "Image exists");
-		}
-		else
-		{
-			Log.e(TAG, "Image doesn't exists!");
-		}
-	}
+            Bitmap binImage = bp.generateBinaryImage(myBitmap);
+            ImageView myImage = (ImageView) findViewById(R.id.binary);
+            myImage.setImageBitmap(binImage);
+            UPCABarcode upacAB = new UPCABarcode();
+            upacAB.decodeImage(binImage);
+            myImage.setVisibility(ImageView.VISIBLE);
+            Log.i(TAG, "Image exists");
+        }
+        else
+        {
+            Log.e(TAG, "Image doesn't exists!");
+        }
+    }
 }

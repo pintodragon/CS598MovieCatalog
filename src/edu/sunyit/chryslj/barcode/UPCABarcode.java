@@ -6,38 +6,37 @@ import android.util.Log;
 
 public class UPCABarcode implements BarcodeDecoder
 {
-	private static final String TAG = UPCABarcode.class.getName();
+    private static final String TAG = UPCABarcode.class.getName();
 
-	@Override
-	public long decodeImage(Bitmap binaryImage)
-	{
-		int width = binaryImage.getWidth();
-		int height = binaryImage.getHeight();
+    @Override
+    public long decodeImage(Bitmap binaryImage)
+    {
+        int width = binaryImage.getWidth();
+        int height = binaryImage.getHeight();
 
-		int readHeight = height / 2;
+        int readHeight = height / 2;
 
-		StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer();
 
-		int white = Color.rgb(255, 255, 255);
-		int black = Color.rgb(0, 0, 0);
+        int black = Color.rgb(0, 0, 0);
 
-		for (int x = 0; x < width; x++)
-		{
-			int pixel = binaryImage.getPixel(x, readHeight);
+        for (int x = 0; x < width; x++)
+        {
+            int pixel = binaryImage.getPixel(x, readHeight);
 
-			if (pixel == white)
-			{
-				sb.append("W ");
-			}
-			else
-			{
-				sb.append("B ");
-			}
-		}
+            if (pixel == black)
+            {
+                sb.append("B ");
+            }
+            else
+            {
+                sb.append("W ");
+            }
+        }
 
-		Log.d(TAG, "ReadHeight: " + readHeight + " Value: " + sb.toString());
+        Log.d(TAG, "ReadHeight: " + readHeight + " Value: " + sb.toString());
 
-		return 0;
-	}
+        return 0;
+    }
 
 }
