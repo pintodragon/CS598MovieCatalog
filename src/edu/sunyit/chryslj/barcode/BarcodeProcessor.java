@@ -141,7 +141,7 @@ public class BarcodeProcessor
 		int height = image.getHeight();
 
 		int[] grayPixelData = convertToGrayScale(image);
-		int binaryThreshold = otsuBinaryThreashold(grayPixelData);
+		int binaryThreshold = otsuGlobalBinaryThreashold(grayPixelData);
 
 		Bitmap binaryImage = Bitmap.createBitmap(width, height,
 		        Bitmap.Config.RGB_565);
@@ -177,45 +177,6 @@ public class BarcodeProcessor
 	}
 
 	/**
-	 * 
-	 * @param image
-	 * @return
-	 */
-	private int[] generateImageHistogram(int[] pixelData)
-	{
-		int[] histogram = new int[256];
-
-		for (int index = 0; index < histogram.length; index++)
-		{
-			histogram[index] = 0;
-		}
-
-		for (int pixelIndex = 0; pixelIndex < pixelData.length; pixelIndex++)
-		{
-			int colorIndex = pixelData[pixelIndex];
-			int piexlValue = getPixelValue(colorIndex);
-
-			histogram[piexlValue]++;
-		}
-
-		return histogram;
-	}
-
-	/**
-	 * 
-	 * @param pixel
-	 * @return
-	 */
-	private int getPixelValue(int pixel)
-	{
-		int r = Color.red(pixel);
-		int g = Color.green(pixel);
-		int b = Color.blue(pixel);
-
-		return (int) ((r + g + b) / 3);
-	}
-
-	/**
 	 * Using Otsu's algorithm to generate an image with only two values. This
 	 * helps reduce the work needed to detect edges, or in our case to detect
 	 * lines of a barcode.
@@ -229,7 +190,7 @@ public class BarcodeProcessor
 	 * @param grayBMP
 	 * @return
 	 */
-	private int otsuBinaryThreashold(int[] grayPixelData)
+	private int otsuGlobalBinaryThreashold(int[] grayPixelData)
 	{
 		int binaryThreshold = 0;
 		float sum = 0;
@@ -283,5 +244,43 @@ public class BarcodeProcessor
 		}
 
 		return binaryThreshold;
+	}
+
+	/**
+	 * 
+	 * @param image
+	 * @return
+	 */
+	private int[] generateImageHistogram(int[] pixelData)
+	{
+		int[] histogram = new int[256];
+
+		for (int index = 0; index < histogram.length; index++)
+		{
+			histogram[index] = 0;
+		}
+
+		for (int colorIndex : pixelData)
+		{
+			int piexlValue = getPixelValue(colorIndex);
+
+			histogram[piexlValue]++;
+		}
+
+		return histogram;
+	}
+
+	/**
+	 * 
+	 * @param pixel
+	 * @return
+	 */
+	private int getPixelValue(int pixel)
+	{
+		int r = Color.red(pixel);
+		int g = Color.green(pixel);
+		int b = Color.blue(pixel);
+
+		return (int) ((r + g + b) / 3);
 	}
 }
