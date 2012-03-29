@@ -1,16 +1,11 @@
 package edu.sunyit.chryslj.barcode;
 
-import java.io.IOException;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
-import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
-import android.view.SurfaceHolder;
 
 /**
  * 
@@ -20,61 +15,9 @@ import android.view.SurfaceHolder;
 public class BarcodeProcessor
 {
 
-    private SurfaceHolder cameraHolder = null;
-    private Camera deviceCamera = null;
-    private Parameters cameraParameters = null;
-
     // TODO FOR TESTING ONLY.
     public BarcodeProcessor()
     {
-    }
-
-    /**
-     * 
-     * @param cameraHolder
-     */
-    public BarcodeProcessor(SurfaceHolder cameraHolder)
-    {
-        this.cameraHolder = cameraHolder;
-        deviceCamera = Camera.open();
-        cameraParameters = deviceCamera.getParameters();
-        deviceCamera.release();
-
-        cameraParameters.setFlashMode(Parameters.FLASH_MODE_AUTO);
-        // TODO look into focus modes.
-        cameraParameters.setFocusMode(Parameters.FOCUS_MODE_EDOF);
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public Bitmap aquireImage()
-    {
-        Bitmap barcodeImage = null;
-
-        deviceCamera = Camera.open();
-
-        if (deviceCamera != null)
-        {
-            deviceCamera.setParameters(cameraParameters);
-            try
-            {
-                deviceCamera.setPreviewDisplay(cameraHolder);
-                deviceCamera.startPreview();
-            }
-            catch (IOException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            // Release the camera now that we are done with it
-            deviceCamera.stopPreview();
-            deviceCamera.release();
-        }
-
-        return barcodeImage;
     }
 
     /**
@@ -98,29 +41,6 @@ public class BarcodeProcessor
     {
         // TODO
         return null;
-    }
-
-    /**
-     * 
-     * @param colorBMP
-     * @return
-     */
-    private Bitmap convertToGrayScale(Bitmap colorBMP)
-    {
-        int width = colorBMP.getWidth();
-        int height = colorBMP.getHeight();
-
-        Bitmap grayBMP = Bitmap.createBitmap(width, height,
-                Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(grayBMP);
-        Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0);
-        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-        paint.setColorFilter(f);
-        c.drawBitmap(colorBMP, 0, 0, paint);
-
-        return grayBMP;
     }
 
     /**
@@ -261,6 +181,29 @@ public class BarcodeProcessor
         }
 
         return binaryThreshold;
+    }
+
+    /**
+     * 
+     * @param colorBMP
+     * @return
+     */
+    private Bitmap convertToGrayScale(Bitmap colorBMP)
+    {
+        int width = colorBMP.getWidth();
+        int height = colorBMP.getHeight();
+
+        Bitmap grayBMP = Bitmap.createBitmap(width, height,
+                Bitmap.Config.RGB_565);
+        Canvas c = new Canvas(grayBMP);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(colorBMP, 0, 0, paint);
+
+        return grayBMP;
     }
 
     /**
