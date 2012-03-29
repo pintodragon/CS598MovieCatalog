@@ -25,6 +25,7 @@ public class BarcodeCameraActivity extends Activity
     private Parameters cameraParameters = null;
     private BarcodePreview barcodePreview;
 
+    // TODO pull these callbacks out to their own classes.
     private PictureCallback pictureCallback = new PictureCallback()
     {
         @Override
