@@ -54,14 +54,14 @@ public class BarcodeProcessor
         int width = image.getWidth();
         int height = image.getHeight();
 
-        final int localWidth = width / 8;
-        final int localHeight = height / 8;
+        final int localWidth = 10;// width / 4;
+        final int localHeight = 10;// height / 4;
         Bitmap binaryImage = Bitmap.createBitmap(width, height,
                 Bitmap.Config.RGB_565);
 
         Bitmap grayBMP = convertToGrayScale(image);
 
-        // Lets partition the image off into 10x10 grids. If the grid we
+        // Lets partition the image off into a few grids. If the grid we
         // currently want to use would exceed the size of teh bitmap then
         // adjust to be within the bounds.
 

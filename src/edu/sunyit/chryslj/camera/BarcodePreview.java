@@ -34,48 +34,6 @@ public class BarcodePreview extends SurfaceView implements
     public void surfaceChanged(SurfaceHolder surfaceHolder, int format,
             int width, int height)
     {
-        // if (surfaceHolder.getSurface() == null)
-        // {
-        // // Surface does not exist
-        // return;
-        // }
-        //
-        // stopPreview();
-        //
-        // try
-        // {
-        // Parameters parameters = camera.getParameters();
-        // Display display = ((WindowManager) getContext().getSystemService(
-        // Context.WINDOW_SERVICE)).getDefaultDisplay();
-        //
-        // if (display.getRotation() == Surface.ROTATION_0)
-        // {
-        // parameters.setPreviewSize(height, width);
-        // camera.setDisplayOrientation(90);
-        // }
-        //
-        // if (display.getRotation() == Surface.ROTATION_90)
-        // {
-        // parameters.setPreviewSize(width, height);
-        // }
-        //
-        // if (display.getRotation() == Surface.ROTATION_180)
-        // {
-        // parameters.setPreviewSize(height, width);
-        // }
-        //
-        // if (display.getRotation() == Surface.ROTATION_270)
-        // {
-        // parameters.setPreviewSize(width, height);
-        // camera.setDisplayOrientation(180);
-        // }
-        //
-        // previewCamera();
-        // }
-        // catch (Exception exc)
-        // {
-        // Log.e(TAG, "Error starting the camera preview: " + exc.getMessage());
-        // }
     }
 
     @Override
@@ -87,7 +45,6 @@ public class BarcodePreview extends SurfaceView implements
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder)
     {
-        // This will be handled by the activity that uses this preview.
     }
 
     // TODO Use this method

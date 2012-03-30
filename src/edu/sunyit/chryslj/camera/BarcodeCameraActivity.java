@@ -5,11 +5,11 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,14 +37,24 @@ public class BarcodeCameraActivity extends Activity
         @Override
         public void onPictureTaken(byte[] data, Camera camera)
         {
+            Log.d(TAG, "Picture taken");
             Intent returnIntent = new Intent();
             returnIntent.putExtra("image", data);
             setResult(RESULT_OK, returnIntent);
-            deviceCamera.release();
-            deviceCamera = null;
+            barcodePreview.stopPreview();
             finish();
         }
 
+    };
+
+    private PreviewCallback previewCallback = new PreviewCallback()
+    {
+        @Override
+        public void onPreviewFrame(byte[] data, Camera camera)
+        {
+            // TODO Auto-generated method stub
+
+        }
     };
 
     @Override
@@ -67,12 +77,21 @@ public class BarcodeCameraActivity extends Activity
             initCameraProperties();
 
             Button captureButton = (Button) findViewById(id.button_capture);
+            captureButton.setEnabled(true);
             captureButton.setOnClickListener(new View.OnClickListener()
             {
+                boolean pressed = false;
+
+                // TODO Having an issue with pictures coming our dark. Might
+                // have to use previewcall back instead.
                 @Override
-                public void onClick(View v)
+                public void onClick(View view)
                 {
-                    deviceCamera.takePicture(null, null, pictureCallback);
+                    if (!pressed)
+                    {
+                        deviceCamera.takePicture(null, null, pictureCallback);
+                        pressed = true;
+                    }
                 }
             });
 
@@ -124,10 +143,7 @@ public class BarcodeCameraActivity extends Activity
             Log.d(TAG, "Focus set to auto");
         }
 
-        cameraParameters.setPictureFormat(ImageFormat.RGB_565);
-        Log.d(TAG,
-                "PictureSize: " + display.getWidth() + "x" +
-                        display.getHeight());
+        cameraParameters.setJpegQuality(100);
 
         deviceCamera.setParameters(cameraParameters);
     }
@@ -207,8 +223,8 @@ public class BarcodeCameraActivity extends Activity
             // We know the supported size is within our valid ranges and that
             // it is not the same as the screen size. Lets determine if it is
             // the closest to our current screen size.
-            int currSizeDifference = Math.abs(screenSize.x * screenSize.y -
-                    currWidth * currHeight);
+            int currSizeDifference = Math.abs(screenSize.x * currWidth -
+                    screenSize.y * currHeight);
             if (currSizeDifference < sizeDifferences)
             {
                 pictureSizeToUse = new Point(currWidth, currHeight);

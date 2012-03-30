@@ -52,18 +52,24 @@ public class TestBMPActivity extends Activity
 
         if (intent != null)
         {
-            Log.i(TAG, "Image exists");
-            byte[] imageData = intent.getByteArrayExtra("image");
-            Bitmap myBitmap = BitmapFactory.decodeByteArray(imageData, 0,
-                    imageData.length);
+            Bundle extras = intent.getExtras();
 
-            BarcodeProcessor bp = new BarcodeProcessor();
-            Bitmap binImage = bp.generateBinaryImage(myBitmap);
-            ImageView myImage = (ImageView) findViewById(R.id.binary);
-            myImage.setImageBitmap(binImage);
-            UPCABarcode upacAB = new UPCABarcode();
-            upacAB.decodeImage(binImage);
-            myImage.setVisibility(ImageView.VISIBLE);
+            if (extras != null)
+            {
+                Log.i(TAG, "Image exists");
+                byte[] imageData = extras.getByteArray("image");
+                Bitmap myBitmap = BitmapFactory.decodeByteArray(imageData, 0,
+                        imageData.length);
+
+                BarcodeProcessor bp = new BarcodeProcessor();
+                Bitmap binImage = bp.generateBinaryImage(myBitmap);
+                UPCABarcode upacAB = new UPCABarcode();
+                upacAB.decodeImage(binImage);
+
+                ImageView myImage = (ImageView) findViewById(R.id.binary);
+                myImage.setImageBitmap(binImage);
+                myImage.setVisibility(ImageView.VISIBLE);
+            }
         }
     }
 }
