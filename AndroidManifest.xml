@@ -14,16 +14,16 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:debuggable="true" >
-        <!-- <activity
-            android:name=".MovieCatalogActivity"
+       <activity
+            android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> -->
-        <activity
+        </activity>
+        <!-- <activity
             android:name=".camera.BarcodeCameraActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape" >
@@ -32,7 +32,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity> -->
+       <activity android:name=".MovieCatalogActivity"></activity>
+       <activity android:name=".TestBMPActivity"></activity>
+       <activity android:name=".camera.BarcodeCameraActivity" android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>
