@@ -54,10 +54,10 @@ public class BarcodeProcessor
         int width = image.getWidth();
         int height = image.getHeight();
 
-        final int localWidth = 10;// width / 4;
-        final int localHeight = 10;// height / 4;
+        final int localWidth = width;//width / 4;
+        final int localHeight = height;//height / 4;
         Bitmap binaryImage = Bitmap.createBitmap(width, height,
-                Bitmap.Config.RGB_565);
+                Bitmap.Config.ARGB_8888);
 
         Bitmap grayBMP = convertToGrayScale(image);
 

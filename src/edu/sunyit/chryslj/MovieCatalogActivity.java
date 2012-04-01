@@ -44,8 +44,6 @@ public class MovieCatalogActivity extends ListActivity
 
         getListView().setOnItemClickListener(new OnItemClickListener()
         {
-
-            @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id)
             {
@@ -58,7 +56,6 @@ public class MovieCatalogActivity extends ListActivity
     // TESTING!!!!!
     public void onClick(View view)
     {
-        @SuppressWarnings("unchecked")
         ArrayAdapter<Movie> adapter = (ArrayAdapter<Movie>) getListAdapter();
 
         Log.d(TAG, "ViewId: " + R.id.delete_movie);

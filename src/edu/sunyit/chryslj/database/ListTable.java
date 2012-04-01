@@ -28,13 +28,11 @@ public class ListTable implements DatabaseTable
             { "0", "Unsorted" }, { "1", "Wishlist" }, { "2", "Loaned" },
             { "3", "Borrowing" } };
 
-    @Override
     public String[] getColumnNames()
     {
         return new String[] { COLUMN_ID, COLUMN_TITLE };
     }
 
-    @Override
     public void onCreate(SQLiteDatabase database)
     {
         // TODO Add default lists
@@ -43,7 +41,6 @@ public class ListTable implements DatabaseTable
         insertDefaultLists(database);
     }
 
-    @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion,
             int newVersion)
     {

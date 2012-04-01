@@ -11,23 +11,27 @@ public class AutoFocusCallbackImpl implements AutoFocusCallback
     private static final long FOCUS_MS = 1500L;
 
     private Handler focusHandler;
-    private int message;
+    private int focusMessage;
 
-    public void setHandler(Handler focusHandler, int message)
+    public void setHandler(Handler focusHandler, int focusMessage)
     {
         this.focusHandler = focusHandler;
-        this.message = message;
+        this.focusMessage = focusMessage;
     }
 
-    @Override
     public void onAutoFocus(boolean success, Camera camera)
     {
         if (focusHandler != null)
         {
-            Message message = focusHandler.obtainMessage(this.message, success);
+            Message message = focusHandler.obtainMessage(focusMessage, success);
             focusHandler.sendMessageDelayed(message, FOCUS_MS);
             focusHandler = null;
         }
         Log.d("AutoFocus", "Autofocus called");
+    }
+    
+    public Handler getFocusHandler()
+    {
+        return focusHandler;
     }
 }

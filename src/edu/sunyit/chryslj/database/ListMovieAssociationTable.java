@@ -32,19 +32,16 @@ public class ListMovieAssociationTable implements DatabaseTable
             TABLE_ASSOCIATIONS + " SELECT * FROM " + TABLE_ASSOCIATIONS_BACKUP +
             ";";
 
-    @Override
     public String[] getColumnNames()
     {
         return new String[] { COLUMN_ID, COLUMN_MOVIEID, COLUMN_LISTID };
     }
 
-    @Override
     public void onCreate(SQLiteDatabase database)
     {
         database.execSQL(TABLE_CREATE);
     }
 
-    @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion,
             int newVersion)
     {

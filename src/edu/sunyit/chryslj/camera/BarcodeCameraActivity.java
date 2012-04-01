@@ -1,5 +1,9 @@
 package edu.sunyit.chryslj.camera;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
@@ -9,7 +13,6 @@ import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
-import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,37 +27,47 @@ import edu.sunyit.chryslj.R.id;
 public class BarcodeCameraActivity extends Activity
 {
     private static final String TAG = BarcodeCameraActivity.class.getName();
-
-    private static final int MIN_NUM_PIXELS = 320 * 240;
-    private static final int MAX_NUM_PIXELS = 854 * 480;
+    
+    // List of desired picture sizes ranging from largest to smallest.
+    private String[] desiredPictureSizes = { "1600x1200" };
 
     private Camera deviceCamera = null;
     private BarcodePreview barcodePreview;
+    
+    private CameraHandler handler;
 
     // TODO pull these callbacks out to their own classes.
     private PictureCallback pictureCallback = new PictureCallback()
     {
-        @Override
         public void onPictureTaken(byte[] data, Camera camera)
         {
-            Log.d(TAG, "Picture taken");
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("image", data);
-            setResult(RESULT_OK, returnIntent);
-            barcodePreview.stopPreview();
-            finish();
+            try
+            {
+                barcodePreview.stopPreview();
+
+                File pictureFile = new File("/mnt/sdcard/picture.jpg");
+                
+                Log.d(TAG, "Picture taken");
+                try {
+                    FileOutputStream fos = new FileOutputStream(pictureFile);
+                    fos.write(data);
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    Log.d(TAG, "File not found: " + e.getMessage());
+                } catch (IOException e) {
+                    Log.d(TAG, "Error accessing file: " + e.getMessage());
+                }
+//                Intent returnIntent = new Intent();
+//                returnIntent.putExtra("image", data);
+//                setResult(RESULT_OK, returnIntent);
+            }
+            finally
+            {
+                releaseCamera();
+                finish();
+            }
         }
 
-    };
-
-    private PreviewCallback previewCallback = new PreviewCallback()
-    {
-        @Override
-        public void onPreviewFrame(byte[] data, Camera camera)
-        {
-            // TODO Auto-generated method stub
-
-        }
     };
 
     @Override
@@ -84,7 +97,6 @@ public class BarcodeCameraActivity extends Activity
 
                 // TODO Having an issue with pictures coming our dark. Might
                 // have to use previewcall back instead.
-                @Override
                 public void onClick(View view)
                 {
                     if (!pressed)
@@ -98,6 +110,9 @@ public class BarcodeCameraActivity extends Activity
             barcodePreview = new BarcodePreview(this, deviceCamera);
             FrameLayout preview = (FrameLayout) findViewById(id.barcode_preview);
             preview.addView(barcodePreview);
+            
+            handler = new CameraHandler(barcodePreview);
+            barcodePreview.setHandler(handler);
         }
 
         Intent intent = getIntent();
@@ -130,10 +145,10 @@ public class BarcodeCameraActivity extends Activity
         cameraParameters.setPictureSize(pictureSize.x, pictureSize.y);
 
         if (cameraParameters.getSupportedFlashModes().contains(
-                Parameters.FLASH_MODE_TORCH))
+                Parameters.FLASH_MODE_AUTO))
         {
-            cameraParameters.setFlashMode(Parameters.FLASH_MODE_TORCH);
-            Log.d(TAG, "Flash set to Torch");
+            cameraParameters.setFlashMode(Parameters.FLASH_MODE_AUTO);
+            Log.d(TAG, "Flash set to torch");
         }
 
         if (cameraParameters.getSupportedFocusModes().contains(
@@ -142,8 +157,6 @@ public class BarcodeCameraActivity extends Activity
             cameraParameters.setFocusMode(Parameters.FOCUS_MODE_AUTO);
             Log.d(TAG, "Focus set to auto");
         }
-
-        cameraParameters.setJpegQuality(100);
 
         deviceCamera.setParameters(cameraParameters);
     }
@@ -188,47 +201,23 @@ public class BarcodeCameraActivity extends Activity
     {
         Point pictureSizeToUse = null;
         List<Size> supprotedSizes = cameraParameters.getSupportedPictureSizes();
-
+        
         // Lets use a really large number to start. This will always get set at
         // least once.
-        int sizeDifferences = Integer.MAX_VALUE;
         for (Size currSize : supprotedSizes)
         {
             int currWidth = currSize.width;
             int currHeight = currSize.height;
+            Log.d(TAG, "All SupportedSize: " + currWidth + "x" + currHeight);
 
-            if ((currWidth * currHeight) < MIN_NUM_PIXELS ||
-                    (currWidth * currHeight) > MAX_NUM_PIXELS)
+            for (String desiredSize : desiredPictureSizes)
             {
-                // Either the size is too small or too large. Not a candidate.
-                continue;
-            }
-            Log.d(TAG, "SupportedSize: " + currWidth + "x" + currHeight);
-
-            // Check if the size is a portrait.
-            if (currWidth < currHeight)
-            {
-                int temp = currWidth;
-                currWidth = currHeight;
-                currHeight = temp;
-            }
-
-            // If we have our exact screen size then return it and search no
-            // more.
-            if (currWidth == screenSize.x && currHeight == screenSize.y)
-            {
-                return screenSize;
-            }
-
-            // We know the supported size is within our valid ranges and that
-            // it is not the same as the screen size. Lets determine if it is
-            // the closest to our current screen size.
-            int currSizeDifference = Math.abs(screenSize.x * currWidth -
-                    screenSize.y * currHeight);
-            if (currSizeDifference < sizeDifferences)
-            {
-                pictureSizeToUse = new Point(currWidth, currHeight);
-                sizeDifferences = currSizeDifference;
+                String dimensions[] = desiredSize.split("x");
+                if (currWidth == Integer.parseInt(dimensions[0]) && currHeight == Integer.parseInt(dimensions[1]))
+                {
+                    pictureSizeToUse = new Point(currWidth, currHeight);
+                    return pictureSizeToUse;
+                }
             }
         }
 
@@ -242,6 +231,8 @@ public class BarcodeCameraActivity extends Activity
             Log.i(TAG, "Unable to find a valid supported picture size, using" +
                     " the cameras default: " + pictureSizeToUse);
         }
+        
+        Log.i(TAG, "PictureSize found: " + pictureSizeToUse.x + "x" + pictureSizeToUse.y);
 
         return pictureSizeToUse;
     }
