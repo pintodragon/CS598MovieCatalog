@@ -1,30 +1,24 @@
 package edu.sunyit.chryslj.camera;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
-import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import edu.sunyit.chryslj.R;
-import edu.sunyit.chryslj.R.id;
 
-public class BarcodeCameraActivity extends Activity
+public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Callback
 {
     private static final String TAG = BarcodeCameraActivity.class.getName();
     
@@ -32,43 +26,9 @@ public class BarcodeCameraActivity extends Activity
     private String[] desiredPictureSizes = { "1600x1200" };
 
     private Camera deviceCamera = null;
-    private BarcodePreview barcodePreview;
-    
-    private CameraHandler handler;
-
-    // TODO pull these callbacks out to their own classes.
-    private PictureCallback pictureCallback = new PictureCallback()
-    {
-        public void onPictureTaken(byte[] data, Camera camera)
-        {
-            try
-            {
-                barcodePreview.stopPreview();
-
-                File pictureFile = new File("/mnt/sdcard/picture.jpg");
-                
-                Log.d(TAG, "Picture taken");
-                try {
-                    FileOutputStream fos = new FileOutputStream(pictureFile);
-                    fos.write(data);
-                    fos.close();
-                } catch (FileNotFoundException e) {
-                    Log.d(TAG, "File not found: " + e.getMessage());
-                } catch (IOException e) {
-                    Log.d(TAG, "Error accessing file: " + e.getMessage());
-                }
-//                Intent returnIntent = new Intent();
-//                returnIntent.putExtra("image", data);
-//                setResult(RESULT_OK, returnIntent);
-            }
-            finally
-            {
-                releaseCamera();
-                finish();
-            }
-        }
-
-    };
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
+    private OverlayView overlayView;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -76,6 +36,8 @@ public class BarcodeCameraActivity extends Activity
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.barcode_preview);
+
+        deviceCamera = getCameraInstance();
     }
 
     @Override
@@ -83,51 +45,21 @@ public class BarcodeCameraActivity extends Activity
     {
         super.onResume();
 
-        deviceCamera = getCameraInstance();
-
-        if (deviceCamera != null)
-        {
-            initCameraProperties();
-
-            Button captureButton = (Button) findViewById(id.button_capture);
-            captureButton.setEnabled(true);
-            captureButton.setOnClickListener(new View.OnClickListener()
-            {
-                boolean pressed = false;
-
-                // TODO Having an issue with pictures coming our dark. Might
-                // have to use previewcall back instead.
-                public void onClick(View view)
-                {
-                    if (!pressed)
-                    {
-                        deviceCamera.takePicture(null, null, pictureCallback);
-                        pressed = true;
-                    }
-                }
-            });
-
-            barcodePreview = new BarcodePreview(this, deviceCamera);
-            FrameLayout preview = (FrameLayout) findViewById(id.barcode_preview);
-            preview.addView(barcodePreview);
-            
-            handler = new CameraHandler(barcodePreview);
-            barcodePreview.setHandler(handler);
-        }
-
-        Intent intent = getIntent();
-
-        if (intent != null)
-        {
-
-        }
+        surfaceView = (SurfaceView) findViewById(R.id.preview_surface);
+        surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        surfaceHolder.setSizeFromLayout();
+        surfaceHolder.addCallback(this);
+        
+        overlayView = (OverlayView)findViewById(R.id.surface_overlay);
+        overlayView.setCamera(deviceCamera);
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        releaseCamera(); // release the camera immediately on pause event
+        stopCamera(); // release the camera immediately on pause event
     }
 
     private void initCameraProperties()
@@ -140,25 +72,37 @@ public class BarcodeCameraActivity extends Activity
         int width = display.getWidth();
         int height = display.getHeight();
 
-        Point pictureSize = getPictureSize(cameraParameters, new Point(width,
+        Point previewSize = getPreviewSize(cameraParameters, new Point(width,
                 height));
-        cameraParameters.setPictureSize(pictureSize.x, pictureSize.y);
+        cameraParameters.setPreviewSize(previewSize.x, previewSize.y);
+        overlayView.setPreviewSize(previewSize);
 
         if (cameraParameters.getSupportedFlashModes().contains(
-                Parameters.FLASH_MODE_AUTO))
+                Parameters.FLASH_MODE_TORCH))
         {
-            cameraParameters.setFlashMode(Parameters.FLASH_MODE_AUTO);
-            Log.d(TAG, "Flash set to torch");
+            cameraParameters.setFlashMode(Parameters.FLASH_MODE_TORCH);
         }
 
         if (cameraParameters.getSupportedFocusModes().contains(
                 Parameters.FOCUS_MODE_AUTO))
         {
             cameraParameters.setFocusMode(Parameters.FOCUS_MODE_AUTO);
-            Log.d(TAG, "Focus set to auto");
         }
 
         deviceCamera.setParameters(cameraParameters);
+    }
+
+    private Point getPreviewSize(Parameters cameraParameters, Point point)
+    {
+        Point previewSize = null;
+        List<Camera.Size> previewSizes = cameraParameters.getSupportedPreviewSizes();
+        for (Camera.Size currSize : previewSizes)
+        {
+            previewSize = new Point(currSize.width, currSize.height);
+            break;
+        }
+        
+        return previewSize;
     }
 
     /**
@@ -237,12 +181,71 @@ public class BarcodeCameraActivity extends Activity
         return pictureSizeToUse;
     }
 
-    private void releaseCamera()
+    private void startCamera(SurfaceHolder holder, int width, int height)
     {
-        if (deviceCamera != null)
+        try
         {
-            deviceCamera.release(); // release the camera for other applications
-            deviceCamera = null;
+            deviceCamera.stopPreview();
         }
+        catch(Exception e)
+        {
+            // Ignore: Preview wasn't started.
+        }
+        try
+        {
+            deviceCamera.setPreviewDisplay(holder);
+            Log.d(TAG, "starting cam");
+        } catch (IOException e1)
+        {
+            Log.d(TAG, "Unable to set display: " + e1.getMessage());
+        }
+        try
+        {
+            initCameraProperties();
+            deviceCamera.startPreview();
+        }
+        catch(Exception e)
+        {
+            Log.d(TAG, "Exception: " + (deviceCamera != null) + " exception val: " + e.getMessage());
+        }
+    }
+    
+    @Override
+    protected void onDestroy()
+    {
+        stopCamera();
+        super.onDestroy();
+    }
+
+    private void stopCamera()
+    {
+        surfaceHolder.removeCallback(this);
+        try
+        {
+            deviceCamera.stopPreview();
+        }
+        catch (Exception e)
+        {
+            // Ignore.
+        }
+        deviceCamera.release();
+    }
+
+    public void surfaceChanged(SurfaceHolder holder, int format, int width,
+            int height)
+    {
+        startCamera(holder, width, height);
+    }
+
+    public void surfaceCreated(SurfaceHolder holder)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void surfaceDestroyed(SurfaceHolder holder)
+    {
+        // TODO Auto-generated method stub
+        
     }
 }

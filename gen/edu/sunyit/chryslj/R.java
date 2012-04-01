@@ -17,15 +17,15 @@ public final class R {
         public static final int LinearLayout1=0x7f040004;
         public static final int add_movie=0x7f04000a;
         public static final int auto_focus=0x7f040000;
-        public static final int barcode_preview=0x7f040001;
         public static final int binary=0x7f040003;
         public static final int button1=0x7f040006;
         public static final int button2=0x7f040007;
         public static final int button3=0x7f040008;
-        public static final int button_capture=0x7f040002;
         public static final int delete_movie=0x7f04000b;
         public static final int group=0x7f040009;
+        public static final int preview_surface=0x7f040002;
         public static final int quit=0x7f04000c;
+        public static final int surface_overlay=0x7f040001;
         public static final int textView1=0x7f040005;
     }
     public static final class layout {
