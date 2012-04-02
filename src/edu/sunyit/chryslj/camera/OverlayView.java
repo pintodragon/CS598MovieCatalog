@@ -14,13 +14,13 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+// TODO Make this class not use the preview call back. Instead it just draws.
 public class OverlayView extends SurfaceView
 {
     private static final String TAG = OverlayView.class.getName();
 
     private SurfaceHolder surfaceHolder;
     private Point previewSize;
-    private int frameCount = 0;
 
     public OverlayView(Context context, AttributeSet attrs)
     {
@@ -33,7 +33,6 @@ public class OverlayView extends SurfaceView
     public void setPreviewSize(Point previewSize)
     {
         this.previewSize = previewSize;
-        frameCount = 0;
     }
 
     public void setCamera(Camera camera)
@@ -59,6 +58,12 @@ public class OverlayView extends SurfaceView
                     paint.setStrokeWidth(2);
                     paint.setStyle(Paint.Style.STROKE);
                     canvasOverlay.drawRect(guide, paint);
+
+                    paint.setColor(Color.MAGENTA);
+                    paint.setStyle(Paint.Style.FILL);
+                    paint.setStrokeWidth(4);
+                    canvasOverlay.drawLine(70, previewSize.y / 2,
+                            previewSize.x - 70, previewSize.y / 2, paint);
                 }
                 catch (Exception e)
                 {

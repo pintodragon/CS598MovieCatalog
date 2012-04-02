@@ -218,6 +218,7 @@ public class BarcodeCameraActivity extends Activity implements
         try
         {
             deviceCamera.stopPreview();
+            deviceCamera.setPreviewCallback(null);
         }
         catch (Exception e)
         {
