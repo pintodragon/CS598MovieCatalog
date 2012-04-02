@@ -8,6 +8,7 @@ public class UPCABarcode implements BarcodeDecoder
 {
     private static final String TAG = UPCABarcode.class.getName();
 
+    @Override
     public long decodeImage(Bitmap binaryImage)
     {
         int width = binaryImage.getWidth();
@@ -34,7 +35,7 @@ public class UPCABarcode implements BarcodeDecoder
         }
 
         Log.d(TAG, "ReadHeight: " + readHeight + " Value: " + sb.toString());
-        
+
         readHeight = height / 2;
 
         sb = new StringBuffer();

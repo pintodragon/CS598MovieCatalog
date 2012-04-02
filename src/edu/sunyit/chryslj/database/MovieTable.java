@@ -34,6 +34,7 @@ public class MovieTable implements DatabaseTable
     private static final String COPY_TABLE_BACK = "INSERT INTO " +
             TABLE_MOVIES + " SELECT * FROM " + TABLE_MOVIES_BACKUP + ";";
 
+    @Override
     public String[] getColumnNames()
     {
         return new String[] { COLUMN_ID, COLUMN_TITLE, COLUMN_RATED,
@@ -41,11 +42,13 @@ public class MovieTable implements DatabaseTable
                 COLUMN_RUNTIME };
     }
 
+    @Override
     public void onCreate(SQLiteDatabase database)
     {
         database.execSQL(TABLE_CREATE);
     }
 
+    @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion,
             int newVersion)
     {

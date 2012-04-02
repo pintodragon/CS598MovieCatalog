@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -15,13 +14,15 @@ import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.Window;
 import android.view.WindowManager;
 import edu.sunyit.chryslj.R;
 
-public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Callback
+public class BarcodeCameraActivity extends Activity implements
+        SurfaceHolder.Callback
 {
     private static final String TAG = BarcodeCameraActivity.class.getName();
-    
+
     // List of desired picture sizes ranging from largest to smallest.
     private String[] desiredPictureSizes = { "1600x1200" };
 
@@ -33,8 +34,11 @@ public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Cal
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.barcode_preview);
 
         deviceCamera = getCameraInstance();
@@ -50,9 +54,8 @@ public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Cal
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         surfaceHolder.setSizeFromLayout();
         surfaceHolder.addCallback(this);
-        
-        overlayView = (OverlayView)findViewById(R.id.surface_overlay);
-        overlayView.setCamera(deviceCamera);
+
+        overlayView = (OverlayView) findViewById(R.id.surface_overlay);
     }
 
     @Override
@@ -72,10 +75,8 @@ public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Cal
         int width = display.getWidth();
         int height = display.getHeight();
 
-        Point previewSize = getPreviewSize(cameraParameters, new Point(width,
-                height));
-        cameraParameters.setPreviewSize(previewSize.x, previewSize.y);
-        overlayView.setPreviewSize(previewSize);
+        cameraParameters.setPreviewSize(width, height);
+        overlayView.setPreviewSize(new Point(width, height));
 
         if (cameraParameters.getSupportedFlashModes().contains(
                 Parameters.FLASH_MODE_TORCH))
@@ -90,19 +91,6 @@ public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Cal
         }
 
         deviceCamera.setParameters(cameraParameters);
-    }
-
-    private Point getPreviewSize(Parameters cameraParameters, Point point)
-    {
-        Point previewSize = null;
-        List<Camera.Size> previewSizes = cameraParameters.getSupportedPreviewSizes();
-        for (Camera.Size currSize : previewSizes)
-        {
-            previewSize = new Point(currSize.width, currSize.height);
-            break;
-        }
-        
-        return previewSize;
     }
 
     /**
@@ -145,7 +133,7 @@ public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Cal
     {
         Point pictureSizeToUse = null;
         List<Size> supprotedSizes = cameraParameters.getSupportedPictureSizes();
-        
+
         // Lets use a really large number to start. This will always get set at
         // least once.
         for (Size currSize : supprotedSizes)
@@ -157,7 +145,8 @@ public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Cal
             for (String desiredSize : desiredPictureSizes)
             {
                 String dimensions[] = desiredSize.split("x");
-                if (currWidth == Integer.parseInt(dimensions[0]) && currHeight == Integer.parseInt(dimensions[1]))
+                if (currWidth == Integer.parseInt(dimensions[0]) &&
+                        currHeight == Integer.parseInt(dimensions[1]))
                 {
                     pictureSizeToUse = new Point(currWidth, currHeight);
                     return pictureSizeToUse;
@@ -175,8 +164,9 @@ public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Cal
             Log.i(TAG, "Unable to find a valid supported picture size, using" +
                     " the cameras default: " + pictureSizeToUse);
         }
-        
-        Log.i(TAG, "PictureSize found: " + pictureSizeToUse.x + "x" + pictureSizeToUse.y);
+
+        Log.i(TAG, "PictureSize found: " + pictureSizeToUse.x + "x" +
+                pictureSizeToUse.y);
 
         return pictureSizeToUse;
     }
@@ -187,29 +177,34 @@ public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Cal
         {
             deviceCamera.stopPreview();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             // Ignore: Preview wasn't started.
         }
+
         try
         {
             deviceCamera.setPreviewDisplay(holder);
             Log.d(TAG, "starting cam");
-        } catch (IOException e1)
+        }
+        catch (IOException e1)
         {
             Log.d(TAG, "Unable to set display: " + e1.getMessage());
         }
+
         try
         {
             initCameraProperties();
+            overlayView.setCamera(deviceCamera);
             deviceCamera.startPreview();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            Log.d(TAG, "Exception: " + (deviceCamera != null) + " exception val: " + e.getMessage());
+            Log.d(TAG, "Exception: " + (deviceCamera != null) +
+                    " exception val: " + e.getMessage());
         }
     }
-    
+
     @Override
     protected void onDestroy()
     {
@@ -231,21 +226,24 @@ public class BarcodeCameraActivity extends Activity implements SurfaceHolder.Cal
         deviceCamera.release();
     }
 
+    @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
             int height)
     {
         startCamera(holder, width, height);
     }
 
+    @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
         // TODO Auto-generated method stub
-        
+
     }
 
+    @Override
     public void surfaceDestroyed(SurfaceHolder holder)
     {
         // TODO Auto-generated method stub
-        
+
     }
 }

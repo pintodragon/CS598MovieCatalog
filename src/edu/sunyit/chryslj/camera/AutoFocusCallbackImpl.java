@@ -19,6 +19,7 @@ public class AutoFocusCallbackImpl implements AutoFocusCallback
         this.focusMessage = focusMessage;
     }
 
+    @Override
     public void onAutoFocus(boolean success, Camera camera)
     {
         if (focusHandler != null)
@@ -29,7 +30,7 @@ public class AutoFocusCallbackImpl implements AutoFocusCallback
         }
         Log.d("AutoFocus", "Autofocus called");
     }
-    
+
     public Handler getFocusHandler()
     {
         return focusHandler;

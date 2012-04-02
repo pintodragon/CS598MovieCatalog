@@ -19,11 +19,13 @@ public class MediaFormatTable implements DatabaseTable
     private static final String DROP_TABLE = "DROP TABLE " + TABLE_FORMATS +
             ";";
 
+    @Override
     public String[] getColumnNames()
     {
         return new String[] { COLUMN_ID, COLUMN_TITLE, COLUMN_NAME };
     }
 
+    @Override
     public void onCreate(SQLiteDatabase database)
     {
         database.execSQL(TABLE_CREATE);
@@ -31,6 +33,7 @@ public class MediaFormatTable implements DatabaseTable
         insertMediaFormats(database);
     }
 
+    @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion,
             int newVersion)
     {

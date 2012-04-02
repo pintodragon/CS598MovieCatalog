@@ -2,14 +2,13 @@ package edu.sunyit.chryslj.camera;
 
 import java.io.IOException;
 
-import edu.sunyit.chryslj.R;
-
 import android.content.Context;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import edu.sunyit.chryslj.R;
 
 public class BarcodePreview extends SurfaceView implements
         SurfaceHolder.Callback
@@ -35,16 +34,19 @@ public class BarcodePreview extends SurfaceView implements
         autoFocusCallback.setHandler(null, 0);
     }
 
+    @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int format,
             int width, int height)
     {
     }
 
+    @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder)
     {
         previewCamera();
     }
 
+    @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder)
     {
     }
@@ -74,12 +76,12 @@ public class BarcodePreview extends SurfaceView implements
             Log.e(TAG, "Error setting the camera preview: " + ioe.getMessage());
         }
     }
-    
+
     public void setHandler(Handler handler)
     {
         this.handler = handler;
     }
-    
+
     public void doAutoFocus()
     {
         if (isPreviewRunning)
@@ -89,7 +91,7 @@ public class BarcodePreview extends SurfaceView implements
                 autoFocusCallback.setHandler(handler, R.id.auto_focus);
                 camera.autoFocus(autoFocusCallback);
             }
-            catch(Exception exp)
+            catch (Exception exp)
             {
                 // For now do nothing.
                 Log.d(TAG, "Exception during auto focus call. Ignoring.");
