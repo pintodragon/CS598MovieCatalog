@@ -3,14 +3,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
     
-    <edu.sunyit.chryslj.camera.OverlayView
-         android:id="@+id/surface_overlay"
-     	 android:layout_width="fill_parent"
-     	 android:layout_height="fill_parent" />
-    
     <SurfaceView
         android:id="@+id/preview_surface"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+    
+    <edu.sunyit.chryslj.camera.OverlayView
+         android:id="@+id/overlay_view"
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent"
+         android:background="@color/transparent" />
 
 </FrameLayout>

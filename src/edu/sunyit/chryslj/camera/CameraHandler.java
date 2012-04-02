@@ -5,26 +5,63 @@ import android.os.Message;
 import android.util.Log;
 import edu.sunyit.chryslj.R;
 
+/**
+ * This handler will be used to run all camera related things such as calling
+ * the auto focus callback, displaying the overlay, etc.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class CameraHandler extends Handler
 {
-    private static final String TAG = CameraHandler.class.getName();
-    
-    private BarcodePreview barcodePreview;
-    
-    public CameraHandler(BarcodePreview barcodePreview)
+    private static final String TAG = CameraHandler.class.getSimpleName();
+
+    private enum State
     {
-        this.barcodePreview = barcodePreview;
+        START,
+        GETIMAGE,
+        DONE
+    };
+
+    private BarcodeCameraActivity barcodeCameraActivity;
+    private State currentState;
+
+    public CameraHandler(BarcodeCameraActivity barcodeCameraActivity)
+    {
+        this.barcodeCameraActivity = barcodeCameraActivity;
+        currentState = State.START;
     }
-    
+
     @Override
     public void handleMessage(Message message)
     {
         Log.d(TAG, "Handler recieved: " + message.what);
-        switch (message.what) {
-          case R.id.auto_focus:
-              Log.d(TAG, "Handler recieved auto_focus");
-              barcodePreview.doAutoFocus();
-              break;
+        switch (message.what)
+        {
+            case R.id.auto_focus:
+                Log.d(TAG, "Handler recieved auto_focus");
+                // Only call for auto focus if we are still looking for an
+                // image.
+                if (currentState == State.GETIMAGE)
+                {
+                    barcodeCameraActivity.doAutoFocus();
+                }
+                break;
+            case R.id.preview_running:
+                Log.d(TAG, "Handler recieved preview_running");
+                //
+                previewRunning();
+        }
+    }
+
+    private void previewRunning()
+    {
+        Log.d(TAG, "Preview Running was run!");
+        if (currentState == State.START)
+        {
+            Log.d(TAG, "Draw overlay");
+            barcodeCameraActivity.drawOverlay();
+            currentState = State.GETIMAGE;
         }
     }
 }

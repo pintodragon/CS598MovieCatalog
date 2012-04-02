@@ -8,6 +8,8 @@ import android.util.Log;
 
 public class AutoFocusCallbackImpl implements AutoFocusCallback
 {
+    private static final String TAG = AutoFocusCallbackImpl.class
+            .getSimpleName();
     private static final long FOCUS_MS = 1500L;
 
     private Handler focusHandler;
@@ -28,7 +30,7 @@ public class AutoFocusCallbackImpl implements AutoFocusCallback
             focusHandler.sendMessageDelayed(message, FOCUS_MS);
             focusHandler = null;
         }
-        Log.d("AutoFocus", "Autofocus called");
+        Log.d(TAG, "Autofocus called");
     }
 
     public Handler getFocusHandler()

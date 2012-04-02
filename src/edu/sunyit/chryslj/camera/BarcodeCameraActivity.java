@@ -1,14 +1,12 @@
 package edu.sunyit.chryslj.camera;
 
 import java.io.IOException;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
-import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -21,15 +19,19 @@ import edu.sunyit.chryslj.R;
 public class BarcodeCameraActivity extends Activity implements
         SurfaceHolder.Callback
 {
-    private static final String TAG = BarcodeCameraActivity.class.getName();
-
-    // List of desired picture sizes ranging from largest to smallest.
-    private String[] desiredPictureSizes = { "1600x1200" };
+    private static final String TAG = BarcodeCameraActivity.class
+            .getSimpleName();
 
     private Camera deviceCamera = null;
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private OverlayView overlayView;
+    private CameraHandler cameraHandler;
+
+    private boolean previewRunning = false;
+
+    private AutoFocusCallbackImpl autoFocusCallbackImpl = new AutoFocusCallbackImpl();
+    private TakePicturePreviewCallback takePicPreviewCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -41,7 +43,10 @@ public class BarcodeCameraActivity extends Activity implements
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.barcode_preview);
 
+        overlayView = (OverlayView) findViewById(R.id.overlay_view);
+
         deviceCamera = getCameraInstance();
+        cameraHandler = new CameraHandler(this);
     }
 
     @Override
@@ -54,8 +59,6 @@ public class BarcodeCameraActivity extends Activity implements
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         surfaceHolder.setSizeFromLayout();
         surfaceHolder.addCallback(this);
-
-        overlayView = (OverlayView) findViewById(R.id.surface_overlay);
     }
 
     @Override
@@ -113,73 +116,19 @@ public class BarcodeCameraActivity extends Activity implements
         return camera;
     }
 
-    /**
-     * By default the camera will use the already set default size for images.
-     * If the value being used happens to be the largest that the camera can
-     * support there is a possibility we will run out of memory later on. To
-     * reduce the chance of this happening we need to determine a supported
-     * picture size that is also less then or equal to the size of the current
-     * display.
-     * 
-     * Using a Point rather than a Camera.Size. You can instantiate a Point with
-     * out an active Camera. You can not instantiate a Size without referencing
-     * a valid camera.
-     * 
-     * @param cameraParameters
-     * @param point
-     * @return
-     */
-    private Point getPictureSize(Parameters cameraParameters, Point screenSize)
-    {
-        Point pictureSizeToUse = null;
-        List<Size> supprotedSizes = cameraParameters.getSupportedPictureSizes();
-
-        // Lets use a really large number to start. This will always get set at
-        // least once.
-        for (Size currSize : supprotedSizes)
-        {
-            int currWidth = currSize.width;
-            int currHeight = currSize.height;
-            Log.d(TAG, "All SupportedSize: " + currWidth + "x" + currHeight);
-
-            for (String desiredSize : desiredPictureSizes)
-            {
-                String dimensions[] = desiredSize.split("x");
-                if (currWidth == Integer.parseInt(dimensions[0]) &&
-                        currHeight == Integer.parseInt(dimensions[1]))
-                {
-                    pictureSizeToUse = new Point(currWidth, currHeight);
-                    return pictureSizeToUse;
-                }
-            }
-        }
-
-        // This should never happen but in the event that we didn't find a size
-        // use the size that the camera is already using.
-        if (pictureSizeToUse == null)
-        {
-            pictureSizeToUse = new Point(
-                    cameraParameters.getPreviewSize().width,
-                    cameraParameters.getPreviewSize().height);
-            Log.i(TAG, "Unable to find a valid supported picture size, using" +
-                    " the cameras default: " + pictureSizeToUse);
-        }
-
-        Log.i(TAG, "PictureSize found: " + pictureSizeToUse.x + "x" +
-                pictureSizeToUse.y);
-
-        return pictureSizeToUse;
-    }
-
     private void startCamera(SurfaceHolder holder, int width, int height)
     {
-        try
+        if (previewRunning)
         {
-            deviceCamera.stopPreview();
-        }
-        catch (Exception e)
-        {
-            // Ignore: Preview wasn't started.
+            try
+            {
+                deviceCamera.stopPreview();
+                previewRunning = false;
+            }
+            catch (Exception e)
+            {
+                // Ignore: Preview wasn't started.
+            }
         }
 
         try
@@ -195,8 +144,11 @@ public class BarcodeCameraActivity extends Activity implements
         try
         {
             initCameraProperties();
-            overlayView.setCamera(deviceCamera);
+            // overlayView.setCamera(deviceCamera);
             deviceCamera.startPreview();
+            previewRunning = true;
+            cameraHandler.sendEmptyMessage(R.id.preview_running);
+            doAutoFocus();
         }
         catch (Exception e)
         {
@@ -214,10 +166,16 @@ public class BarcodeCameraActivity extends Activity implements
 
     private void stopCamera()
     {
+        autoFocusCallbackImpl.setHandler(null, 0);
         surfaceHolder.removeCallback(this);
         try
         {
-            deviceCamera.stopPreview();
+            if (previewRunning)
+            {
+                deviceCamera.stopPreview();
+                previewRunning = false;
+            }
+
             deviceCamera.setPreviewCallback(null);
         }
         catch (Exception e)
@@ -246,5 +204,27 @@ public class BarcodeCameraActivity extends Activity implements
     {
         // TODO Auto-generated method stub
 
+    }
+
+    public void drawOverlay()
+    {
+        Log.d(TAG, "Draw the overlay");
+        WindowManager manager = (WindowManager) getApplication()
+                .getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        int width = display.getWidth();
+        int height = display.getHeight();
+
+        overlayView.setPreviewSize(new Point(width, height));
+        overlayView.invalidate();
+    }
+
+    public void doAutoFocus()
+    {
+        if (deviceCamera != null && previewRunning)
+        {
+            autoFocusCallbackImpl.setHandler(cameraHandler, R.id.auto_focus);
+            deviceCamera.autoFocus(autoFocusCallbackImpl);
+        }
     }
 }

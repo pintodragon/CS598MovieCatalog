@@ -4,76 +4,58 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.hardware.Camera;
-import android.hardware.Camera.PreviewCallback;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-// TODO Make this class not use the preview call back. Instead it just draws.
 public class OverlayView extends SurfaceView
 {
-    private static final String TAG = OverlayView.class.getName();
+    private static final String TAG = OverlayView.class.getSimpleName();
 
-    private SurfaceHolder surfaceHolder;
-    private Point previewSize;
+    // TODO Horrible magic numbers
+    private Point previewSize = new Point(800, 480);
 
     public OverlayView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-
-        surfaceHolder = getHolder();
-        surfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
+        Log.d(TAG, "Overlay Created!");
     }
 
+    @Override
+    public void onDraw(Canvas canvas)
+    {
+        Log.d(TAG, "On Draw!");
+        int recX1 = 70;
+        int recX2 = previewSize.x - recX1;
+        int recY1 = 40;
+        int recY2 = previewSize.y - recY1;
+        Log.d(TAG, "preview x: " + previewSize.x + " preview y: " +
+                previewSize.y);
+        Rect guide = new Rect(recX1, recY1, recX2, recY2);
+        Paint paint = new Paint();
+        paint.setAlpha(0);
+        paint.setColor(Color.WHITE);
+        paint.setStrokeWidth(2);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(guide, paint);
+
+        paint.setColor(Color.MAGENTA);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeWidth(4);
+        canvas.drawLine(70, previewSize.y / 2, previewSize.x - 70,
+                previewSize.y / 2, paint);
+    }
+
+    /**
+     * Called any time the surface changes on the camera.
+     * 
+     * @param previewSize
+     */
     public void setPreviewSize(Point previewSize)
     {
+        Log.d(TAG, "Preview Size set!");
         this.previewSize = previewSize;
-    }
-
-    public void setCamera(Camera camera)
-    {
-        camera.setPreviewCallback(new PreviewCallback()
-        {
-            // Called by camera hardware, with preview frame
-            @Override
-            public void onPreviewFrame(byte[] frame, Camera c)
-            {
-                Canvas canvasOverlay = surfaceHolder.lockCanvas(null);
-                try
-                {
-                    int recX1 = 70;
-                    int recX2 = previewSize.x - recX1;
-                    int recY1 = 40;
-                    int recY2 = previewSize.y - recY1;
-                    Log.d(TAG, "preview x: " + previewSize.x + " preview y: " +
-                            previewSize.y);
-                    Rect guide = new Rect(recX1, recY1, recX2, recY2);
-                    Paint paint = new Paint();
-                    paint.setColor(Color.WHITE);
-                    paint.setStrokeWidth(2);
-                    paint.setStyle(Paint.Style.STROKE);
-                    canvasOverlay.drawRect(guide, paint);
-
-                    paint.setColor(Color.MAGENTA);
-                    paint.setStyle(Paint.Style.FILL);
-                    paint.setStrokeWidth(4);
-                    canvasOverlay.drawLine(70, previewSize.y / 2,
-                            previewSize.x - 70, previewSize.y / 2, paint);
-                }
-                catch (Exception e)
-                {
-                    // Log/trap rendering errors
-                }
-                finally
-                {
-                    surfaceHolder.unlockCanvasAndPost(canvasOverlay);
-                }
-            }
-        });
     }
 }
