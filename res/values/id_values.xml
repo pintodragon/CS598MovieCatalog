@@ -2,4 +2,6 @@
 <resources>
   <item name="auto_focus" type="id" />
   <item name="preview_running" type="id" />
+  <item name="take_preview" type="id" />
+  <item name="preview_taken" type="id" />
 </resources>

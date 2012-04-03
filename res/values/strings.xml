@@ -7,5 +7,6 @@
     <string name="add_new">Add New</string>
     <string name="delete">Delete</string>
     <string name="main_title">CSC 598 Movie Catalog Project</string>
+    <string name="take_pic">Take Picture</string>
 
 </resources>

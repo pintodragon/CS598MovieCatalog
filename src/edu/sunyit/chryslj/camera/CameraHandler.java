@@ -49,8 +49,21 @@ public class CameraHandler extends Handler
                 break;
             case R.id.preview_running:
                 Log.d(TAG, "Handler recieved preview_running");
-                //
+                // Draw the guide lines
                 previewRunning();
+                break;
+            case R.id.take_preview:
+                // Call the one shot preview callback.
+                Log.d(TAG, "Handler recieved take_preview");
+                currentState = State.DONE;
+                barcodeCameraActivity.takeOneShotPreview();
+                break;
+            case R.id.preview_taken:
+                Log.d(TAG, "Handler recieved take_preview");
+                byte[] data = (byte[]) message.obj;
+                // TODO Might be incorrectly returning null.
+                barcodeCameraActivity.sendPictureToReader(data);
+                break;
         }
     }
 

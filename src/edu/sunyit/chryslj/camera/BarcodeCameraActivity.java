@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import edu.sunyit.chryslj.R;
@@ -33,6 +35,9 @@ public class BarcodeCameraActivity extends Activity implements
     private AutoFocusCallbackImpl autoFocusCallbackImpl = new AutoFocusCallbackImpl();
     private TakePicturePreviewCallback takePicPreviewCallback;
 
+    // *******************//
+    // Activity overrides //
+    // *******************//
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -45,7 +50,15 @@ public class BarcodeCameraActivity extends Activity implements
 
         overlayView = (OverlayView) findViewById(R.id.overlay_view);
 
-        deviceCamera = getCameraInstance();
+        try
+        {
+            deviceCamera = Camera.open();
+        }
+        catch (Exception exc)
+        {
+            Log.e(TAG, "Unable to get camera instance: " + exc.getMessage());
+        }
+
         cameraHandler = new CameraHandler(this);
     }
 
@@ -64,10 +77,108 @@ public class BarcodeCameraActivity extends Activity implements
     @Override
     protected void onPause()
     {
-        super.onPause();
         stopCamera(); // release the camera immediately on pause event
+        super.onPause();
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        stopCamera();
+        super.onDestroy();
+    }
+
+    // ********************************************************************//
+    // SurfaceHolder.Callback overrides. We only need the surface changed. //
+    // ********************************************************************//
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width,
+            int height)
+    {
+        startCamera(holder);
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder)
+    {
+        // Do nothing
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder)
+    {
+        // Do nothing
+    }
+
+    // ******************************//
+    // BarcodeCameraActivity methods //
+    // ******************************//
+
+    /**
+     * 
+     * @param view
+     */
+    public void onTakePicClick(View view)
+    {
+        if (view.getId() == R.id.take_picture)
+        {
+            cameraHandler.sendEmptyMessage(R.id.take_preview);
+        }
+    }
+
+    /**
+     * 
+     */
+    public void takeOneShotPreview()
+    {
+        takePicPreviewCallback = new TakePicturePreviewCallback();
+        takePicPreviewCallback.setHandler(cameraHandler);
+        deviceCamera.setOneShotPreviewCallback(takePicPreviewCallback);
+    }
+
+    /**
+     * 
+     * @param data
+     */
+    public void sendPictureToReader(byte[] data)
+    {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("image", data);
+        setResult(RESULT_OK, resultIntent);
+        finish();
+    }
+
+    /**
+     * 
+     */
+    public void drawOverlay()
+    {
+        Log.d(TAG, "Draw the overlay");
+        WindowManager manager = (WindowManager) getApplication()
+                .getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        int width = display.getWidth();
+        int height = display.getHeight();
+
+        overlayView.setPreviewSize(new Point(width, height));
+        overlayView.invalidate();
+    }
+
+    /**
+     * 
+     */
+    public void doAutoFocus()
+    {
+        if (deviceCamera != null && previewRunning)
+        {
+            autoFocusCallbackImpl.setHandler(cameraHandler, R.id.auto_focus);
+            deviceCamera.autoFocus(autoFocusCallbackImpl);
+        }
+    }
+
+    /**
+     * 
+     */
     private void initCameraProperties()
     {
         Parameters cameraParameters = deviceCamera.getParameters();
@@ -98,77 +209,13 @@ public class BarcodeCameraActivity extends Activity implements
 
     /**
      * 
-     * @return
      */
-    public static Camera getCameraInstance()
-    {
-        Camera camera = null;
-
-        try
-        {
-            camera = Camera.open();
-        }
-        catch (Exception exc)
-        {
-            Log.e(TAG, "Unable to get camera instance: " + exc.getMessage());
-        }
-
-        return camera;
-    }
-
-    private void startCamera(SurfaceHolder holder, int width, int height)
-    {
-        if (previewRunning)
-        {
-            try
-            {
-                deviceCamera.stopPreview();
-                previewRunning = false;
-            }
-            catch (Exception e)
-            {
-                // Ignore: Preview wasn't started.
-            }
-        }
-
-        try
-        {
-            deviceCamera.setPreviewDisplay(holder);
-            Log.d(TAG, "starting cam");
-        }
-        catch (IOException e1)
-        {
-            Log.d(TAG, "Unable to set display: " + e1.getMessage());
-        }
-
-        try
-        {
-            initCameraProperties();
-            // overlayView.setCamera(deviceCamera);
-            deviceCamera.startPreview();
-            previewRunning = true;
-            cameraHandler.sendEmptyMessage(R.id.preview_running);
-            doAutoFocus();
-        }
-        catch (Exception e)
-        {
-            Log.d(TAG, "Exception: " + (deviceCamera != null) +
-                    " exception val: " + e.getMessage());
-        }
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        stopCamera();
-        super.onDestroy();
-    }
-
     private void stopCamera()
     {
         autoFocusCallbackImpl.setHandler(null, 0);
         surfaceHolder.removeCallback(this);
-        try
+
+        if (deviceCamera != null)
         {
             if (previewRunning)
             {
@@ -176,55 +223,40 @@ public class BarcodeCameraActivity extends Activity implements
                 previewRunning = false;
             }
 
-            deviceCamera.setPreviewCallback(null);
+            deviceCamera.release();
         }
-        catch (Exception e)
+    }
+
+    /**
+     * 
+     * @param holder
+     */
+    private void startCamera(SurfaceHolder holder)
+    {
+        if (deviceCamera != null)
         {
-            // Ignore.
-        }
-        deviceCamera.release();
-    }
+            if (previewRunning)
+            {
+                deviceCamera.stopPreview();
+                previewRunning = false;
+            }
 
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,
-            int height)
-    {
-        startCamera(holder, width, height);
-    }
+            try
+            {
+                deviceCamera.setPreviewDisplay(holder);
+                Log.d(TAG, "starting cam");
+            }
+            catch (IOException e1)
+            {
+                Log.d(TAG, "Unable to set display: " + e1.getMessage());
+            }
 
-    @Override
-    public void surfaceCreated(SurfaceHolder holder)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void drawOverlay()
-    {
-        Log.d(TAG, "Draw the overlay");
-        WindowManager manager = (WindowManager) getApplication()
-                .getSystemService(Context.WINDOW_SERVICE);
-        Display display = manager.getDefaultDisplay();
-        int width = display.getWidth();
-        int height = display.getHeight();
-
-        overlayView.setPreviewSize(new Point(width, height));
-        overlayView.invalidate();
-    }
-
-    public void doAutoFocus()
-    {
-        if (deviceCamera != null && previewRunning)
-        {
-            autoFocusCallbackImpl.setHandler(cameraHandler, R.id.auto_focus);
-            deviceCamera.autoFocus(autoFocusCallbackImpl);
+            initCameraProperties();
+            // overlayView.setCamera(deviceCamera);
+            deviceCamera.startPreview();
+            previewRunning = true;
+            cameraHandler.sendEmptyMessage(R.id.preview_running);
+            doAutoFocus();
         }
     }
 }

@@ -3,11 +3,13 @@ package edu.sunyit.chryslj;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import edu.sunyit.chryslj.camera.BarcodeCameraActivity;
 
 public class MainActivity extends Activity
 {
+    private static final String TAG = MainActivity.class.getSimpleName();
     public static final int TAKE_PICTURE_REQUEST = 0;
 
     @Override
@@ -22,8 +24,10 @@ public class MainActivity extends Activity
     {
         if (resultCode == Activity.RESULT_OK)
         {
+            Log.d(TAG, "Result returned to activity");
             if (requestCode == TAKE_PICTURE_REQUEST)
             {
+                Log.d(TAG, "Image returned to activity");
                 byte[] imageData = data.getByteArrayExtra("image");
                 Intent intent = new Intent();
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
