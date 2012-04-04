@@ -17,6 +17,7 @@ public class UPCABarcode implements BarcodeDecoder
         int readHeight = height / 2;
 
         StringBuffer sb = new StringBuffer();
+        StringBuffer nb = new StringBuffer();
 
         int black = Color.rgb(0, 0, 0);
 
@@ -32,24 +33,12 @@ public class UPCABarcode implements BarcodeDecoder
             {
                 sb.append("W ");
             }
+
+            nb.append((pixel & 0xFF) + " ");
         }
 
         Log.d(TAG, "ReadHeight: " + readHeight + " Value: " + sb.toString());
-
-        readHeight = height / 2;
-
-        sb = new StringBuffer();
-
-        black = Color.rgb(100, 100, 100);
-
-        for (int x = 0; x < width; x++)
-        {
-            int pixel = binaryImage.getPixel(x, readHeight);
-
-            sb.append(pixel + " ");
-        }
-
-        Log.d(TAG, "ReadHeight: " + readHeight + " Value: " + sb.toString());
+        Log.d(TAG, "ReadHeight: " + readHeight + " Value: " + nb.toString());
 
         return 0;
     }

@@ -27,12 +27,20 @@ public class MainActivity extends Activity
             Log.d(TAG, "Result returned to activity");
             if (requestCode == TAKE_PICTURE_REQUEST)
             {
-                Log.d(TAG, "Image returned to activity");
-                byte[] imageData = data.getByteArrayExtra("image");
+                // imageData is the YCrCB data acquired from the preview.
+                byte[] imageData = data
+                        .getByteArrayExtra(getString(R.string.ycrcb_image_data));
+                int width = data.getIntExtra(
+                        getString(R.string.ycrcb_image_width), 0);
+                int height = data.getIntExtra(
+                        getString(R.string.ycrcb_image_height), 0);
+
                 Intent intent = new Intent();
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 intent.setClass(this.getApplication(), TestBMPActivity.class);
-                intent.putExtra("image", imageData);
+                intent.putExtra(getString(R.string.ycrcb_image_data), imageData);
+                intent.putExtra(getString(R.string.ycrcb_image_width), width);
+                intent.putExtra(getString(R.string.ycrcb_image_height), height);
                 startActivity(intent);
             }
         }

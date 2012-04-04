@@ -60,9 +60,14 @@ public class CameraHandler extends Handler
                 break;
             case R.id.preview_taken:
                 Log.d(TAG, "Handler recieved take_preview");
+                // The data being sent back is in YCrCB format.
                 byte[] data = (byte[]) message.obj;
-                // TODO Might be incorrectly returning null.
-                barcodeCameraActivity.sendPictureToReader(data);
+
+                // arg1 and arg2 were set in the picture preview call back as
+                // the width and height of the preview screen.
+                int width = message.arg1;
+                int height = message.arg2;
+                barcodeCameraActivity.sendPictureToReader(width, height, data);
                 break;
         }
     }

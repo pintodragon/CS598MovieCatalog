@@ -139,12 +139,16 @@ public class BarcodeCameraActivity extends Activity implements
     /**
      * 
      * @param data
+     *            the YCrCB data of the preview image acquired.
      */
-    public void sendPictureToReader(byte[] data)
+    public void sendPictureToReader(int width, int height, byte[] data)
     {
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("image", data);
-        setResult(RESULT_OK, resultIntent);
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(getString(R.string.ycrcb_image_data), data);
+        returnIntent.putExtra(getString(R.string.ycrcb_image_width), width);
+        returnIntent.putExtra(getString(R.string.ycrcb_image_height), height);
+        setResult(RESULT_OK, returnIntent);
+        stopCamera();
         finish();
     }
 

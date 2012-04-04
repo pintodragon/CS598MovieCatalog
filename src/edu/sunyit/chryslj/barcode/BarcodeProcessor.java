@@ -1,11 +1,7 @@
 package edu.sunyit.chryslj.barcode;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
 
 /**
  * 
@@ -48,18 +44,18 @@ public class BarcodeProcessor
      * @param image
      * @return
      */
-    public Bitmap generateBinaryImage(Bitmap image)
+    public Bitmap generateBinaryImage(int width, int height, byte[] image)
     {
-        // TODO great candidate for a new thread
-        int width = image.getWidth();
-        int height = image.getHeight();
 
-        final int localWidth = width;//width / 4;
-        final int localHeight = height;//height / 4;
+        Bitmap grayBMP = convertToGrayScale(width, height, image);
+
+        // TODO great candidate for a new thread
+
+        final int localWidth = width / 4;
+        final int localHeight = height / 4;
+
         Bitmap binaryImage = Bitmap.createBitmap(width, height,
                 Bitmap.Config.ARGB_8888);
-
-        Bitmap grayBMP = convertToGrayScale(image);
 
         // Lets partition the image off into a few grids. If the grid we
         // currently want to use would exceed the size of teh bitmap then
@@ -114,7 +110,9 @@ public class BarcodeProcessor
             }
         }
 
-        return binaryImage;
+        // grayBMP.recycle();
+
+        return grayBMP;
     }
 
     /**
@@ -184,25 +182,33 @@ public class BarcodeProcessor
     }
 
     /**
+     * Get the Y plane of the YCrCB data. The Y plane is a grayscale version of
+     * the image.
      * 
-     * @param colorBMP
+     * @param colorImageData
+     *            the YCrCB image data we want the grayscale of.
      * @return
      */
-    private Bitmap convertToGrayScale(Bitmap colorBMP)
+    private Bitmap convertToGrayScale(int width, int height,
+            byte[] colorImageData)
     {
-        int width = colorBMP.getWidth();
-        int height = colorBMP.getHeight();
+        int[] pixelData = new int[width * height];
+        int yDataOffset = width;
+
+        for (int row = 0; row < height; row++)
+        {
+            int pixelOffset = row * width;
+            for (int column = 0; column < width; column++)
+            {
+                int yPlaneGreyVal = colorImageData[yDataOffset + column] & 0xFF;
+                pixelData[pixelOffset + column] = 0xFF000000 | (yPlaneGreyVal * 0x00010101);
+            }
+            yDataOffset += width;
+        }
 
         Bitmap grayBMP = Bitmap.createBitmap(width, height,
-                Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(grayBMP);
-        Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0);
-        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-        paint.setColorFilter(f);
-        c.drawBitmap(colorBMP, 0, 0, paint);
-
+                Bitmap.Config.ARGB_8888);
+        grayBMP.setPixels(pixelData, 0, width, 0, 0, width, height);
         return grayBMP;
     }
 

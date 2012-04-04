@@ -8,5 +8,8 @@
     <string name="delete">Delete</string>
     <string name="main_title">CSC 598 Movie Catalog Project</string>
     <string name="take_pic">Take Picture</string>
+    <string name="ycrcb_image_data">imageData</string>
+    <string name="ycrcb_image_width">imageWidth</string>
+    <string name="ycrcb_image_height">imageHeight</string>
 
 </resources>

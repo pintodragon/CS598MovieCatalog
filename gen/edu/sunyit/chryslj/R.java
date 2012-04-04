@@ -52,5 +52,8 @@ public final class R {
         public static final int main_title=0x7f060005;
         public static final int quit=0x7f060002;
         public static final int take_pic=0x7f060006;
+        public static final int ycrcb_image_data=0x7f060007;
+        public static final int ycrcb_image_height=0x7f060009;
+        public static final int ycrcb_image_width=0x7f060008;
     }
 }

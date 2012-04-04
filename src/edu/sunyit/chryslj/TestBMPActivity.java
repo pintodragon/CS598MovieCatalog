@@ -3,16 +3,14 @@ package edu.sunyit.chryslj;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import edu.sunyit.chryslj.barcode.BarcodeProcessor;
 import edu.sunyit.chryslj.barcode.UPCABarcode;
 
 public class TestBMPActivity extends Activity
 {
-    private static final String TAG = TestBMPActivity.class.getName();
+    private static final String TAG = TestBMPActivity.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -52,24 +50,22 @@ public class TestBMPActivity extends Activity
 
         if (intent != null)
         {
-            Bundle extras = intent.getExtras();
+            // imageData is the YCrCB data acquired from the preview.
+            byte[] imageData = intent
+                    .getByteArrayExtra(getString(R.string.ycrcb_image_data));
+            int width = intent.getIntExtra(
+                    getString(R.string.ycrcb_image_width), 0);
+            int height = intent.getIntExtra(
+                    getString(R.string.ycrcb_image_height), 0);
 
-            if (extras != null)
-            {
-                Log.i(TAG, "Image exists");
-                byte[] imageData = extras.getByteArray("image");
-                Bitmap myBitmap = BitmapFactory.decodeByteArray(imageData, 0,
-                        imageData.length);
+            BarcodeProcessor bp = new BarcodeProcessor();
+            Bitmap binImage = bp.generateBinaryImage(width, height, imageData);
+            UPCABarcode upacAB = new UPCABarcode();
+            upacAB.decodeImage(binImage);
 
-                BarcodeProcessor bp = new BarcodeProcessor();
-                Bitmap binImage = bp.generateBinaryImage(myBitmap);
-                UPCABarcode upacAB = new UPCABarcode();
-                upacAB.decodeImage(binImage);
-
-                ImageView myImage = (ImageView) findViewById(R.id.binary);
-                myImage.setImageBitmap(binImage);
-                myImage.setVisibility(ImageView.VISIBLE);
-            }
+            ImageView myImage = (ImageView) findViewById(R.id.binary);
+            myImage.setImageBitmap(binImage);
+            myImage.setVisibility(ImageView.VISIBLE);
         }
     }
 }
