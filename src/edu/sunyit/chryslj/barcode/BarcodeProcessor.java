@@ -220,8 +220,7 @@ public class BarcodeProcessor
      */
     private int getThresholdValue(int[] histogramData)
     {
-        int binaryThreshold = 0;
-        int maxHistogramValue = 0;
+        int maxHistogramSize = 0;
 
         int firstPeakValue = 0;
         int firstPeakSize = 0;
@@ -231,9 +230,9 @@ public class BarcodeProcessor
         for (int x = 0; x < histogramData.length; x++)
         {
             // Check if histogramData[x] is the max size
-            if (histogramData[x] > maxHistogramValue)
+            if (histogramData[x] > maxHistogramSize)
             {
-                maxHistogramValue = histogramData[x];
+                maxHistogramSize = histogramData[x];
             }
 
             // See if we found a new first peak
@@ -274,7 +273,7 @@ public class BarcodeProcessor
             int score =
                     distanceFromFirst * distanceFromFirst *
                             (secondPeakValue - x) *
-                            (maxHistogramValue - histogramData[x]);
+                            (maxHistogramSize - histogramData[x]);
             if (score > bestValleySize)
             {
                 bestValleyValue = x;
