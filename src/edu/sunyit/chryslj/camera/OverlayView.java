@@ -14,6 +14,9 @@ public class OverlayView extends SurfaceView
 {
     private static final String TAG = OverlayView.class.getSimpleName();
 
+    public static final int X_OFFSET = 70;
+    public static final int Y_OFFSET = 40;
+
     // TODO Horrible magic numbers
     private Point previewSize = new Point(800, 480);
 
@@ -27,10 +30,10 @@ public class OverlayView extends SurfaceView
     public void onDraw(Canvas canvas)
     {
         Log.d(TAG, "On Draw!");
-        int recX1 = 70;
-        int recX2 = previewSize.x - recX1;
-        int recY1 = 40;
-        int recY2 = previewSize.y - recY1;
+        int recX1 = X_OFFSET;
+        int recX2 = previewSize.x - X_OFFSET;
+        int recY1 = Y_OFFSET;
+        int recY2 = previewSize.y - Y_OFFSET;
         Log.d(TAG, "preview x: " + previewSize.x + " preview y: " +
                 previewSize.y);
         Rect guide = new Rect(recX1, recY1, recX2, recY2);

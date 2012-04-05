@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
+import edu.sunyit.chryslj.camera.OverlayView;
 
 /**
  * 
@@ -55,8 +56,12 @@ public class BarcodeProcessor
      */
     public Bitmap generateBinaryImage(int width, int height, byte[] image)
     {
-        int row = (height / 2) * width;
         Bitmap grayBMP = convertToGrayScale(width, height, image);
+
+        int columnStart = OverlayView.X_OFFSET;
+        int columnFinish = width - OverlayView.X_OFFSET;
+        int row = (height / 2) * width + columnStart;
+        width = columnFinish - columnStart;
 
         // TODO great candidate for a new thread
 
@@ -139,7 +144,7 @@ public class BarcodeProcessor
         {
             int right = rowData[column + 1] & 0xff;
             int pixelValue = ((center * 4) - left - right) / 2;
-            Log.d(TAG, "PixelValue: " + pixelValue);
+
             if (pixelValue < binaryThreshold)
             {
                 binaryRowData[column] = Color.BLACK;
@@ -156,7 +161,8 @@ public class BarcodeProcessor
 
         Log.d(TAG, "Binary Row: " + sb.toString());
 
-        grayBMP.setPixels(binaryRowData, 0, width, 0, height / 2, width, 1);
+        grayBMP.setPixels(binaryRowData, 0, width, columnStart, height / 2,
+                width, 1);
 
         // grayBMP.recycle();
 
