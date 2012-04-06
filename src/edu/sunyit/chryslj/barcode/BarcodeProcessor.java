@@ -152,7 +152,6 @@ public class BarcodeProcessor
                 sb.append("W ");
             }
 
-            Log.d(TAG, "BinaryPixel: " + binaryRowData[column]);
             left = center;
             center = right;
         }

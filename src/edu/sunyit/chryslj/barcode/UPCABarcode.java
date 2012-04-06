@@ -44,7 +44,6 @@ public class UPCABarcode implements BarcodeDecoder
     @Override
     public String decodeImage(int[] binaryRowData) throws InvalidImageException
     {
-        int width = binaryRowData.length;
         int xOffset = locateFirstBar(binaryRowData);
         int moduleWidth = 0;
 
@@ -58,57 +57,58 @@ public class UPCABarcode implements BarcodeDecoder
 
         // Starting with Odd parity (Space first) so when we hit a bar we
         // increment our digitIndex.
-        int[] firstDigit = new int[4];
+        StringBuilder barcodeBuilder = new StringBuilder();
+
+        // Start decoding.
+        for (int digit = 0; digit < 6; digit++)
+        {
+            int[] digitAndOffset =
+                    aquireDigit(binaryRowData, xOffset, SPACE_COLOR,
+                            moduleWidth);
+            barcodeBuilder.append(digitAndOffset[0]);
+            xOffset = digitAndOffset[1];
+        }
+
+        Log.d(TAG, "Barcode: " + barcodeBuilder.toString());
+
+        return barcodeBuilder.toString();
+    }
+
+    private int[] aquireDigit(int[] binaryRowData, int currentOffset,
+            int startColor, int moduleWidth)
+    {
+        int[] digitWidths = new int[4];
         int digitIndex = 0;
-        int previousPixel = SPACE_COLOR;
+        int previousPixel = startColor;
+        int xOffset = currentOffset;
 
-        // Start decoding.
-        for (int x = xOffset; x < width; x++)
+        for (int x = xOffset; x < binaryRowData.length; x++)
         {
             if (binaryRowData[x] != previousPixel)
             {
-                if (digitIndex == 3)
+                Log.d(TAG, "Digit: " + digitIndex + " WidthTotal: " +
+                        digitWidths[digitIndex] + " Width: " +
+                        (digitWidths[digitIndex] / moduleWidth));
+                digitWidths[digitIndex] = digitWidths[digitIndex] / moduleWidth;
+
+                digitIndex++;
+                previousPixel = binaryRowData[x];
+
+                if (digitIndex == digitWidths.length)
                 {
                     // Done with first digit
                     xOffset = x;
                     break;
                 }
-                firstDigit[digitIndex] = firstDigit[digitIndex] / moduleWidth;
-                digitIndex++;
             }
-            firstDigit[digitIndex]++;
+            digitWidths[digitIndex]++;
         }
 
-        int digitValue = matchDigitPattern(firstDigit);
+        int[] digitAndOffset = new int[2];
+        digitAndOffset[0] = matchDigitPattern(digitWidths);
+        digitAndOffset[1] = xOffset;
 
-        Log.d(TAG, "First Digit Value: " + digitValue);
-
-        firstDigit = new int[4];
-        digitIndex = 0;
-        previousPixel = SPACE_COLOR;
-
-        // Start decoding.
-        for (int x = xOffset; x < width; x++)
-        {
-            if (binaryRowData[x] != previousPixel)
-            {
-                if (digitIndex == 3)
-                {
-                    // Done with first digit
-                    xOffset = x;
-                    break;
-                }
-                firstDigit[digitIndex] = firstDigit[digitIndex] / moduleWidth;
-                digitIndex++;
-            }
-            firstDigit[digitIndex]++;
-        }
-
-        digitValue = matchDigitPattern(firstDigit);
-
-        Log.d(TAG, "Second Digit Value: " + digitValue);
-
-        return "";
+        return digitAndOffset;
     }
 
     private int[] getPastGuard(int[] binaryRowData, int xOffset)
@@ -176,7 +176,6 @@ public class UPCABarcode implements BarcodeDecoder
 
         for (int x = 0; x < binaryRowData.length; x++)
         {
-            Log.d(TAG, "PixelValue: " + binaryRowData[x] + " at: " + x);
             // If we have a value that looks like it might be a bar
             if (binaryRowData[x] == BAR_COLOR)
             {
