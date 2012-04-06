@@ -32,7 +32,8 @@ public class BarcodeCameraActivity extends Activity implements
 
     private boolean previewRunning = false;
 
-    private AutoFocusCallbackImpl autoFocusCallbackImpl = new AutoFocusCallbackImpl();
+    private AutoFocusCallbackImpl autoFocusCallbackImpl =
+            new AutoFocusCallbackImpl();
     private TakePicturePreviewCallback takePicPreviewCallback;
 
     // *******************//
@@ -120,7 +121,7 @@ public class BarcodeCameraActivity extends Activity implements
      */
     public void onTakePicClick(View view)
     {
-        if (view.getId() == R.id.take_picture)
+        if (view.getId() == R.id.overlay_view)
         {
             cameraHandler.sendEmptyMessage(R.id.take_preview);
         }
@@ -158,8 +159,9 @@ public class BarcodeCameraActivity extends Activity implements
     public void drawOverlay()
     {
         Log.d(TAG, "Draw the overlay");
-        WindowManager manager = (WindowManager) getApplication()
-                .getSystemService(Context.WINDOW_SERVICE);
+        WindowManager manager =
+                (WindowManager) getApplication().getSystemService(
+                        Context.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
         int width = display.getWidth();
         int height = display.getHeight();
@@ -187,8 +189,9 @@ public class BarcodeCameraActivity extends Activity implements
     {
         Parameters cameraParameters = deviceCamera.getParameters();
 
-        WindowManager manager = (WindowManager) getApplication()
-                .getSystemService(Context.WINDOW_SERVICE);
+        WindowManager manager =
+                (WindowManager) getApplication().getSystemService(
+                        Context.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
         int width = display.getWidth();
         int height = display.getHeight();

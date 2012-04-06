@@ -12,6 +12,8 @@ import android.graphics.YuvImage;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 import edu.sunyit.chryslj.barcode.BarcodeProcessor;
 import edu.sunyit.chryslj.exceptions.InvalidImageException;
 
@@ -72,6 +74,11 @@ public class TestBMPActivity extends Activity
             {
                 barcode = bp.decodeImage(width, height, imageData);
                 Log.d(TAG, "Barcode: " + barcode);
+                Toast.makeText(getApplication(), barcode, Toast.LENGTH_LONG)
+                        .show();
+                TextView barcodeText = (TextView) findViewById(R.id.textView1);
+                barcodeText.setText(barcode);
+                barcodeText.setVisibility(TextView.VISIBLE);
             }
             catch (InvalidImageException e)
             {

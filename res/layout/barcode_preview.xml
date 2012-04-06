@@ -12,21 +12,6 @@
          android:id="@+id/overlay_view"
          android:layout_width="fill_parent"
          android:layout_height="fill_parent"
-         android:background="@color/transparent" />
-    
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <Button
-            android:id="@+id/take_picture"
-            android:text="@string/take_pic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:onClick="onTakePicClick" />
-
-    </RelativeLayout>
-
+         android:background="@color/transparent"
+         android:onClick="onTakePicClick" />
 </FrameLayout>

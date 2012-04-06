@@ -18,22 +18,21 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout1=0x7f050008;
-        public static final int add_movie=0x7f05000e;
+        public static final int add_movie=0x7f05000d;
         public static final int auto_focus=0x7f050000;
-        public static final int binary=0x7f050007;
-        public static final int button1=0x7f05000a;
-        public static final int button2=0x7f05000b;
-        public static final int button3=0x7f05000c;
-        public static final int delete_movie=0x7f05000f;
-        public static final int group=0x7f05000d;
+        public static final int binary=0x7f050006;
+        public static final int button1=0x7f050009;
+        public static final int button2=0x7f05000a;
+        public static final int button3=0x7f05000b;
+        public static final int delete_movie=0x7f05000e;
+        public static final int group=0x7f05000c;
         public static final int overlay_view=0x7f050005;
         public static final int preview_running=0x7f050001;
         public static final int preview_surface=0x7f050004;
         public static final int preview_taken=0x7f050003;
-        public static final int quit=0x7f050010;
-        public static final int take_picture=0x7f050006;
+        public static final int quit=0x7f05000f;
         public static final int take_preview=0x7f050002;
-        public static final int textView1=0x7f050009;
+        public static final int textView1=0x7f050007;
     }
     public static final class layout {
         public static final int barcode_preview=0x7f030000;
