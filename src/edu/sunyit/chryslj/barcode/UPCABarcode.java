@@ -69,6 +69,7 @@ public class UPCABarcode implements BarcodeDecoder
             xOffset = digitAndOffset[1];
         }
 
+        Log.d(TAG, "Expecting: 025192");
         Log.d(TAG, "Barcode: " + barcodeBuilder.toString());
 
         return barcodeBuilder.toString();
@@ -86,10 +87,34 @@ public class UPCABarcode implements BarcodeDecoder
         {
             if (binaryRowData[x] != previousPixel)
             {
+                int totalWidth = digitWidths[digitIndex];
+                int discrepancy = digitWidths[digitIndex] % moduleWidth;
+
+                Log.d(TAG, "Width: " + totalWidth);
+                Log.d(TAG, "Discrepency: " + discrepancy);
+
+                if (discrepancy != 0)
+                {
+                    int adjustment = moduleWidth - discrepancy;
+                    Log.d(TAG, "Adjustment: " + adjustment);
+
+                    // Check the rounded up value of the division by 2. This
+                    // helps cover the case where we want to check the
+                    // discrepancy for odd numbers by value in the 1's place in
+                    // the condition. AKA 3 / 2 = 1.5 and we want any
+                    // discrepancy value of 1 or lower to result in true.
+                    if (discrepancy < (int) Math.ceil(moduleWidth / 2.0))
+                    {
+                        totalWidth -= discrepancy;
+                    }
+                    else
+                    {
+                        totalWidth += adjustment;
+                    }
+                }
+                digitWidths[digitIndex] = totalWidth / moduleWidth;
                 Log.d(TAG, "Digit: " + digitIndex + " WidthTotal: " +
-                        digitWidths[digitIndex] + " Width: " +
-                        (digitWidths[digitIndex] / moduleWidth));
-                digitWidths[digitIndex] = digitWidths[digitIndex] / moduleWidth;
+                        totalWidth + " Width: " + digitWidths[digitIndex]);
 
                 digitIndex++;
                 previousPixel = binaryRowData[x];
@@ -116,6 +141,7 @@ public class UPCABarcode implements BarcodeDecoder
         int barWidth = 0;
         int spaceWidth = 0;
         int currentX = xOffset;
+        int totalBarWidth = 0;
 
         int currentPixel = binaryRowData[currentX++];
 
@@ -125,11 +151,17 @@ public class UPCABarcode implements BarcodeDecoder
             currentPixel = binaryRowData[currentX++];
         }
 
+        Log.e(TAG, "FirstBar: " + barWidth);
+        totalBarWidth += barWidth;
+
         while (currentPixel == SPACE_COLOR)
         {
             spaceWidth++;
             currentPixel = binaryRowData[currentX++];
         }
+
+        Log.d(TAG, "SecondBar: " + spaceWidth);
+        totalBarWidth += spaceWidth;
 
         if (Math.abs(barWidth - spaceWidth) > MODULE_WIDTH_VAR)
         {
@@ -149,12 +181,18 @@ public class UPCABarcode implements BarcodeDecoder
             {
                 currentX = Integer.MAX_VALUE;
             }
+
+            Log.d(TAG, "ThirdBar: " + barWidth);
+            totalBarWidth += barWidth;
         }
 
+        Log.d(TAG, "TotalWidth: " + totalBarWidth);
+        Log.d(TAG, "TotalWidth: " + Math.ceil(totalBarWidth / 3.0));
         int[] widthAndStart = new int[2];
-        widthAndStart[0] = barWidth;
+        widthAndStart[0] = (int) Math.ceil(totalBarWidth / 3.0);
         widthAndStart[1] = currentX;
 
+        Log.d(TAG, "TotalWidth: " + widthAndStart[0]);
         return widthAndStart;
     }
 
@@ -207,9 +245,10 @@ public class UPCABarcode implements BarcodeDecoder
             for (int parityIndex = 0; parityIndex < DIGIT_PATTERNS[index].length; parityIndex++)
             {
                 if (Math.abs(digitWidths[parityIndex] -
-                        DIGIT_PATTERNS[index][parityIndex]) > MODULE_WIDTH_VAR)
+                        DIGIT_PATTERNS[index][parityIndex]) != 0)
                 {
                     isMatch = false;
+                    break;
                 }
             }
 
