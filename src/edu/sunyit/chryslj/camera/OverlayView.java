@@ -14,10 +14,11 @@ public class OverlayView extends SurfaceView
 {
     private static final String TAG = OverlayView.class.getSimpleName();
 
-    public static final int X_OFFSET = 70;
-    public static final int Y_OFFSET = 40;
+    // Smaller guide. Algorithms tend to work better with a smaller barcode
+    // image.
+    public static final int X_OFFSET = 190;
+    public static final int Y_OFFSET = 75;
 
-    // TODO Horrible magic numbers
     private Point previewSize = new Point(800, 480);
 
     public OverlayView(Context context, AttributeSet attrs)
@@ -47,7 +48,7 @@ public class OverlayView extends SurfaceView
         paint.setColor(Color.MAGENTA);
         paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(4);
-        canvas.drawLine(70, previewSize.y / 2, previewSize.x - 70,
+        canvas.drawLine(X_OFFSET, previewSize.y / 2, previewSize.x - X_OFFSET,
                 previewSize.y / 2, paint);
     }
 

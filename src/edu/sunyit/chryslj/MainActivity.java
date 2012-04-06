@@ -17,6 +17,8 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        // TODO Remove this line.
+        Log.e(TAG, "making a filter");
     }
 
     @Override
@@ -28,12 +30,14 @@ public class MainActivity extends Activity
             if (requestCode == TAKE_PICTURE_REQUEST)
             {
                 // imageData is the YCrCB data acquired from the preview.
-                byte[] imageData = data
-                        .getByteArrayExtra(getString(R.string.ycrcb_image_data));
-                int width = data.getIntExtra(
-                        getString(R.string.ycrcb_image_width), 0);
-                int height = data.getIntExtra(
-                        getString(R.string.ycrcb_image_height), 0);
+                byte[] imageData =
+                        data.getByteArrayExtra(getString(R.string.ycrcb_image_data));
+                int width =
+                        data.getIntExtra(getString(R.string.ycrcb_image_width),
+                                0);
+                int height =
+                        data.getIntExtra(
+                                getString(R.string.ycrcb_image_height), 0);
 
                 Intent intent = new Intent();
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);

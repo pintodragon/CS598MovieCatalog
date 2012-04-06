@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 import edu.sunyit.chryslj.camera.OverlayView;
+import edu.sunyit.chryslj.exceptions.InvalidImageException;
 
 /**
  * 
@@ -26,22 +27,18 @@ public class BarcodeProcessor
      * @param image
      * @param type
      * @return
+     * @throws InvalidImageException
      */
-    public long decodeImage(Bitmap image, BarcodeDecoder type)
+    public String decodeImage(int width, int height, byte[] imageData)
+            throws InvalidImageException
     {
-        // TODO
-        return 0;
-    }
+        int[] binaryRowData = getBinaryRow(width, height, imageData);
 
-    /**
-     * 
-     * @param image
-     * @return
-     */
-    public BarcodeDecoder determineType(Bitmap image)
-    {
-        // TODO
-        return null;
+        // Should launch this in a new thread.
+        UPCABarcode upacAB = new UPCABarcode();
+        String barcode = upacAB.decodeImage(binaryRowData);
+
+        return barcode;
     }
 
     /**
@@ -54,15 +51,14 @@ public class BarcodeProcessor
      * @param image
      * @return
      */
-    public Bitmap generateBinaryImage(int width, int height, byte[] image)
+    public int[] getBinaryRow(int width, int height, byte[] image)
     {
-        Bitmap grayBMP = convertToGrayScale(width, height, image);
-
         int columnStart = OverlayView.X_OFFSET;
         int columnFinish = width - OverlayView.X_OFFSET;
         int row = (height / 2) * width + columnStart;
         width = columnFinish - columnStart;
-
+        Log.d(TAG, "ColumnStart: " + columnStart + " ColumnFinish: " +
+                columnFinish);
         // TODO great candidate for a new thread
 
         // final int localWidth = width / 4;
@@ -155,18 +151,15 @@ public class BarcodeProcessor
                 binaryRowData[column] = Color.WHITE;
                 sb.append("W ");
             }
+
+            Log.d(TAG, "BinaryPixel: " + binaryRowData[column]);
             left = center;
             center = right;
         }
 
         Log.d(TAG, "Binary Row: " + sb.toString());
 
-        grayBMP.setPixels(binaryRowData, 0, width, columnStart, height / 2,
-                width, 1);
-
-        // grayBMP.recycle();
-
-        return grayBMP;
+        return binaryRowData;
     }
 
     private int getThresholdValueIterative(byte[] rowData, int[] rowHistogram,

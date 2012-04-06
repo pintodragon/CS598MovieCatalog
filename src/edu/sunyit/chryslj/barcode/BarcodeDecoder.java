@@ -1,8 +1,8 @@
 package edu.sunyit.chryslj.barcode;
 
-import android.graphics.Bitmap;
+import edu.sunyit.chryslj.exceptions.InvalidImageException;
 
 public interface BarcodeDecoder
 {
-	public long decodeImage(Bitmap binaryImage);
+    public String decodeImage(int[] binaryRowData) throws InvalidImageException;
 }
