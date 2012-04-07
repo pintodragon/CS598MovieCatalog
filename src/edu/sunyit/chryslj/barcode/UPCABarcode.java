@@ -82,6 +82,12 @@ public class UPCABarcode implements BarcodeDecoder
 
         Log.d(TAG, "Barcode: " + barcodeBuilder.toString());
 
+        if (!isCheckDigitValid(barcodeBuilder.toString()))
+        {
+            throw new InvalidImageException(
+                    "Check digit did not match checksum");
+        }
+
         return barcodeBuilder.toString();
     }
 
@@ -299,4 +305,63 @@ public class UPCABarcode implements BarcodeDecoder
         return digitValue;
     }
 
+    /**
+     * The check digit is calculated according to a few rules. You use the first
+     * eleven digits of the barcode to determine if the check digit is valid.
+     * <ol>
+     * <li>Calculate the sum of all the digits in the odd positions and multiply
+     * the result by 3.</li>
+     * <li>Calculate the sum of all the digits in the even positions.</li>
+     * <li>Add the results of step 1 and 2.</li>
+     * <li>If 10 minus the result of step 3 mod 10 is the check digit then the
+     * barcode is valid.</li>
+     * </ol>
+     * 
+     * @param barcode
+     * @return
+     */
+    private boolean isCheckDigitValid(String barcode)
+    {
+        boolean isValid = false;
+
+        if (barcode.length() != 12)
+        {
+            isValid = false;
+        }
+        else
+        {
+            int oddSum = 0;
+            int evenSum = 0;
+            int checkDigit = Integer.parseInt("" + barcode.charAt(11));
+
+            for (int charPos = 0; charPos < barcode.length() - 1; charPos++)
+            {
+                int digit = Integer.parseInt("" + barcode.charAt(charPos));
+                // Because we start at 0 as an index pos % 2 == 0 indicates an
+                // odd position digit.
+                if ((charPos % 2) == 0)
+                {
+                    Log.d(TAG, "Add: " + digit + " to " + oddSum);
+                    oddSum = oddSum + digit;
+                }
+                else
+                {
+                    evenSum = evenSum + digit;
+                }
+            }
+
+            Log.d(TAG, "EvenSum: " + evenSum + " OddSum: " + oddSum);
+
+            oddSum = oddSum * 3;
+
+            int finalSum = evenSum + oddSum;
+            isValid =
+                    ((finalSum % 10) == 0) ? true
+                            : ((10 - (finalSum % 10)) == checkDigit);
+            Log.d(TAG, "FinalSum: " + finalSum + " CheckDigit: " + checkDigit +
+                    " Checksum: " + (10 - (finalSum % 10)));
+        }
+
+        return isValid;
+    }
 }
