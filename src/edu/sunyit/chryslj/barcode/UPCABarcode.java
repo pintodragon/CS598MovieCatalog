@@ -47,13 +47,10 @@ public class UPCABarcode implements BarcodeDecoder
         int xOffset = locateFirstBar(binaryRowData);
         int moduleWidth = 0;
 
+        // Starting guard
         int[] widthAndNewStart = getPastGuard(binaryRowData, xOffset);
         moduleWidth = widthAndNewStart[0];
         xOffset = widthAndNewStart[1];
-        if (xOffset == Integer.MAX_VALUE)
-        {
-            throw new InvalidImageException("No valid guard patern.");
-        }
 
         // Starting with Odd parity (Space first) so when we hit a bar we
         // increment our digitIndex.
@@ -69,7 +66,20 @@ public class UPCABarcode implements BarcodeDecoder
             xOffset = digitAndOffset[1];
         }
 
-        Log.d(TAG, "Expecting: 025192");
+        Log.d(TAG, "Middle Guard");
+        // Middle guard
+        xOffset = getMiddlePastGuard(binaryRowData, xOffset);
+        // Only care about the new x offset.
+        Log.d(TAG, "Second set of numbers start at: " + xOffset);
+
+        for (int digit = 0; digit < 6; digit++)
+        {
+            int[] digitAndOffset =
+                    aquireDigit(binaryRowData, xOffset, BAR_COLOR, moduleWidth);
+            barcodeBuilder.append(digitAndOffset[0]);
+            xOffset = digitAndOffset[1];
+        }
+
         Log.d(TAG, "Barcode: " + barcodeBuilder.toString());
 
         return barcodeBuilder.toString();
@@ -90,13 +100,14 @@ public class UPCABarcode implements BarcodeDecoder
                 int totalWidth = digitWidths[digitIndex];
                 int discrepancy = digitWidths[digitIndex] % moduleWidth;
 
-                Log.d(TAG, "Width: " + totalWidth);
-                Log.d(TAG, "Discrepency: " + discrepancy);
+                StringBuilder sb = new StringBuilder();
+                sb.append("Width: " + totalWidth + " Discrepency: " +
+                        discrepancy);
 
                 if (discrepancy != 0)
                 {
                     int adjustment = moduleWidth - discrepancy;
-                    Log.d(TAG, "Adjustment: " + adjustment);
+                    sb.append(" Adjustment: " + adjustment);
 
                     // Check the rounded up value of the division by 2. This
                     // helps cover the case where we want to check the
@@ -112,9 +123,10 @@ public class UPCABarcode implements BarcodeDecoder
                         totalWidth += adjustment;
                     }
                 }
+                Log.d(TAG, sb.toString());
                 digitWidths[digitIndex] = totalWidth / moduleWidth;
-                Log.d(TAG, "Digit: " + digitIndex + " WidthTotal: " +
-                        totalWidth + " Width: " + digitWidths[digitIndex]);
+                Log.d(TAG, "Digit: " + digitIndex + " TotalWidth: " +
+                        totalWidth + " EndWidth: " + digitWidths[digitIndex]);
 
                 digitIndex++;
                 previousPixel = binaryRowData[x];
@@ -137,63 +149,88 @@ public class UPCABarcode implements BarcodeDecoder
     }
 
     private int[] getPastGuard(int[] binaryRowData, int xOffset)
+            throws InvalidImageException
     {
         int barWidth = 0;
         int spaceWidth = 0;
         int currentX = xOffset;
         int totalBarWidth = 0;
+        int currentColor = BAR_COLOR;
 
         int currentPixel = binaryRowData[currentX++];
 
-        while (currentPixel == BAR_COLOR)
-        {
-            barWidth++;
-            currentPixel = binaryRowData[currentX++];
-        }
-
-        Log.e(TAG, "FirstBar: " + barWidth);
-        totalBarWidth += barWidth;
-
-        while (currentPixel == SPACE_COLOR)
-        {
-            spaceWidth++;
-            currentPixel = binaryRowData[currentX++];
-        }
-
-        Log.d(TAG, "SecondBar: " + spaceWidth);
-        totalBarWidth += spaceWidth;
-
-        if (Math.abs(barWidth - spaceWidth) > MODULE_WIDTH_VAR)
-        {
-            Log.e(TAG, "Invalid module width");
-            currentX = Integer.MAX_VALUE;
-        }
-        else
+        for (int guardModule = 0; guardModule < 3; guardModule++)
         {
             barWidth = 0;
-            while (currentPixel == BAR_COLOR)
+            while (currentPixel == currentColor &&
+                    currentX < binaryRowData.length)
             {
                 barWidth++;
                 currentPixel = binaryRowData[currentX++];
             }
 
-            if (Math.abs(barWidth - spaceWidth) > MODULE_WIDTH_VAR)
+            if (currentColor == SPACE_COLOR)
             {
-                currentX = Integer.MAX_VALUE;
+                spaceWidth = barWidth;
             }
+            currentColor =
+                    (currentColor == BAR_COLOR) ? SPACE_COLOR : BAR_COLOR;
 
-            Log.d(TAG, "ThirdBar: " + barWidth);
             totalBarWidth += barWidth;
         }
 
-        Log.d(TAG, "TotalWidth: " + totalBarWidth);
-        Log.d(TAG, "TotalWidth: " + Math.ceil(totalBarWidth / 3.0));
+        if (Math.abs(barWidth - spaceWidth) > MODULE_WIDTH_VAR)
+        {
+            Log.e(TAG, "Invalid guard patern.");
+            throw new InvalidImageException("Invalid guard patern.");
+        }
+
         int[] widthAndStart = new int[2];
         widthAndStart[0] = (int) Math.ceil(totalBarWidth / 3.0);
         widthAndStart[1] = currentX;
 
         Log.d(TAG, "TotalWidth: " + widthAndStart[0]);
         return widthAndStart;
+    }
+
+    /**
+     * The middle guard could be in the pattern of space, bar, space, bar,
+     * space. The second set of digits starts with a bar so we are going to
+     * iterate through the spaces until we hit the bars we are looking for.
+     * 
+     * @param binaryRowData
+     * @param xOffset
+     * @return
+     * @throws InvalidImageException
+     */
+    private int getMiddlePastGuard(int[] binaryRowData, int xOffset)
+            throws InvalidImageException
+    {
+        int currentX = xOffset;
+
+        for (int x = currentX; x < binaryRowData.length; x++)
+        {
+            if (binaryRowData[x] == BAR_COLOR)
+            {
+                currentX = x;
+                break;
+            }
+        }
+
+        // Offset returned as second element of the array.
+        int widthAndOffset[] = getPastGuard(binaryRowData, currentX);
+        currentX = widthAndOffset[1];
+
+        for (int x = currentX; x < binaryRowData.length; x++)
+        {
+            if (binaryRowData[x] == BAR_COLOR)
+            {
+                currentX = x;
+                break;
+            }
+        }
+
+        return currentX;
     }
 
     /**
