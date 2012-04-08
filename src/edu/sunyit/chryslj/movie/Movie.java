@@ -8,7 +8,7 @@ import edu.sunyit.chryslj.movie.enums.Rating;
 
 public class Movie
 {
-    private int id = 0;
+    private int id;
     private String title = "";
     private Rating rated;
     private Genre genre;

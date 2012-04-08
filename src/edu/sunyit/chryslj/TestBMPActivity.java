@@ -1,6 +1,7 @@
 package edu.sunyit.chryslj;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,7 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.sunyit.chryslj.barcode.BarcodeProcessor;
 import edu.sunyit.chryslj.exceptions.InvalidImageException;
+import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.ws.MovieLookup;
+import edu.sunyit.chryslj.ws.RottenTomatoesMovieLookup;
 import edu.sunyit.chryslj.ws.UPCDatabaseMovieLookup;
 
 public class TestBMPActivity extends Activity
@@ -84,12 +87,26 @@ public class TestBMPActivity extends Activity
 
                 if (!barcode.equals(""))
                 {
+                    // TODO Fix so this isn't "testing" items but doing the UPC
+                    // database, amazon if that failed and then rotten tomatoes.
+                    // Also might be a good candidate for a seperate thread with
+                    // a handler.
                     MovieLookup movieLookup =
                             new UPCDatabaseMovieLookup(getResources());
-                    movieLookup.lookupMovieByBarcode(barcode);
+                    Movie movie = movieLookup.lookupMovieByBarcode(barcode);
+                    Log.d(TAG, "Movie name: " + movie.getTitle() +
+                            " Movie format: " + movie.getFormat());
+                    MovieLookup movieInfoLookup =
+                            new RottenTomatoesMovieLookup(getResources());
+                    movie = movieInfoLookup.gatherMoreInformation(movie);
                 }
             }
             catch (InvalidImageException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch (IOException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

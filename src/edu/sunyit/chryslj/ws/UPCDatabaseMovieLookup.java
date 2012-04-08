@@ -70,15 +70,15 @@ public class UPCDatabaseMovieLookup implements MovieLookup
         catch (NullPointerException nl)
         {
             movie = null;
-            Log.d(TAG, "NullPointer encountered: " + nl);
+            Log.e(TAG, "NullPointer encountered: " + nl);
         }
         catch (XMLRPCException e)
         {
             movie = null;
-            Log.d(TAG, "XMLRPC exception: " + e);
+            Log.e(TAG, "XMLRPC exception: " + e);
         }
 
-        return null;
+        return movie;
     }
 
     @Override

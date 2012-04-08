@@ -45,7 +45,7 @@ public class UPCABarcode implements BarcodeDecoder
     public String decodeImage(int[] binaryRowData) throws InvalidImageException
     {
         int xOffset = locateFirstBar(binaryRowData);
-        int moduleWidth = 0;
+        int moduleWidth = 1;
 
         // Starting guard
         int[] widthAndNewStart = getPastGuard(binaryRowData, xOffset);
