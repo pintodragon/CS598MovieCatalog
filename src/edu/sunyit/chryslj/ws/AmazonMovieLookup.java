@@ -17,9 +17,10 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import android.content.res.Resources;
-import android.content.res.Resources.NotFoundException;
 import android.util.Log;
 import edu.sunyit.chryslj.R;
+import edu.sunyit.chryslj.movie.Movie;
+import edu.sunyit.chryslj.movie.enums.MediaFormat;
 
 public class AmazonMovieLookup implements MovieLookup
 {
@@ -37,49 +38,25 @@ public class AmazonMovieLookup implements MovieLookup
 
     private AmazonSignedRequestHelper signingHelper;
 
-    public AmazonMovieLookup(Resources resources)
+    public AmazonMovieLookup(Resources resources) throws IOException,
+                                                 InvalidKeyException,
+                                                 IllegalArgumentException,
+                                                 NoSuchAlgorithmException
     {
-        try
-        {
-            InputStream rawPropertiesFile =
-                    resources.openRawResource(R.raw.awskeys);
-            Properties properties = new Properties();
-            properties.load(rawPropertiesFile);
-            access_key = properties.getProperty(ACCESS_KEY_ID, "");
-            secret_key = properties.getProperty(SECRET_ACCESS_KEY, "");
-            signingHelper =
-                    new AmazonSignedRequestHelper(ENDPOINT, access_key,
-                            secret_key);
-        }
-        catch (NotFoundException nfe)
-        {
-
-        }
-        catch (IOException ioe)
-        {
-
-        }
-        catch (InvalidKeyException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IllegalArgumentException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        InputStream rawPropertiesFile =
+                resources.openRawResource(R.raw.awskeys);
+        Properties properties = new Properties();
+        properties.load(rawPropertiesFile);
+        access_key = properties.getProperty(ACCESS_KEY_ID, "");
+        secret_key = properties.getProperty(SECRET_ACCESS_KEY, "");
+        signingHelper =
+                new AmazonSignedRequestHelper(ENDPOINT, access_key, secret_key);
     }
 
     @Override
-    public String lookupMovieByBarcode(String barcode)
+    public Movie lookupMovieByBarcode(String barcode)
     {
-        String movieTitle = "";
+        Movie movie = null;
 
         Map<String, String> requestParams = new HashMap<String, String>();
         requestParams.put("Service", "AWSECommerceService");
@@ -100,34 +77,61 @@ public class AmazonMovieLookup implements MovieLookup
             docBuilder =
                     DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document incomingDoc = docBuilder.parse(requestUrl);
-            Node titleNode = incomingDoc.getElementsByTagName("Title").item(0);
-            movieTitle = titleNode.getTextContent();
-        }
-        catch (ParserConfigurationException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (SAXException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        Log.d(TAG, "Title is: " + movieTitle);
+            Node xmlNode = incomingDoc.getElementsByTagName("Title").item(0);
 
-        return movieTitle;
+            movie = new Movie();
+            movie.setTitle(xmlNode.getTextContent());
+
+            xmlNode = incomingDoc.getElementsByTagName("ProductGroup").item(0);
+
+            String formatStr = xmlNode.getTextContent().toLowerCase();
+
+            // Default to DVD
+            MediaFormat mediaFormat = MediaFormat.DVD;
+            if (formatStr.contains("blu"))
+            {
+                mediaFormat = MediaFormat.BLU_RAY;
+            }
+            else if (formatStr.contains("vhs"))
+            {
+                mediaFormat = MediaFormat.VHS;
+            }
+
+            movie.setFormat(mediaFormat);
+        }
+        catch (ParserConfigurationException pce)
+        {
+            movie = null;
+            Log.d(TAG, "Parser exception: " + pce);
+        }
+        catch (SAXException saxe)
+        {
+            movie = null;
+            Log.d(TAG, "SAX exception: " + saxe);
+        }
+        catch (IOException ioe)
+        {
+            movie = null;
+            Log.d(TAG, "IO exception: " + ioe);
+        }
+
+        Log.d(TAG, "Title is: " + movie.getTitle());
+
+        return movie;
     }
 
     @Override
-    public String lookupMovieByTitle(String title)
+    public Movie lookupMovieByTitle(String title)
     {
         // TODO Auto-generated method stub
 
+        return null;
+    }
+
+    @Override
+    public Movie gatherMoreInformation(Movie movie)
+    {
+        // TODO Auto-generated method stub
         return null;
     }
 }

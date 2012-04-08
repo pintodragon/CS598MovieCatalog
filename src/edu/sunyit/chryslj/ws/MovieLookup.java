@@ -1,8 +1,12 @@
 package edu.sunyit.chryslj.ws;
 
+import edu.sunyit.chryslj.movie.Movie;
+
 public interface MovieLookup
 {
-    public String lookupMovieByBarcode(String barcode);
+    public Movie lookupMovieByBarcode(String barcode);
 
-    public String lookupMovieByTitle(String title);
+    public Movie lookupMovieByTitle(String title);
+
+    public Movie gatherMoreInformation(Movie movie);
 }

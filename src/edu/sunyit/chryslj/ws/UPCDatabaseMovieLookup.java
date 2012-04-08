@@ -10,9 +10,10 @@ import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
 
 import android.content.res.Resources;
-import android.content.res.Resources.NotFoundException;
 import android.util.Log;
 import edu.sunyit.chryslj.R;
+import edu.sunyit.chryslj.movie.Movie;
+import edu.sunyit.chryslj.movie.enums.MediaFormat;
 
 public class UPCDatabaseMovieLookup implements MovieLookup
 {
@@ -21,32 +22,23 @@ public class UPCDatabaseMovieLookup implements MovieLookup
     private String rpc_key = "";
     private String rpc_url = "";
 
-    public UPCDatabaseMovieLookup(Resources resources)
+    public UPCDatabaseMovieLookup(Resources resources) throws IOException
     {
-        try
-        {
-            InputStream rawPropertiesFile =
-                    resources.openRawResource(R.raw.upcdatabase);
-            Properties properties = new Properties();
-            properties.load(rawPropertiesFile);
-            rpc_key = properties.getProperty("RPC_KEY", "");
-            rpc_url =
-                    properties.getProperty("RPC_URL",
-                            "http://www.upcdatabase.com/xmlrpc");
-        }
-        catch (NotFoundException nfe)
-        {
-
-        }
-        catch (IOException ioe)
-        {
-
-        }
+        InputStream rawPropertiesFile =
+                resources.openRawResource(R.raw.upcdatabase);
+        Properties properties = new Properties();
+        properties.load(rawPropertiesFile);
+        rpc_key = properties.getProperty("RPC_KEY", "");
+        rpc_url =
+                properties.getProperty("RPC_URL",
+                        "http://www.upcdatabase.com/xmlrpc");
     }
 
     @Override
-    public String lookupMovieByBarcode(String barcode)
+    public Movie lookupMovieByBarcode(String barcode)
     {
+        Movie movie = null;
+
         try
         {
             Map<String, String> params = new HashMap<String, String>();
@@ -57,28 +49,47 @@ public class UPCDatabaseMovieLookup implements MovieLookup
             @SuppressWarnings("rawtypes")
             HashMap result = (HashMap) client.call("lookup", params);
 
-            for (Object key : result.keySet())
+            movie = new Movie();
+            movie.setTitle(result.get("description").toString());
+            String formatStr = result.get("size").toString();
+
+            // Default to DVD
+            MediaFormat mediaFormat = MediaFormat.DVD;
+            if (formatStr.contains("bd"))
             {
-                Log.d(TAG, "Key: " + key + " Value: " + result.get(key));
+                mediaFormat = MediaFormat.BLU_RAY;
+            }
+            else if (formatStr.contains("vhs"))
+            {
+                mediaFormat = MediaFormat.VHS;
             }
 
-            String resultSize = result.get("size").toString();
-            String resultDesc = result.get("description").toString();
+            movie.setFormat(mediaFormat);
 
         }
         catch (NullPointerException nl)
         {
-
+            movie = null;
+            Log.d(TAG, "NullPointer encountered: " + nl);
         }
         catch (XMLRPCException e)
         {
+            movie = null;
+            Log.d(TAG, "XMLRPC exception: " + e);
         }
 
         return null;
     }
 
     @Override
-    public String lookupMovieByTitle(String title)
+    public Movie lookupMovieByTitle(String title)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Movie gatherMoreInformation(Movie movie)
     {
         // TODO Auto-generated method stub
         return null;
