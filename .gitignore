@@ -6,4 +6,4 @@ bin/
 ~$*.docx
 ~*.tmp
 status.txt
-res/raw/*
+res/raw/*.properties

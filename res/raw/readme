@@ -1,0 +1,12 @@
+In this directory the API keys for the different external web interfaces that I use are stored in .properties files. I am not including them because they are my personal development keys and if I add them to this project out on github who knows who will find them and use them. The amazon ones require payment for use after a certain number of free uses and I personally do not want to pay for someone else abusing my development key.
+
+The files missing are:
+
+awskeys.properties
+	- ACCESS_KEY_ID=<access key>
+	- SECRET_ACCESS_KEY=<secret key>
+rotten.properties
+	- API_KEY=<api key>
+upcdatabase.properties
+	- RPC_KEY=<rpc key>
+	- RPC_URL=<url to use>
