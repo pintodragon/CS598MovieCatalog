@@ -6,3 +6,5 @@ bin/
 ~$*.docx
 ~*.tmp
 status.txt
+res/raw/awskeys.properties
+res/raw/upcdatabase.properties

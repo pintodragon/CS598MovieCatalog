@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.sunyit.chryslj.barcode.BarcodeProcessor;
 import edu.sunyit.chryslj.exceptions.InvalidImageException;
+import edu.sunyit.chryslj.ws.MovieLookup;
+import edu.sunyit.chryslj.ws.UPCDatabaseMovieLookup;
 
 public class TestBMPActivity extends Activity
 {
@@ -79,6 +81,13 @@ public class TestBMPActivity extends Activity
                 TextView barcodeText = (TextView) findViewById(R.id.textView1);
                 barcodeText.setText(barcode);
                 barcodeText.setVisibility(TextView.VISIBLE);
+
+                if (!barcode.equals(""))
+                {
+                    MovieLookup movieLookup =
+                            new UPCDatabaseMovieLookup(getResources());
+                    movieLookup.lookupMovieByBarcode(barcode);
+                }
             }
             catch (InvalidImageException e)
             {

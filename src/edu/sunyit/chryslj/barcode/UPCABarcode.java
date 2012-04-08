@@ -66,11 +66,11 @@ public class UPCABarcode implements BarcodeDecoder
             xOffset = digitAndOffset[1];
         }
 
-        Log.d(TAG, "Middle Guard");
+        // Log.d(TAG, "Middle Guard");
         // Middle guard
         xOffset = getMiddlePastGuard(binaryRowData, xOffset);
         // Only care about the new x offset.
-        Log.d(TAG, "Second set of numbers start at: " + xOffset);
+        // Log.d(TAG, "Second set of numbers start at: " + xOffset);
 
         for (int digit = 0; digit < 6; digit++)
         {
@@ -106,14 +106,14 @@ public class UPCABarcode implements BarcodeDecoder
                 int totalWidth = digitWidths[digitIndex];
                 int discrepancy = digitWidths[digitIndex] % moduleWidth;
 
-                StringBuilder sb = new StringBuilder();
-                sb.append("Width: " + totalWidth + " Discrepency: " +
-                        discrepancy);
+                // StringBuilder sb = new StringBuilder();
+                // sb.append("Width: " + totalWidth + " Discrepency: " +
+                // discrepancy);
 
                 if (discrepancy != 0)
                 {
                     int adjustment = moduleWidth - discrepancy;
-                    sb.append(" Adjustment: " + adjustment);
+                    // sb.append(" Adjustment: " + adjustment);
 
                     // Check the rounded up value of the division by 2. This
                     // helps cover the case where we want to check the
@@ -129,10 +129,10 @@ public class UPCABarcode implements BarcodeDecoder
                         totalWidth += adjustment;
                     }
                 }
-                Log.d(TAG, sb.toString());
+                // Log.d(TAG, sb.toString());
                 digitWidths[digitIndex] = totalWidth / moduleWidth;
-                Log.d(TAG, "Digit: " + digitIndex + " TotalWidth: " +
-                        totalWidth + " EndWidth: " + digitWidths[digitIndex]);
+                // Log.d(TAG, "Digit: " + digitIndex + " TotalWidth: " +
+                // totalWidth + " EndWidth: " + digitWidths[digitIndex]);
 
                 digitIndex++;
                 previousPixel = binaryRowData[x];
@@ -195,7 +195,7 @@ public class UPCABarcode implements BarcodeDecoder
         widthAndStart[0] = (int) Math.ceil(totalBarWidth / 3.0);
         widthAndStart[1] = currentX;
 
-        Log.d(TAG, "TotalWidth: " + widthAndStart[0]);
+        // Log.d(TAG, "TotalWidth: " + widthAndStart[0]);
         return widthAndStart;
     }
 
@@ -263,7 +263,7 @@ public class UPCABarcode implements BarcodeDecoder
                 // Make sure we have enough quietZone
                 if (quietZone >= QUIET_ZONE_VALID)
                 {
-                    Log.d(TAG, "We found our first bar at: " + x);
+                    // Log.d(TAG, "We found our first bar at: " + x);
                     xOffset = x;
                     break;
                 }
@@ -341,7 +341,7 @@ public class UPCABarcode implements BarcodeDecoder
                 // odd position digit.
                 if ((charPos % 2) == 0)
                 {
-                    Log.d(TAG, "Add: " + digit + " to " + oddSum);
+                    // Log.d(TAG, "Add: " + digit + " to " + oddSum);
                     oddSum = oddSum + digit;
                 }
                 else
@@ -350,7 +350,7 @@ public class UPCABarcode implements BarcodeDecoder
                 }
             }
 
-            Log.d(TAG, "EvenSum: " + evenSum + " OddSum: " + oddSum);
+            // Log.d(TAG, "EvenSum: " + evenSum + " OddSum: " + oddSum);
 
             oddSum = oddSum * 3;
 
@@ -358,8 +358,9 @@ public class UPCABarcode implements BarcodeDecoder
             isValid =
                     ((finalSum % 10) == 0) ? true
                             : ((10 - (finalSum % 10)) == checkDigit);
-            Log.d(TAG, "FinalSum: " + finalSum + " CheckDigit: " + checkDigit +
-                    " Checksum: " + (10 - (finalSum % 10)));
+            // Log.d(TAG, "FinalSum: " + finalSum + " CheckDigit: " + checkDigit
+            // +
+            // " Checksum: " + (10 - (finalSum % 10)));
         }
 
         return isValid;
