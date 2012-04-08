@@ -34,10 +34,12 @@ public class UPCDatabaseMovieLookup implements MovieLookup
                         "http://www.upcdatabase.com/xmlrpc");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Movie lookupMovieByBarcode(String barcode)
     {
         Movie movie = null;
+        HashMap<String, String> result = null;
 
         try
         {
@@ -46,36 +48,61 @@ public class UPCDatabaseMovieLookup implements MovieLookup
             params.put("upc", barcode);
 
             XMLRPCClient client = new XMLRPCClient(rpc_url);
-            @SuppressWarnings("rawtypes")
-            HashMap result = (HashMap) client.call("lookup", params);
-
-            movie = new Movie();
-            movie.setTitle(result.get("description").toString());
-            String formatStr = result.get("size").toString();
-
-            // Default to DVD
-            MediaFormat mediaFormat = MediaFormat.DVD;
-            if (formatStr.contains("bd"))
-            {
-                mediaFormat = MediaFormat.BLU_RAY;
-            }
-            else if (formatStr.contains("vhs"))
-            {
-                mediaFormat = MediaFormat.VHS;
-            }
-
-            movie.setFormat(mediaFormat);
-
+            result = (HashMap<String, String>) client.call("lookup", params);
         }
-        catch (NullPointerException nl)
+        catch (XMLRPCException xe)
         {
-            movie = null;
-            Log.e(TAG, "NullPointer encountered: " + nl);
+            // The look up failed and we already have a null result so nothing
+            // to do here.
         }
-        catch (XMLRPCException e)
+
+        // If the XML RPC call worked then continue to get information about the
+        // movie.
+        if (result != null)
         {
-            movie = null;
-            Log.e(TAG, "XMLRPC exception: " + e);
+            try
+            {
+                // The UPC Database stores title information in the description
+                // field.
+                movie = new Movie();
+                movie.setTitle(result.get("description").toString());
+            }
+            catch (NullPointerException npe)
+            {
+                movie = null;
+                Log.e(TAG, "NullPointer encountered: " + npe);
+            }
+
+            // If we were able to get a title then continue. If not we return
+            // null.
+            if (movie != null)
+            {
+                try
+                {
+                    String formatStr =
+                            result.get("size").toString().toLowerCase();
+
+                    // Default to DVD
+                    MediaFormat mediaFormat = MediaFormat.DVD;
+                    if (formatStr.contains("bd") || formatStr.contains("blu"))
+                    {
+                        mediaFormat = MediaFormat.BLU_RAY;
+                    }
+                    else if (formatStr.contains("vhs"))
+                    {
+                        mediaFormat = MediaFormat.VHS;
+                    }
+
+                    movie.setFormat(mediaFormat);
+                }
+                catch (NullPointerException npe)
+                {
+                    // Sometimes the UPC Database doesn't always have
+                    // information about the format of the movie. Set the
+                    // default to DVD.
+                    movie.setFormat(MediaFormat.DVD);
+                }
+            }
         }
 
         return movie;

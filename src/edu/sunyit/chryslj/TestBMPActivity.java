@@ -2,6 +2,8 @@ package edu.sunyit.chryslj;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import edu.sunyit.chryslj.barcode.BarcodeProcessor;
 import edu.sunyit.chryslj.exceptions.InvalidImageException;
 import edu.sunyit.chryslj.movie.Movie;
+import edu.sunyit.chryslj.ws.AmazonMovieLookup;
 import edu.sunyit.chryslj.ws.MovieLookup;
 import edu.sunyit.chryslj.ws.RottenTomatoesMovieLookup;
 import edu.sunyit.chryslj.ws.UPCDatabaseMovieLookup;
@@ -94,6 +97,32 @@ public class TestBMPActivity extends Activity
                     MovieLookup movieLookup =
                             new UPCDatabaseMovieLookup(getResources());
                     Movie movie = movieLookup.lookupMovieByBarcode(barcode);
+
+                    // First attempt failed so try Amazon WS
+                    if (movie == null)
+                    {
+                        try
+                        {
+                            movieLookup = new AmazonMovieLookup(getResources());
+                            movie = movieLookup.lookupMovieByBarcode(barcode);
+                        }
+                        catch (InvalidKeyException e)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (IllegalArgumentException e)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (NoSuchAlgorithmException e)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+
                     MovieLookup movieInfoLookup =
                             new RottenTomatoesMovieLookup(getResources());
                     movie = movieInfoLookup.gatherMoreInformation(movie);
