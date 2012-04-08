@@ -20,6 +20,22 @@ public enum Rating
         this.description = description;
     }
 
+    public static Rating getRatingByTitle(String title)
+    {
+        Rating rating = Rating.UNRATED;
+
+        for (Rating possible : Rating.values())
+        {
+            if (title.equals(possible.getTitle()))
+            {
+                rating = possible;
+                break;
+            }
+        }
+
+        return rating;
+    }
+
     public int getId()
     {
         return id;
@@ -38,6 +54,6 @@ public enum Rating
     @Override
     public String toString()
     {
-        return title;
+        return getTitle();
     }
 }

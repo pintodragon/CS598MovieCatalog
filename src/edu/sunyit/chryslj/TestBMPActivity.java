@@ -94,11 +94,16 @@ public class TestBMPActivity extends Activity
                     MovieLookup movieLookup =
                             new UPCDatabaseMovieLookup(getResources());
                     Movie movie = movieLookup.lookupMovieByBarcode(barcode);
-                    Log.d(TAG, "Movie name: " + movie.getTitle() +
-                            " Movie format: " + movie.getFormat());
                     MovieLookup movieInfoLookup =
                             new RottenTomatoesMovieLookup(getResources());
                     movie = movieInfoLookup.gatherMoreInformation(movie);
+
+                    Log.d(TAG,
+                            "Movie: " + movie.getTitle() + " Rated: " +
+                                    movie.getRated() + " Runtime: " +
+                                    movie.getRunTime() + " Genre: " +
+                                    movie.getGenre() + " Format: " +
+                                    movie.getFormat());
                 }
             }
             catch (InvalidImageException e)

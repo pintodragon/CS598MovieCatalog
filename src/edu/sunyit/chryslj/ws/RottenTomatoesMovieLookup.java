@@ -268,7 +268,7 @@ public class RottenTomatoesMovieLookup implements MovieLookup
         try
         {
             String mpaaRating = movieObject.getString("mpaa_rating");
-            movie.setRated(Rating.valueOf(mpaaRating));
+            movie.setRated(Rating.getRatingByTitle(mpaaRating));
         }
         catch (JSONException je)
         {
@@ -298,26 +298,24 @@ public class RottenTomatoesMovieLookup implements MovieLookup
         }
 
         // Get the movies genre
+        Genre selectedGenre = null;
         try
         {
             // A movie might have multiple genres but for this application we
             // will only store one.
             JSONArray genres = movieObject.getJSONArray("genres");
 
-            Genre selectedGenre = null;
             for (int index = 0; index < genres.length(); index++)
             {
                 try
                 {
                     // Just grab the first genre that we match.
-                    selectedGenre = Genre.valueOf(genres.getString(index));
-                    break;
-                }
-                catch (JSONException je)
-                {
-                    // Error reading the json object returned. Set the default
-                    // to unknown.
-                    selectedGenre = Genre.UNKNOWN;
+                    selectedGenre =
+                            Genre.getGenreByTitle(genres.getString(index));
+                    if (selectedGenre != null)
+                    {
+                        break;
+                    }
                 }
                 catch (Exception unknown)
                 {
@@ -333,12 +331,14 @@ public class RottenTomatoesMovieLookup implements MovieLookup
             {
                 selectedGenre = Genre.UNKNOWN;
             }
-            movie.setGenre(selectedGenre);
         }
         catch (JSONException je)
         {
-
+            // Error reading the json object returned. Set the default
+            // to unknown.
+            selectedGenre = Genre.UNKNOWN;
         }
+        movie.setGenre(selectedGenre);
 
         return movie;
     }

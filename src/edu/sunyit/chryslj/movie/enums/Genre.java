@@ -39,6 +39,22 @@ public enum Genre
         this.title = title;
     }
 
+    public static Genre getGenreByTitle(String title)
+    {
+        Genre genre = null;
+
+        for (Genre possible : Genre.values())
+        {
+            if (title.equals(possible.getTitle()))
+            {
+                genre = possible;
+                break;
+            }
+        }
+
+        return genre;
+    }
+
     public int getId()
     {
         return id;
@@ -47,5 +63,11 @@ public enum Genre
     public String getTitle()
     {
         return title;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getTitle();
     }
 }

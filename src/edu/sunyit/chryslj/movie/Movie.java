@@ -155,8 +155,8 @@ public class Movie
     }
 
     /**
-	 * 
-	 */
+     * Used by our list adapter.
+     */
     @Override
     public String toString()
     {
