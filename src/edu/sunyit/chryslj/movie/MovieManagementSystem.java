@@ -24,388 +24,386 @@ import edu.sunyit.chryslj.movie.enums.Rating;
 
 public class MovieManagementSystem
 {
-	private static final String TAG = MovieManagementSystem.class
-	        .getSimpleName();
+    private static final String TAG = MovieManagementSystem.class
+            .getSimpleName();
 
-	private SQLiteDatabase database;
-	private MovieDatabaseHelper dbHelper;
+    private SQLiteDatabase database;
+    private MovieDatabaseHelper dbHelper;
 
-	private MediaFormatTable mediaFormatTable = new MediaFormatTable();
-	private RatingTable ratingTable = new RatingTable();
-	private GenreTable genreTable = new GenreTable();
-	private MovieTable movieTable = new MovieTable();
-	private ListTable listTable = new ListTable();
-	private ListMovieAssociationTable associationTable = new ListMovieAssociationTable();
+    private MediaFormatTable mediaFormatTable = new MediaFormatTable();
+    private RatingTable ratingTable = new RatingTable();
+    private GenreTable genreTable = new GenreTable();
+    private MovieTable movieTable = new MovieTable();
+    private ListTable listTable = new ListTable();
+    private ListMovieAssociationTable associationTable =
+            new ListMovieAssociationTable();
 
-	public MovieManagementSystem(Context context)
-	{
-		dbHelper = new MovieDatabaseHelper(context, Arrays.asList(
-		        mediaFormatTable, ratingTable, genreTable, movieTable,
-		        listTable, associationTable));
-	}
+    public MovieManagementSystem(Context context)
+    {
+        dbHelper =
+                new MovieDatabaseHelper(context, Arrays.asList(
+                        mediaFormatTable, ratingTable, genreTable, movieTable,
+                        listTable, associationTable));
+    }
 
-	public void open() throws SQLException
-	{
-		database = dbHelper.getWritableDatabase();
-	}
+    public void open() throws SQLException
+    {
+        database = dbHelper.getWritableDatabase();
+    }
 
-	public void close()
-	{
-		dbHelper.close();
-	}
+    public void close()
+    {
+        dbHelper.close();
+    }
 
-	/**
-	 * 
-	 * @param title
-	 * @return
-	 */
-	private Movie aquireMovieInformation(String title)
-	{
-		// TODO
-		return null;
-	}
+    /**
+     * 
+     * @param newMovie
+     * @return
+     */
+    public boolean addMovie(Movie newMovie)
+    {
+        boolean movieAdded = true;
 
-	/**
-	 * 
-	 * @param barcode
-	 * @return
-	 */
-	private Movie aquireMovieInformation(int barcode)
-	{
-		// TODO
-		return null;
-	}
+        ContentValues values = new ContentValues();
+        values.put(MovieTable.COLUMN_TITLE, newMovie.getTitle());
+        values.put(MovieTable.COLUMN_RATED, newMovie.getRated().getId());
+        values.put(MovieTable.COLUMN_GENRE, newMovie.getGenre().getId());
+        values.put(MovieTable.COLUMN_PERSONALRATING,
+                newMovie.getPersonalRaiting());
+        values.put(MovieTable.COLUMN_FORMAT, newMovie.getFormat().ordinal());
+        values.put(MovieTable.COLUMN_RUNTIME, newMovie.getRunTime());
 
-	/**
-	 * 
-	 * @param newMovie
-	 * @return
-	 */
-	public boolean addMovie(Movie newMovie)
-	{
-		boolean movieAdded = true;
+        database.beginTransaction();
+        try
+        {
+            long insertId =
+                    database.insertOrThrow(MovieTable.TABLE_MOVIES, null,
+                            values);
 
-		ContentValues values = new ContentValues();
-		values.put(MovieTable.COLUMN_TITLE, newMovie.getTitle());
-		values.put(MovieTable.COLUMN_RATED, newMovie.getRated().getId());
-		values.put(MovieTable.COLUMN_GENRE, newMovie.getGenre().getId());
-		values.put(MovieTable.COLUMN_PERSONALRATING,
-		        newMovie.getPersonalRaiting());
-		values.put(MovieTable.COLUMN_FORMAT, newMovie.getFormat().ordinal());
-		values.put(MovieTable.COLUMN_RUNTIME, newMovie.getRunTime());
+            // In the event the insert doesn't throw like it is suppose to be.
+            if (insertId == -1)
+            {
+                throw new SQLException();
+            }
 
-		database.beginTransaction();
-		try
-		{
-			long insertId = database.insertOrThrow(MovieTable.TABLE_MOVIES,
-			        null, values);
+            Log.d(TAG, "InsertedId: " + insertId);
+            database.setTransactionSuccessful();
+        }
+        catch (SQLException sqlException)
+        {
+            Log.e(TAG, "Unable to add \"" + newMovie + "\" to the database." +
+                    sqlException.getMessage());
+            movieAdded = false;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
 
-			// In the event the insert doesn't throw like it is suppose to be.
-			if (insertId == -1)
-			{
-				throw new SQLException();
-			}
+        return movieAdded;
+    }
 
-			Log.d(TAG, "InsertedId: " + insertId);
-			database.setTransactionSuccessful();
-		}
-		catch (SQLException sqlException)
-		{
-			Log.e(TAG, "Unable to add \"" + newMovie + "\" to the database." +
-			        sqlException.getMessage());
-			movieAdded = false;
-		}
-		finally
-		{
-			database.endTransaction();
-		}
+    /**
+     * 
+     * @param movie
+     * @return
+     */
+    public boolean removeMovie(Movie movie)
+    {
+        boolean movieRemoved = false;
 
-		return movieAdded;
-	}
+        database.beginTransaction();
+        try
+        {
+            database.delete(MovieTable.TABLE_MOVIES, MovieTable.COLUMN_ID +
+                    " = " + movie.getId(), null);
+            database.setTransactionSuccessful();
+            movieRemoved = true;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
 
-	/**
-	 * 
-	 * @param movie
-	 * @return
-	 */
-	public boolean removeMovie(Movie movie)
-	{
-		boolean movieRemoved = false;
+        if (!movieRemoved)
+        {
+            Log.e(TAG, "Unable to delete movie: " + movie);
+        }
 
-		database.beginTransaction();
-		try
-		{
-			database.delete(MovieTable.TABLE_MOVIES, MovieTable.COLUMN_ID +
-			        " = " + movie.getId(), null);
-			database.setTransactionSuccessful();
-			movieRemoved = true;
-		}
-		finally
-		{
-			database.endTransaction();
-		}
+        return movieRemoved;
+    }
 
-		if (!movieRemoved)
-		{
-			Log.e(TAG, "Unable to delete movie: " + movie);
-		}
+    /**
+     * 
+     * @param movies
+     * @return
+     */
+    public boolean removeMovie(List<Movie> movies)
+    {
+        boolean moviesRemoved = true;
 
-		return movieRemoved;
-	}
+        for (Movie movie : movies)
+        {
+            moviesRemoved = removeMovie(movie);
+        }
 
-	/**
-	 * 
-	 * @param movies
-	 * @return
-	 */
-	public boolean removeMovie(List<Movie> movies)
-	{
-		boolean moviesRemoved = true;
+        return moviesRemoved;
+    }
 
-		for (Movie movie : movies)
-		{
-			moviesRemoved = removeMovie(movie);
-		}
+    /**
+     * 
+     * @return
+     */
+    public List<Movie> getAllMovies()
+    {
+        List<Movie> movies = new ArrayList<Movie>();
+        Cursor cursor =
+                database.query(MovieTable.TABLE_MOVIES,
+                        movieTable.getColumnNames(), null, null, null, null,
+                        null);
+        cursor.moveToFirst();
 
-		return moviesRemoved;
-	}
+        while (!cursor.isAfterLast())
+        {
+            Movie movie = cursorToMovie(cursor);
+            if (movie != null)
+            {
+                movies.add(movie);
+            }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public List<Movie> getAllMovies()
-	{
-		List<Movie> movies = new ArrayList<Movie>();
-		Cursor cursor = database.query(MovieTable.TABLE_MOVIES,
-		        movieTable.getColumnNames(), null, null, null, null, null);
-		cursor.moveToFirst();
+            cursor.moveToNext();
+        }
 
-		while (!cursor.isAfterLast())
-		{
-			Movie movie = cursorToMovie(cursor);
-			movies.add(movie);
-			cursor.moveToNext();
-		}
+        cursor.close();
+        return movies;
+    }
 
-		cursor.close();
-		return movies;
-	}
+    /**
+     * 
+     * @param movieList
+     * @return
+     */
+    public boolean addList(MovieList movieList)
+    {
+        boolean listAdded = true;
 
-	/**
-	 * 
-	 * @param movieList
-	 * @return
-	 */
-	public boolean addList(MovieList movieList)
-	{
-		boolean listAdded = true;
+        ContentValues values = new ContentValues();
+        values.put(ListTable.COLUMN_TITLE, movieList.getTitle());
 
-		ContentValues values = new ContentValues();
-		values.put(ListTable.COLUMN_TITLE, movieList.getTitle());
+        database.beginTransaction();
+        try
+        {
+            long insertId =
+                    database.insertOrThrow(ListTable.TABLE_LISTS, null, values);
 
-		database.beginTransaction();
-		try
-		{
-			long insertId = database.insertOrThrow(ListTable.TABLE_LISTS, null,
-			        values);
+            // In the event the insert doesn't throw like it is suppose to be.
+            if (insertId == -1)
+            {
+                throw new SQLException();
+            }
 
-			// In the event the insert doesn't throw like it is suppose to be.
-			if (insertId == -1)
-			{
-				throw new SQLException();
-			}
+            Log.d(TAG, "InsertedId: " + insertId);
+            database.setTransactionSuccessful();
+        }
+        catch (SQLException sqlException)
+        {
+            Log.e(TAG, "Unable to add \"" + movieList + "\" to the database." +
+                    sqlException.getMessage());
+            listAdded = false;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
 
-			Log.d(TAG, "InsertedId: " + insertId);
-			database.setTransactionSuccessful();
-		}
-		catch (SQLException sqlException)
-		{
-			Log.e(TAG, "Unable to add \"" + movieList + "\" to the database." +
-			        sqlException.getMessage());
-			listAdded = false;
-		}
-		finally
-		{
-			database.endTransaction();
-		}
+        return listAdded;
+    }
 
-		return listAdded;
-	}
+    /**
+     * 
+     * @param movieList
+     * @return
+     */
+    public boolean removeList(MovieList movieList)
+    {
+        boolean ListRemoved = false;
 
-	/**
-	 * 
-	 * @param movieList
-	 * @return
-	 */
-	public boolean removeList(MovieList movieList)
-	{
-		boolean ListRemoved = false;
+        database.beginTransaction();
+        try
+        {
+            database.delete(ListTable.TABLE_LISTS, ListTable.COLUMN_ID + " = " +
+                    movieList.getId(), null);
+            database.delete(
+                    ListMovieAssociationTable.TABLE_ASSOCIATIONS,
+                    ListMovieAssociationTable.COLUMN_LISTID + " = " +
+                            movieList.getId(), null);
+            database.setTransactionSuccessful();
+            ListRemoved = true;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
 
-		database.beginTransaction();
-		try
-		{
-			database.delete(ListTable.TABLE_LISTS, ListTable.COLUMN_ID + " = " +
-			        movieList.getId(), null);
-			database.delete(
-			        ListMovieAssociationTable.TABLE_ASSOCIATIONS,
-			        ListMovieAssociationTable.COLUMN_LISTID + " = " +
-			                movieList.getId(), null);
-			database.setTransactionSuccessful();
-			ListRemoved = true;
-		}
-		finally
-		{
-			database.endTransaction();
-		}
+        if (!ListRemoved)
+        {
+            Log.e(TAG, "Unable to delete list: " + movieList);
+        }
 
-		if (!ListRemoved)
-		{
-			Log.e(TAG, "Unable to delete list: " + movieList);
-		}
+        return ListRemoved;
+    }
 
-		return ListRemoved;
-	}
+    /**
+     * 
+     * @param lists
+     * @return
+     */
+    public boolean removeList(List<MovieList> lists)
+    {
+        boolean listsRemoved = true;
 
-	/**
-	 * 
-	 * @param lists
-	 * @return
-	 */
-	public boolean removeList(List<MovieList> lists)
-	{
-		boolean listsRemoved = true;
+        for (MovieList list : lists)
+        {
+            listsRemoved = removeList(list);
+        }
 
-		for (MovieList list : lists)
-		{
-			listsRemoved = removeList(list);
-		}
+        return listsRemoved;
+    }
 
-		return listsRemoved;
-	}
+    /**
+     * 
+     * @return
+     */
+    public List<MovieList> getAllLists()
+    {
+        List<MovieList> movieLists = new ArrayList<MovieList>();
+        Cursor cursor =
+                database.query(ListTable.TABLE_LISTS,
+                        listTable.getColumnNames(), null, null, null, null,
+                        null);
+        cursor.moveToFirst();
 
-	/**
-	 * 
-	 * @return
-	 */
-	public List<MovieList> getAllLists()
-	{
-		List<MovieList> movieLists = new ArrayList<MovieList>();
-		Cursor cursor = database.query(ListTable.TABLE_LISTS,
-		        listTable.getColumnNames(), null, null, null, null, null);
-		cursor.moveToFirst();
+        while (!cursor.isAfterLast())
+        {
+            MovieList movieList = cursorToMovieList(cursor);
+            if (movieList != null)
+            {
+                movieLists.add(movieList);
+            }
+            cursor.moveToNext();
+        }
 
-		while (!cursor.isAfterLast())
-		{
-			MovieList movieList = cursorToMovieList(cursor);
-			movieLists.add(movieList);
-			cursor.moveToNext();
-		}
+        cursor.close();
+        return movieLists;
+    }
 
-		cursor.close();
-		return movieLists;
-	}
+    /**
+     * 
+     * @param movie
+     * @param movieList
+     * @return
+     */
+    public boolean addMovieToMovieList(Movie movie, MovieList movieList)
+    {
+        boolean movieAddedToList = true;
 
-	/**
-	 * 
-	 * @param movie
-	 * @param movieList
-	 * @return
-	 */
-	public boolean addMovieToMovieList(Movie movie, MovieList movieList)
-	{
-		boolean movieAddedToList = true;
+        ContentValues values = new ContentValues();
+        values.put(ListMovieAssociationTable.COLUMN_LISTID, movieList.getId());
+        values.put(ListMovieAssociationTable.COLUMN_MOVIEID, movie.getId());
 
-		ContentValues values = new ContentValues();
-		values.put(ListMovieAssociationTable.COLUMN_LISTID, movieList.getId());
-		values.put(ListMovieAssociationTable.COLUMN_MOVIEID, movie.getId());
+        database.beginTransaction();
 
-		database.beginTransaction();
+        try
+        {
+            long insertId =
+                    database.insertOrThrow(
+                            ListMovieAssociationTable.TABLE_ASSOCIATIONS, null,
+                            values);
 
-		try
-		{
-			long insertId = database.insertOrThrow(
-			        ListMovieAssociationTable.TABLE_ASSOCIATIONS, null, values);
+            if (insertId == -1)
+            {
+                throw new SQLException();
+            }
 
-			if (insertId == -1)
-			{
-				throw new SQLException();
-			}
+            Log.d(TAG, "InsertedId: " + insertId);
+            database.setTransactionSuccessful();
+        }
+        catch (SQLException sqlException)
+        {
+            Log.e(TAG, "Unable to add \"" + movie + "\" to \"" + movieList +
+                    "\"." + sqlException.getMessage());
+            movieAddedToList = false;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
 
-			Log.d(TAG, "InsertedId: " + insertId);
-			database.setTransactionSuccessful();
-		}
-		catch (SQLException sqlException)
-		{
-			Log.e(TAG, "Unable to add \"" + movie + "\" to \"" + movieList +
-			        "\"." + sqlException.getMessage());
-			movieAddedToList = false;
-		}
-		finally
-		{
-			database.endTransaction();
-		}
+        return movieAddedToList;
+    }
 
-		return movieAddedToList;
-	}
+    /**
+     * 
+     * @param currentLists
+     * @return
+     */
+    public String promptForList(List<MovieList> currentLists)
+    {
+        // TODO create the dialog to prompt for a list or create one.
+        return null;
+    }
 
-	/**
-	 * 
-	 * @param currentLists
-	 * @return
-	 */
-	public String promptForList(List<MovieList> currentLists)
-	{
-		// TODO create the dialog to prompt for a list or create one.
-		return null;
-	}
+    /**
+     * 
+     * @return
+     */
+    public Collection<String> getChangesSinceLastSync()
+    {
+        // TODO
+        return null;
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public Collection<String> getChangesSinceLastSync()
-	{
-		// TODO
-		return null;
-	}
+    /**
+     * 
+     * @param cursor
+     * @return
+     */
+    private Movie cursorToMovie(Cursor cursor)
+    {
+        Movie movie = null;
+        if (cursor.getCount() != 0)
+        {
+            movie = new Movie();
+            movie.setId(cursor.getInt(0));
+            movie.setTitle(cursor.getString(1));
+            movie.setRated(Rating.values()[cursor.getInt(2)]);
+            movie.setGenre(Genre.values()[cursor.getInt(3)]);
+            movie.setPersonalRaiting(cursor.getInt(4));
+            movie.setFormat(MediaFormat.values()[cursor.getInt(5)]);
+            movie.setRunTime(cursor.getShort(6));
+            Log.d(TAG, "Movie: " + movie.toString());
+        }
 
-	/**
-	 * 
-	 * @param cursor
-	 * @return
-	 */
-	private Movie cursorToMovie(Cursor cursor)
-	{
-		// TODO Magic numbers!!!!
-		Movie movie = new Movie();
-		movie.setId(cursor.getInt(0));
-		movie.setTitle(cursor.getString(1));
-		movie.setRated(Rating.values()[cursor.getInt(2)]);
-		movie.setGenre(Genre.values()[cursor.getInt(3)]);
-		movie.setPersonalRaiting(cursor.getInt(4));
-		movie.setFormat(MediaFormat.values()[cursor.getInt(5)]);
-		movie.setRunTime(cursor.getShort(6));
+        return movie;
+    }
 
-		Log.d(TAG, "Movie: " + movie.toString());
+    /**
+     * 
+     * @param cursor
+     * @return
+     */
+    private MovieList cursorToMovieList(Cursor cursor)
+    {
+        MovieList movieList = null;
+        if (cursor.getCount() != 0)
+        {
+            movieList = new MovieList();
+            movieList.setId(cursor.getInt(0));
+            movieList.setTitle(cursor.getString(1));
+            Log.d(TAG, "MovieList: " + movieList.toString());
+        }
 
-		return movie;
-	}
-
-	/**
-	 * 
-	 * @param cursor
-	 * @return
-	 */
-	private MovieList cursorToMovieList(Cursor cursor)
-	{
-		// TODO Magic numbers!!!!
-		MovieList movieList = new MovieList();
-		movieList.setId(cursor.getInt(0));
-		movieList.setTitle(cursor.getString(1));
-
-		Log.d(TAG, "MovieList: " + movieList.toString());
-
-		return movieList;
-	}
+        return movieList;
+    }
 }

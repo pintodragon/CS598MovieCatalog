@@ -55,11 +55,11 @@ public class BarcodeActivity extends Activity
                     intent.getIntExtra(getString(R.string.ycrcb_image_height),
                             0);
 
-            BarcodeProcessor bp = new BarcodeProcessor();
             String barcode;
             try
             {
-                barcode = bp.decodeImage(width, height, imageData);
+                barcode =
+                        BarcodeProcessor.decodeImage(width, height, imageData);
                 Log.d(TAG, "Barcode: " + barcode);
                 Toast.makeText(getApplication(), barcode, Toast.LENGTH_LONG)
                         .show();

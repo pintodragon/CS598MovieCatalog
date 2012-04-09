@@ -5,28 +5,25 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical" >
-
+
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/main_title"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="List"
         android:onClick="onClick" />
-
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ImgTest"
         android:onClick="onClick"  />
-
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"

@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Testing</string>
-    <string name="app_name">MovieCatalog</string>
+    <string name="app_name">CS598MovieCatalog</string>
     <string name="quit">Quit</string>
-    <string name="add_new">Add New</string>
-    <string name="delete">Delete</string>
     <string name="main_title">CSC 598 Movie Catalog Project</string>
     <string name="take_pic">Take Picture</string>
     <string name="ycrcb_image_data">imageData</string>
     <string name="ycrcb_image_width">imageWidth</string>
     <string name="ycrcb_image_height">imageHeight</string>
-
 </resources>
