@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import edu.sunyit.chryslj.camera.BarcodeCameraActivity;
+import edu.sunyit.chryslj.ui.BarcodeActivity;
+import edu.sunyit.chryslj.ui.CameraPreviewActivity;
+import edu.sunyit.chryslj.ui.MovieListActivity;
 
 public class MainActivity extends Activity
 {
@@ -41,7 +43,7 @@ public class MainActivity extends Activity
 
                 Intent intent = new Intent();
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                intent.setClass(this.getApplication(), TestBMPActivity.class);
+                intent.setClass(this.getApplication(), BarcodeActivity.class);
                 intent.putExtra(getString(R.string.ycrcb_image_data), imageData);
                 intent.putExtra(getString(R.string.ycrcb_image_width), width);
                 intent.putExtra(getString(R.string.ycrcb_image_height), height);
@@ -58,17 +60,17 @@ public class MainActivity extends Activity
         switch (view.getId())
         {
             case R.id.button1:
-                intent.setClass(view.getContext(), MovieCatalogActivity.class);
+                intent.setClass(view.getContext(), MovieListActivity.class);
                 startActivity(intent);
                 break;
             case R.id.button2:
                 intent = new Intent();
-                intent.setClass(view.getContext(), TestBMPActivity.class);
+                intent.setClass(view.getContext(), BarcodeActivity.class);
                 startActivity(intent);
                 break;
             case R.id.button3:
                 intent = new Intent();
-                intent.setClass(view.getContext(), BarcodeCameraActivity.class);
+                intent.setClass(view.getContext(), CameraPreviewActivity.class);
                 startActivityForResult(intent, TAKE_PICTURE_REQUEST);
                 break;
         }

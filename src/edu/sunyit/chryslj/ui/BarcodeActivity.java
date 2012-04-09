@@ -1,4 +1,4 @@
-package edu.sunyit.chryslj;
+package edu.sunyit.chryslj.ui;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.barcode.BarcodeProcessor;
 import edu.sunyit.chryslj.exceptions.InvalidImageException;
 import edu.sunyit.chryslj.movie.Movie;
@@ -25,37 +26,15 @@ import edu.sunyit.chryslj.ws.MovieLookup;
 import edu.sunyit.chryslj.ws.RottenTomatoesMovieLookup;
 import edu.sunyit.chryslj.ws.UPCDatabaseMovieLookup;
 
-public class TestBMPActivity extends Activity
+public class BarcodeActivity extends Activity
 {
-    private static final String TAG = TestBMPActivity.class.getSimpleName();
+    private static final String TAG = BarcodeActivity.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_test);
-
-        // File imgFile = new File("/mnt/sdcard/picture.jpg");
-        //
-        // if (imgFile.exists())
-        // {
-        // Bitmap myBitmap = BitmapFactory.decodeFile(imgFile
-        // .getAbsolutePath());
-        //
-        // BarcodeProcessor bp = new BarcodeProcessor();
-        //
-        // Bitmap binImage = bp.generateBinaryImage(myBitmap);
-        // ImageView myImage = (ImageView) findViewById(R.id.binary);
-        // myImage.setImageBitmap(binImage);
-        // UPCABarcode upacAB = new UPCABarcode();
-        // upacAB.decodeImage(binImage);
-        // myImage.setVisibility(ImageView.VISIBLE);
-        // // Log.i(TAG, "Image exists");
-        // }
-        // else
-        // {
-        // Log.e(TAG, "Image doesn't exists!");
-        // }
     }
 
     @Override
@@ -90,10 +69,8 @@ public class TestBMPActivity extends Activity
 
                 if (!barcode.equals(""))
                 {
-                    // TODO Fix so this isn't "testing" items but doing the UPC
-                    // database, amazon if that failed and then rotten tomatoes.
-                    // Also might be a good candidate for a seperate thread with
-                    // a handler.
+                    // TODO Also might be a good candidate for a separate thread
+                    // with a handler.
                     MovieLookup movieLookup =
                             new UPCDatabaseMovieLookup(getResources());
                     Movie movie = movieLookup.lookupMovieByBarcode(barcode);

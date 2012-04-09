@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import edu.sunyit.chryslj.R;
+import edu.sunyit.chryslj.ui.CameraPreviewActivity;
 
 /**
  * This handler will be used to run all camera related things such as calling
@@ -23,12 +24,12 @@ public class CameraHandler extends Handler
         DONE
     };
 
-    private BarcodeCameraActivity barcodeCameraActivity;
+    private CameraPreviewActivity cameraPreviewActivity;
     private State currentState;
 
-    public CameraHandler(BarcodeCameraActivity barcodeCameraActivity)
+    public CameraHandler(CameraPreviewActivity cameraPreviewActivity)
     {
-        this.barcodeCameraActivity = barcodeCameraActivity;
+        this.cameraPreviewActivity = cameraPreviewActivity;
         currentState = State.START;
     }
 
@@ -44,7 +45,7 @@ public class CameraHandler extends Handler
                 // image.
                 if (currentState == State.GETIMAGE)
                 {
-                    barcodeCameraActivity.doAutoFocus();
+                    cameraPreviewActivity.doAutoFocus();
                 }
                 break;
             case R.id.preview_running:
@@ -56,7 +57,7 @@ public class CameraHandler extends Handler
                 // Call the one shot preview callback.
                 Log.d(TAG, "Handler recieved take_preview");
                 currentState = State.DONE;
-                barcodeCameraActivity.takeOneShotPreview();
+                cameraPreviewActivity.takeOneShotPreview();
                 break;
             case R.id.preview_taken:
                 Log.d(TAG, "Handler recieved take_preview");
@@ -67,7 +68,7 @@ public class CameraHandler extends Handler
                 // the width and height of the preview screen.
                 int width = message.arg1;
                 int height = message.arg2;
-                barcodeCameraActivity.sendPictureToReader(width, height, data);
+                cameraPreviewActivity.sendPictureToReader(width, height, data);
                 break;
         }
     }
@@ -78,7 +79,7 @@ public class CameraHandler extends Handler
         if (currentState == State.START)
         {
             Log.d(TAG, "Draw overlay");
-            barcodeCameraActivity.drawOverlay();
+            cameraPreviewActivity.drawOverlay();
             currentState = State.GETIMAGE;
         }
     }

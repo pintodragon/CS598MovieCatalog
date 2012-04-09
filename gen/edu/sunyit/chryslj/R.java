@@ -11,6 +11,9 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
+        public static final int not_selected_pressed=0x7f050003;
+        public static final int selected_not_pressed=0x7f050001;
+        public static final int selected_pressed=0x7f050002;
         public static final int transparent=0x7f050000;
     }
     public static final class drawable {
@@ -30,8 +33,9 @@ public final class R {
         public static final int preview_running=0x7f060001;
         public static final int preview_surface=0x7f060004;
         public static final int preview_taken=0x7f060003;
-        public static final int quit=0x7f06000f;
+        public static final int quit=0x7f060010;
         public static final int take_preview=0x7f060002;
+        public static final int temp_list_view=0x7f06000f;
         public static final int textView1=0x7f060007;
     }
     public static final class layout {

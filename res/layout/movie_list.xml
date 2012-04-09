@@ -26,9 +26,9 @@
     </LinearLayout>
 
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/temp_list_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello" />
+        android:choiceMode="singleChoice" />
 
 </LinearLayout>

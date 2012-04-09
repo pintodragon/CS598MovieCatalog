@@ -34,9 +34,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> -->
-       <activity android:name=".MovieCatalogActivity" android:screenOrientation="portrait"></activity>
-       <activity android:name=".TestBMPActivity" android:screenOrientation="portrait"></activity>
-       <activity android:name=".camera.BarcodeCameraActivity" android:screenOrientation="landscape"></activity>
+       <activity android:name=".ui.MovieListActivity" android:screenOrientation="portrait"></activity>
+       <activity android:name=".ui.BarcodeActivity" android:screenOrientation="portrait"></activity>
+       <activity android:name=".ui.CameraPreviewActivity" android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

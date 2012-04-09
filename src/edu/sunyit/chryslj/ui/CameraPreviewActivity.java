@@ -1,4 +1,4 @@
-package edu.sunyit.chryslj.camera;
+package edu.sunyit.chryslj.ui;
 
 import java.io.IOException;
 
@@ -17,11 +17,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import edu.sunyit.chryslj.R;
+import edu.sunyit.chryslj.camera.AutoFocusCallbackImpl;
+import edu.sunyit.chryslj.camera.CameraHandler;
+import edu.sunyit.chryslj.camera.OverlayView;
+import edu.sunyit.chryslj.camera.TakePicturePreviewCallback;
 
-public class BarcodeCameraActivity extends Activity implements
+public class CameraPreviewActivity extends Activity implements
         SurfaceHolder.Callback
 {
-    private static final String TAG = BarcodeCameraActivity.class
+    private static final String TAG = CameraPreviewActivity.class
             .getSimpleName();
 
     private Camera deviceCamera = null;
