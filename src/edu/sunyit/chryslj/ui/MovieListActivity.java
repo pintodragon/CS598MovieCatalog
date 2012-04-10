@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -15,7 +16,7 @@ import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
-public class MovieListActivity extends Activity
+public class MovieListActivity extends Activity implements OnClickListener
 {
     private static final String TAG = MovieListActivity.class.getName();
     private MovieManagementSystem movieManagementSystem;
@@ -87,6 +88,9 @@ public class MovieListActivity extends Activity
                 Movie currentMovie = movieList.get(movieIndex);
                 TableRow newTableRow =
                         new TableRow(bodyTableLayout.getContext());
+                newTableRow
+                        .setBackgroundColor(android.R.drawable.list_selector_background);
+                newTableRow.setOnClickListener(this);
                 newTableRow.addView(
                         createIndexView(movieIndex + 1,
                                 bodyTableLayout.getContext()), 0);
@@ -167,5 +171,28 @@ public class MovieListActivity extends Activity
         textView.setText(sorted);
 
         return textView;
+    }
+
+    /**
+     * Our button handler. When a user clicks on the manual or camera add
+     * buttons this method is called.
+     * 
+     * @param view
+     */
+    public void onButtonClick(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.movie_add_manual:
+                break;
+            case R.id.movie_add_camera:
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        // TODO Logic for when a table row is clicked.
     }
 }
