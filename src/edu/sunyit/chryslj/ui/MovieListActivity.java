@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -184,6 +185,9 @@ public class MovieListActivity extends Activity implements OnClickListener
         switch (view.getId())
         {
             case R.id.movie_add_manual:
+                Intent intent = new Intent();
+                intent.setClass(getApplication(), MovieInfoActivity.class);
+                startActivity(intent);
                 break;
             case R.id.movie_add_camera:
                 break;

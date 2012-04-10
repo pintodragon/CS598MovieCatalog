@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_vertical" >
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/movie_info_main_title"
+        android:textSize="25dp" />
+            
+	<TableLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:stretchColumns="1" >
+		
+		<TableRow>
+
+			<TextView
+			    android:layout_width="80dp"
+			    android:layout_gravity="center_vertical"
+			    android:text="@string/movie_info_title" />
+
+			<EditText
+			    android:id="@+id/movie_info_title_text"
+			    android:layout_width="wrap_content"
+			    android:layout_gravity="center_vertical"
+			    android:inputType="text"
+			    android:text="@string/movie_info_title_text" />
+
+		</TableRow>
+		
+		<TableRow>
+			<TextView android:text="@string/movie_info_rating"
+                android:layout_gravity="center_vertical"
+				android:layout_width="80dp" />
+
+			<Spinner
+			    android:id="@+id/spinner3"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content" />
+
+		</TableRow>
+		
+		<TableRow>
+			<TextView android:text="@string/movie_info_genre"
+                android:layout_gravity="center_vertical"
+				android:layout_width="80dp" />
+
+			<Spinner
+			    android:id="@+id/spinner2"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content" />
+
+		</TableRow>
+		
+		<TableRow>
+			<TextView android:text="@string/movie_info_format"
+                android:layout_gravity="center_vertical"
+				android:layout_width="80dp" />
+
+			<Spinner
+			    android:id="@+id/spinner1"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content" />
+
+		</TableRow>
+		
+		<TableRow>
+			<TextView android:text="@string/movie_info_personalrating"
+                android:layout_gravity="center_vertical"
+				android:layout_width="80dp" />
+
+			<LinearLayout
+			    android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+			    android:layout_height="wrap_content" >
+
+				<SeekBar
+				    android:id="@+id/movie_info_seek_bar"
+				    android:layout_width="0dip"
+				    android:layout_height="wrap_content"
+				    android:layout_gravity="center_vertical"
+				    android:layout_weight="1" />
+
+				<TextView
+				    android:id="@+id/movie_info_rating_progress"
+				    android:layout_width="40dp"
+				    android:layout_height="wrap_content"
+				    android:layout_gravity="center_vertical"
+				    android:text="0"
+				    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			</LinearLayout>
+
+		</TableRow>
+	
+	</TableLayout>
+
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+		<Button
+		    android:id="@+id/movie_info_commit"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center_horizontal"
+		    android:text="@string/movie_info_commit" />
+		<Button
+		    android:id="@+id/movie_info_cancel"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center_horizontal"
+		    android:text="@string/movie_info_cancel" />
+	</LinearLayout>
+
+</LinearLayout>

@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical" >
-
+
+
     <LinearLayout
         android:id="@+id/movie_list_table_container"
         android:layout_width="match_parent"
@@ -68,20 +69,22 @@
         android:layout_alignParentLeft="true"
         android:gravity="center_horizontal"
         android:orientation="horizontal" >
-
+
+
         <Button
             android:id="@+id/movie_add_manual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onButtonClick"
             android:text="@string/movie_add_manual" />
-
+
+
         <Button
             android:id="@+id/movie_add_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onButtonClick"
-            android:text="@string/movie_add_manual" />
+            android:text="@string/movie_add_camera" />
 
     </LinearLayout>
 
