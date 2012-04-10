@@ -1,19 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:id="@+id/movie_list_table_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+
+        <TableLayout
+            android:id="@+id/movie_main_table_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:stretchColumns="1, 2, 3" >
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:text="@string/movie_table_title" />
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:text="@string/movie_table_category" />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:text="@string/movie_table_sort" />
+            </TableRow>
+
+            <ScrollView android:layout_height="match_parent" >
+
+                <TableLayout
+                    android:id="@+id/movie_data_table_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="1, 2, 3" >
+                </TableLayout>
+            </ScrollView>
+        </TableLayout>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/temp_list_view"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:choiceMode="singleChoice" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
 
-</LinearLayout>
+        <Button
+            android:id="@+id/movie_add_manual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/movie_add_manual" />
+
+        <Button
+            android:id="@+id/movie_add_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/movie_add_manual" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/movie_list_empty_textview"
+        android:layout_width="match_parent"
+        android:layout_height="420dp"
+        android:gravity="center"
+        android:text="@string/movie_empty_text"
+        android:textSize="25dp" />
+
+</RelativeLayout>

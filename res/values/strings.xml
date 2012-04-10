@@ -7,4 +7,11 @@
     <string name="ycrcb_image_data">imageData</string>
     <string name="ycrcb_image_width">imageWidth</string>
     <string name="ycrcb_image_height">imageHeight</string>
+    
+    <string name="movie_table_title">Title</string>
+    <string name="movie_table_category">Category</string>
+    <string name="movie_table_sort">Sorted By: %1$s</string>
+    <string name="movie_add_manual">Add Manual</string>
+    <string name="movie_add_camera">Add Camera</string>
+    <string name="movie_empty_text">There are no movies currently in the system</string>
 </resources>

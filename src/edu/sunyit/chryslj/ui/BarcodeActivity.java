@@ -63,9 +63,6 @@ public class BarcodeActivity extends Activity
                 Log.d(TAG, "Barcode: " + barcode);
                 Toast.makeText(getApplication(), barcode, Toast.LENGTH_LONG)
                         .show();
-                TextView barcodeText = (TextView) findViewById(R.id.textView1);
-                barcodeText.setText(barcode);
-                barcodeText.setVisibility(TextView.VISIBLE);
 
                 if (!barcode.equals(""))
                 {
@@ -88,11 +85,6 @@ public class BarcodeActivity extends Activity
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
-                        catch (IllegalArgumentException e)
-                        {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
                         catch (NoSuchAlgorithmException e)
                         {
                             // TODO Auto-generated catch block
@@ -100,16 +92,28 @@ public class BarcodeActivity extends Activity
                         }
                     }
 
-                    MovieLookup movieInfoLookup =
-                            new RottenTomatoesMovieLookup(getResources());
-                    movie = movieInfoLookup.gatherMoreInformation(movie);
+                    if (movie != null)
+                    {
+                        MovieLookup movieInfoLookup =
+                                new RottenTomatoesMovieLookup(getResources());
+                        movie = movieInfoLookup.gatherMoreInformation(movie);
 
-                    Log.d(TAG,
-                            "Movie: " + movie.getTitle() + " Rated: " +
-                                    movie.getRated() + " Runtime: " +
-                                    movie.getRunTime() + " Genre: " +
-                                    movie.getGenre() + " Format: " +
-                                    movie.getFormat());
+                        TextView barcodeText =
+                                (TextView) findViewById(R.id.textView1);
+                        barcodeText.setText("Movie: " + movie.getTitle() +
+                                " Rated: " + movie.getRated() + " Runtime: " +
+                                movie.getRunTime() + " Genre: " +
+                                movie.getGenre() + " Format: " +
+                                movie.getFormat());
+                        barcodeText.setVisibility(TextView.VISIBLE);
+
+                        Log.d(TAG,
+                                "Movie: " + movie.getTitle() + " Rated: " +
+                                        movie.getRated() + " Runtime: " +
+                                        movie.getRunTime() + " Genre: " +
+                                        movie.getGenre() + " Format: " +
+                                        movie.getFormat());
+                    }
                 }
             }
             catch (InvalidImageException e)

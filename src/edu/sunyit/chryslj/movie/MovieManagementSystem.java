@@ -11,10 +11,10 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import edu.sunyit.chryslj.database.CategoryMovieAssociationTable;
 import edu.sunyit.chryslj.database.GenreTable;
-import edu.sunyit.chryslj.database.ListMovieAssociationTable;
-import edu.sunyit.chryslj.database.ListTable;
 import edu.sunyit.chryslj.database.MediaFormatTable;
+import edu.sunyit.chryslj.database.MovieCategoryTable;
 import edu.sunyit.chryslj.database.MovieDatabaseHelper;
 import edu.sunyit.chryslj.database.MovieTable;
 import edu.sunyit.chryslj.database.RatingTable;
@@ -34,16 +34,16 @@ public class MovieManagementSystem
     private RatingTable ratingTable = new RatingTable();
     private GenreTable genreTable = new GenreTable();
     private MovieTable movieTable = new MovieTable();
-    private ListTable listTable = new ListTable();
-    private ListMovieAssociationTable associationTable =
-            new ListMovieAssociationTable();
+    private MovieCategoryTable movieCategoryTable = new MovieCategoryTable();
+    private CategoryMovieAssociationTable associationTable =
+            new CategoryMovieAssociationTable();
 
     public MovieManagementSystem(Context context)
     {
         dbHelper =
                 new MovieDatabaseHelper(context, Arrays.asList(
                         mediaFormatTable, ratingTable, genreTable, movieTable,
-                        listTable, associationTable));
+                        movieCategoryTable, associationTable));
     }
 
     public void open() throws SQLException
@@ -181,21 +181,22 @@ public class MovieManagementSystem
 
     /**
      * 
-     * @param movieList
+     * @param movieCategory
      * @return
      */
-    public boolean addList(MovieList movieList)
+    public boolean addList(MovieCategory movieCategory)
     {
         boolean listAdded = true;
 
         ContentValues values = new ContentValues();
-        values.put(ListTable.COLUMN_TITLE, movieList.getTitle());
+        values.put(MovieCategoryTable.COLUMN_TITLE, movieCategory.getTitle());
 
         database.beginTransaction();
         try
         {
             long insertId =
-                    database.insertOrThrow(ListTable.TABLE_LISTS, null, values);
+                    database.insertOrThrow(MovieCategoryTable.TABLE_CATEGORY,
+                            null, values);
 
             // In the event the insert doesn't throw like it is suppose to be.
             if (insertId == -1)
@@ -208,8 +209,8 @@ public class MovieManagementSystem
         }
         catch (SQLException sqlException)
         {
-            Log.e(TAG, "Unable to add \"" + movieList + "\" to the database." +
-                    sqlException.getMessage());
+            Log.e(TAG, "Unable to add \"" + movieCategory +
+                    "\" to the database." + sqlException.getMessage());
             listAdded = false;
         }
         finally
@@ -222,22 +223,23 @@ public class MovieManagementSystem
 
     /**
      * 
-     * @param movieList
+     * @param movieCategory
      * @return
      */
-    public boolean removeList(MovieList movieList)
+    public boolean removeList(MovieCategory movieCategory)
     {
         boolean ListRemoved = false;
 
         database.beginTransaction();
         try
         {
-            database.delete(ListTable.TABLE_LISTS, ListTable.COLUMN_ID + " = " +
-                    movieList.getId(), null);
             database.delete(
-                    ListMovieAssociationTable.TABLE_ASSOCIATIONS,
-                    ListMovieAssociationTable.COLUMN_LISTID + " = " +
-                            movieList.getId(), null);
+                    edu.sunyit.chryslj.database.MovieCategoryTable.TABLE_CATEGORY,
+                    edu.sunyit.chryslj.database.MovieCategoryTable.COLUMN_ID +
+                            " = " + movieCategory.getId(), null);
+            database.delete(CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
+                    CategoryMovieAssociationTable.COLUMN_CATEGORYID + " = " +
+                            movieCategory.getId(), null);
             database.setTransactionSuccessful();
             ListRemoved = true;
         }
@@ -248,7 +250,7 @@ public class MovieManagementSystem
 
         if (!ListRemoved)
         {
-            Log.e(TAG, "Unable to delete list: " + movieList);
+            Log.e(TAG, "Unable to delete list: " + movieCategory);
         }
 
         return ListRemoved;
@@ -259,11 +261,11 @@ public class MovieManagementSystem
      * @param lists
      * @return
      */
-    public boolean removeList(List<MovieList> lists)
+    public boolean removeList(List<MovieCategory> lists)
     {
         boolean listsRemoved = true;
 
-        for (MovieList list : lists)
+        for (MovieCategory list : lists)
         {
             listsRemoved = removeList(list);
         }
@@ -275,42 +277,45 @@ public class MovieManagementSystem
      * 
      * @return
      */
-    public List<MovieList> getAllLists()
+    public List<MovieCategory> getAllLists()
     {
-        List<MovieList> movieLists = new ArrayList<MovieList>();
+        List<MovieCategory> movieCategorys = new ArrayList<MovieCategory>();
         Cursor cursor =
-                database.query(ListTable.TABLE_LISTS,
-                        listTable.getColumnNames(), null, null, null, null,
-                        null);
+                database.query(
+                        edu.sunyit.chryslj.database.MovieCategoryTable.TABLE_CATEGORY,
+                        movieCategoryTable.getColumnNames(), null, null, null,
+                        null, null);
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast())
         {
-            MovieList movieList = cursorToMovieList(cursor);
-            if (movieList != null)
+            MovieCategory movieCategory = cursorTomovieCategory(cursor);
+            if (movieCategory != null)
             {
-                movieLists.add(movieList);
+                movieCategorys.add(movieCategory);
             }
             cursor.moveToNext();
         }
 
         cursor.close();
-        return movieLists;
+        return movieCategorys;
     }
 
     /**
      * 
      * @param movie
-     * @param movieList
+     * @param movieCategory
      * @return
      */
-    public boolean addMovieToMovieList(Movie movie, MovieList movieList)
+    public boolean addMovieTomovieCategory(Movie movie,
+            MovieCategory movieCategory)
     {
         boolean movieAddedToList = true;
 
         ContentValues values = new ContentValues();
-        values.put(ListMovieAssociationTable.COLUMN_LISTID, movieList.getId());
-        values.put(ListMovieAssociationTable.COLUMN_MOVIEID, movie.getId());
+        values.put(CategoryMovieAssociationTable.COLUMN_CATEGORYID,
+                movieCategory.getId());
+        values.put(CategoryMovieAssociationTable.COLUMN_MOVIEID, movie.getId());
 
         database.beginTransaction();
 
@@ -318,8 +323,8 @@ public class MovieManagementSystem
         {
             long insertId =
                     database.insertOrThrow(
-                            ListMovieAssociationTable.TABLE_ASSOCIATIONS, null,
-                            values);
+                            CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
+                            null, values);
 
             if (insertId == -1)
             {
@@ -331,7 +336,7 @@ public class MovieManagementSystem
         }
         catch (SQLException sqlException)
         {
-            Log.e(TAG, "Unable to add \"" + movie + "\" to \"" + movieList +
+            Log.e(TAG, "Unable to add \"" + movie + "\" to \"" + movieCategory +
                     "\"." + sqlException.getMessage());
             movieAddedToList = false;
         }
@@ -348,7 +353,7 @@ public class MovieManagementSystem
      * @param currentLists
      * @return
      */
-    public String promptForList(List<MovieList> currentLists)
+    public String promptForList(List<MovieCategory> currentLists)
     {
         // TODO create the dialog to prompt for a list or create one.
         return null;
@@ -393,17 +398,17 @@ public class MovieManagementSystem
      * @param cursor
      * @return
      */
-    private MovieList cursorToMovieList(Cursor cursor)
+    private MovieCategory cursorTomovieCategory(Cursor cursor)
     {
-        MovieList movieList = null;
+        MovieCategory movieCategory = null;
         if (cursor.getCount() != 0)
         {
-            movieList = new MovieList();
-            movieList.setId(cursor.getInt(0));
-            movieList.setTitle(cursor.getString(1));
-            Log.d(TAG, "MovieList: " + movieList.toString());
+            movieCategory = new MovieCategory();
+            movieCategory.setId(cursor.getInt(0));
+            movieCategory.setTitle(cursor.getString(1));
+            Log.d(TAG, "movieCategory: " + movieCategory.toString());
         }
 
-        return movieList;
+        return movieCategory;
     }
 }

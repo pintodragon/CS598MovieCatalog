@@ -2,23 +2,24 @@ package edu.sunyit.chryslj.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public class ListMovieAssociationTable implements DatabaseTable
+public class CategoryMovieAssociationTable implements DatabaseTable
 {
-    public static final String TABLE_ASSOCIATIONS = "lists_associations";
+    public static final String TABLE_ASSOCIATIONS = "category_associations";
     public static final String TABLE_ASSOCIATIONS_BACKUP = TABLE_ASSOCIATIONS +
             "_backup";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_MOVIEID = "movie_id";
-    public static final String COLUMN_LISTID = "list_id";
+    public static final String COLUMN_CATEGORYID = "category_id";
 
     private static final String TABLE_CREATE = "CREATE TABLE " +
             TABLE_ASSOCIATIONS + "(" + COLUMN_ID +
             " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_MOVIEID +
-            " INTEGER NOT NULL, " + COLUMN_LISTID + " INTEGER NOT NULL," +
+            " INTEGER NOT NULL, " + COLUMN_CATEGORYID + " INTEGER NOT NULL," +
             " FOREIGN KEY(" + COLUMN_MOVIEID + ") REFERENCES " +
             MovieTable.TABLE_MOVIES + "(" + MovieTable.COLUMN_ID + ")" +
-            " FOREIGN KEY(" + COLUMN_LISTID + ") REFERENCES " +
-            ListTable.TABLE_LISTS + "(" + ListTable.COLUMN_ID + "));";
+            " FOREIGN KEY(" + COLUMN_CATEGORYID + ") REFERENCES " +
+            MovieCategoryTable.TABLE_CATEGORY + "(" +
+            MovieCategoryTable.COLUMN_ID + "));";
 
     // Used for upgrading the table.
     private static final String CREATE_BACKUP = "CREATE TEMPORARY TABLE " +
@@ -35,7 +36,7 @@ public class ListMovieAssociationTable implements DatabaseTable
     @Override
     public String[] getColumnNames()
     {
-        return new String[] { COLUMN_ID, COLUMN_MOVIEID, COLUMN_LISTID };
+        return new String[] { COLUMN_ID, COLUMN_MOVIEID, COLUMN_CATEGORYID };
     }
 
     @Override

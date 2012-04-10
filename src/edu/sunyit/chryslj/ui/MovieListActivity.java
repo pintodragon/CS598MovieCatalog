@@ -2,48 +2,42 @@ package edu.sunyit.chryslj.ui;
 
 import java.util.List;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
-public class MovieListActivity extends ListActivity
+public class MovieListActivity extends Activity
 {
     private static final String TAG = MovieListActivity.class.getName();
     private MovieManagementSystem movieMangementSystem;
 
-    private ArrayAdapter<Movie> adapter = null;
-    private ListView listView = null;
+    private TableLayout headerTableLayout;
+    private TableLayout bodyTableLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.movie_list);
 
         movieMangementSystem = new MovieManagementSystem(this);
         movieMangementSystem.open();
 
         List<Movie> values = movieMangementSystem.getAllMovies();
-
-        adapter =
-                new ArrayAdapter<Movie>(this,
-                        android.R.layout.simple_list_item_1, values);
-        listView = getListView();
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id)
-            {
-            }
-        });
+        headerTableLayout =
+                (TableLayout) findViewById(R.id.movie_main_table_layout);
+        String sortedBy =
+                getResources().getString(R.string.movie_table_sort, "None");
+        TableRow headerRow = (TableRow) headerTableLayout.getChildAt(0);
+        ((TextView) headerRow.getChildAt(headerRow.getChildCount() - 1))
+                .setText(sortedBy);
+        bodyTableLayout =
+                (TableLayout) findViewById(R.id.movie_data_table_layout);
     }
 
     @Override

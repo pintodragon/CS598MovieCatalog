@@ -4,27 +4,30 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public class ListTable implements DatabaseTable
+public class MovieCategoryTable implements DatabaseTable
 {
-    public static final String TABLE_LISTS = "lists";
-    public static final String TABLE_LISTS_BACKUP = TABLE_LISTS + "_backup";
+    public static final String TABLE_CATEGORY = "category";
+    public static final String TABLE_CATEGORY_BACKUP = TABLE_CATEGORY +
+            "_backup";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TITLE = "title";
 
-    private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_LISTS +
-            "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COLUMN_TITLE + " TEXT NOT NULL);";
+    private static final String TABLE_CREATE = "CREATE TABLE " +
+            TABLE_CATEGORY + "(" + COLUMN_ID +
+            " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TITLE +
+            " TEXT NOT NULL);";
 
     // Used for upgrading the table.
     private static final String CREATE_BACKUP = "CREATE TEMPORARY TABLE " +
-            TABLE_LISTS_BACKUP + " AS SELECT * FROM " + TABLE_LISTS + ";";
+            TABLE_CATEGORY_BACKUP + " AS SELECT * FROM " + TABLE_CATEGORY + ";";
 
-    private static final String DROP_TABLE = "DROP TABLE " + TABLE_LISTS + ";";
+    private static final String DROP_TABLE = "DROP TABLE " + TABLE_CATEGORY +
+            ";";
 
-    private static final String COPY_TABLE_BACK = "INSERT INTO " + TABLE_LISTS +
-            " SELECT * FROM " + TABLE_LISTS_BACKUP + ";";
+    private static final String COPY_TABLE_BACK = "INSERT INTO " +
+            TABLE_CATEGORY + " SELECT * FROM " + TABLE_CATEGORY_BACKUP + ";";
 
-    private static final String[][] defaultLists = new String[][] {
+    private static final String[][] defaultCategories = new String[][] {
             { "0", "Unsorted" }, { "1", "Wishlist" }, { "2", "Loaned" },
             { "3", "Borrowing" } };
 
@@ -65,12 +68,12 @@ public class ListTable implements DatabaseTable
         try
         {
 
-            for (String[] listVals : defaultLists)
+            for (String[] categoryVals : defaultCategories)
             {
                 ContentValues values = new ContentValues();
-                values.put(COLUMN_ID, Integer.parseInt(listVals[0]));
-                values.put(COLUMN_TITLE, listVals[1]);
-                database.insertOrThrow(TABLE_LISTS, null, values);
+                values.put(COLUMN_ID, Integer.parseInt(categoryVals[0]));
+                values.put(COLUMN_TITLE, categoryVals[1]);
+                database.insertOrThrow(TABLE_CATEGORY, null, values);
             }
         }
         catch (Exception e)
