@@ -5,11 +5,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 import edu.sunyit.chryslj.database.CategoryMovieAssociationTable;
 import edu.sunyit.chryslj.database.GenreTable;
@@ -22,7 +23,7 @@ import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
-public class MovieManagementSystem
+public class MovieManagementSystem extends ContentProvider
 {
     private static final String TAG = MovieManagementSystem.class
             .getSimpleName();
@@ -38,12 +39,14 @@ public class MovieManagementSystem
     private CategoryMovieAssociationTable associationTable =
             new CategoryMovieAssociationTable();
 
-    public MovieManagementSystem(Context context)
+    @Override
+    public boolean onCreate()
     {
         dbHelper =
-                new MovieDatabaseHelper(context, Arrays.asList(
+                new MovieDatabaseHelper(getContext(), Arrays.asList(
                         mediaFormatTable, ratingTable, genreTable, movieTable,
                         movieCategoryTable, associationTable));
+        return false;
     }
 
     public void open() throws SQLException
@@ -410,5 +413,42 @@ public class MovieManagementSystem
         }
 
         return movieCategory;
+    }
+
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getType(Uri uri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Uri insert(Uri uri, ContentValues values)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection,
+            String[] selectionArgs, String sortOrder)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int update(Uri uri, ContentValues values, String selection,
+            String[] selectionArgs)
+    {
+        // TODO Auto-generated method stub
+        return 0;
     }
 }

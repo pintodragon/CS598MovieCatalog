@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +35,7 @@ public class MovieListActivity extends Activity implements OnClickListener
         setContentView(R.layout.movie_list);
 
         // Connect to the movie management system.
-        movieManagementSystem = new MovieManagementSystem(this);
+        movieManagementSystem = new MovieManagementSystem();
         movieManagementSystem.open();
 
         headerTableLayout =
@@ -182,6 +183,7 @@ public class MovieListActivity extends Activity implements OnClickListener
      */
     public void onButtonClick(View view)
     {
+        Log.d(TAG, "View: " + view.getId());
         switch (view.getId())
         {
             case R.id.movie_add_manual:
@@ -195,8 +197,9 @@ public class MovieListActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public void onClick(View v)
+    public void onClick(View view)
     {
         // TODO Logic for when a table row is clicked.
+        Log.d(TAG, "View: " + view.getId());
     }
 }

@@ -92,11 +92,11 @@ public final class R {
         public static final int movie_table_personal_rating=0x7f070009;
         public static final int movie_table_sort=0x7f07000a;
         public static final int movie_table_title=0x7f070008;
+        public static final int provider_authority=0x7f070006;
         public static final int quit=0x7f070001;
-        public static final int take_pic=0x7f070003;
-        public static final int ycrcb_image_data=0x7f070004;
-        public static final int ycrcb_image_height=0x7f070006;
-        public static final int ycrcb_image_width=0x7f070005;
+        public static final int ycrcb_image_data=0x7f070003;
+        public static final int ycrcb_image_height=0x7f070005;
+        public static final int ycrcb_image_width=0x7f070004;
     }
     public static final class style {
         public static final int personalRatingBar=0x7f080000;

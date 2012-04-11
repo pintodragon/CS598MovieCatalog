@@ -1,6 +1,7 @@
 package edu.sunyit.chryslj.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.SeekBar;
@@ -36,6 +37,16 @@ public class MovieInfoActivity extends Activity implements
             boolean fromTouch)
     {
         ratingProgressText.setText("" + progress);
+    }
+
+    @Override
+    public void onResume()
+    {
+        Intent intent = getIntent();
+        if (intent != null)
+        {
+            // TODO fill in with stuff
+        }
     }
 
     @Override

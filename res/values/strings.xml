@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CS598MovieCatalog</string>
-    <string name="quit">Quit</string>
     <string name="main_title">CSC 598 Movie Catalog Project</string>
-    <string name="take_pic">Take Picture</string>
+    <string name="provider_authority">edu.sunyit.chryslj.movie.contentprovider</string>
+    <string name="app_quit">Quit</string>
+    
     <string name="ycrcb_image_data">imageData</string>
     <string name="ycrcb_image_width">imageWidth</string>
     <string name="ycrcb_image_height">imageHeight</string>
