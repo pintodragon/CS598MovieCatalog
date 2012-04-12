@@ -17,6 +17,7 @@
     <string name="movie_add_camera">Add Camera</string>
     <string name="movie_empty_text">There are no movies currently in the system</string>
 
+    <string name="movie_info_intent_title">movie_info_intent_title</string>
     <string name="movie_info_main_title">Movie Information</string>
 	<string name="movie_info_title">Title:</string>
 	<string name="movie_info_rating">Rated:</string>
@@ -25,7 +26,9 @@
     <string name="movie_info_personalrating">Personal Rating:</string>
     <string name="movie_info_personalrating_text"></string>
     <string name="movie_info_runtime">Run Time:</string>
+    <string name="movie_info_runtime_mins">Minutes</string>
     <string name="movie_info_lists">Associated Lists:</string>
+    <string name="movie_info_edit">Edit</string>
     <string name="movie_info_commit">Commit</string>
     <string name="movie_info_cancel">Cancel</string>
 </resources>

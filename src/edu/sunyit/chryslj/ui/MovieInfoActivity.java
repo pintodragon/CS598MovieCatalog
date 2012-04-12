@@ -22,9 +22,11 @@ public class MovieInfoActivity extends Activity implements
         SeekBar.OnSeekBarChangeListener
 {
     private static final String TAG = MovieInfoActivity.class.getSimpleName();
-    private MovieManagementSystem movieManagementSystem;
+
+    private MovieManagementSystem movieMangementSystem;
 
     private Movie currentMovie = null;
+    private boolean editable = true;
 
     private SeekBar ratingSeekBar;
     private Spinner formatSpinner;
@@ -40,19 +42,14 @@ public class MovieInfoActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_info);
 
-        // Connect to the movie management system.
-        movieManagementSystem = new MovieManagementSystem(getApplication());
+        movieMangementSystem = new MovieManagementSystem(getApplication());
 
         titleEditText = (EditText) findViewById(R.id.movie_info_title_text);
+        titleEditText.setText("");
 
-        ratingProgressText =
-                (TextView) findViewById(R.id.movie_info_rating_progress);
-        ratingProgressText.setText("" + 0);
-
-        runtimeText = (TextView) findViewById(R.id.movie_info_runtime_text);
-
-        ratingSeekBar = (SeekBar) findViewById(R.id.movie_info_seek_bar);
-        ratingSeekBar.setOnSeekBarChangeListener(this);
+        ratedSpinner = (Spinner) findViewById(R.id.movie_info_rating);
+        ratedSpinner.setAdapter(new ArrayAdapter<Rating>(this,
+                android.R.layout.simple_spinner_item, Rating.values()));
 
         formatSpinner = (Spinner) findViewById(R.id.movie_info_format);
         formatSpinner.setAdapter(new ArrayAdapter<MediaFormat>(this,
@@ -62,9 +59,16 @@ public class MovieInfoActivity extends Activity implements
         genreSpinner.setAdapter(new ArrayAdapter<Genre>(this,
                 android.R.layout.simple_spinner_item, Genre.values()));
 
-        ratedSpinner = (Spinner) findViewById(R.id.movie_info_rating);
-        ratedSpinner.setAdapter(new ArrayAdapter<Rating>(this,
-                android.R.layout.simple_spinner_item, Rating.values()));
+        ratingSeekBar = (SeekBar) findViewById(R.id.movie_info_seek_bar);
+        ratingSeekBar.setOnSeekBarChangeListener(this);
+        ratingSeekBar.setProgress(0);
+
+        ratingProgressText =
+                (TextView) findViewById(R.id.movie_info_rating_progress);
+        ratingProgressText.setText("" + 0);
+
+        runtimeText = (TextView) findViewById(R.id.movie_info_runtime_text);
+        runtimeText.setText("" + 0);
 
         Log.d(TAG, "TextView: " + ratingProgressText.getId() + " SeekBar: " +
                 ratingSeekBar.getId());
@@ -84,7 +88,31 @@ public class MovieInfoActivity extends Activity implements
         Intent intent = getIntent();
         if (intent != null)
         {
-            // TODO fill in with stuff
+            String movieTitle =
+                    intent.getStringExtra(getResources().getString(
+                            R.string.movie_info_intent_title));
+            if (movieTitle != null)
+            {
+                movieMangementSystem.open();
+                currentMovie = movieMangementSystem.getMovie(movieTitle);
+
+                titleEditText.setText(currentMovie.getTitle());
+                ratedSpinner.setSelection(currentMovie.getRated().getId());
+                formatSpinner.setSelection(currentMovie.getFormat().getId());
+                genreSpinner.setSelection(currentMovie.getGenre().getId());
+                ratingSeekBar.setProgress(currentMovie.getPersonalRaiting());
+                ratingProgressText.setText("" +
+                        currentMovie.getPersonalRaiting());
+                runtimeText.setText("" + currentMovie.getRunTime());
+            }
+
+            editable = false;
+            updateEditable();
+        }
+        else
+        {
+            editable = true;
+            updateEditable();
         }
     }
 
@@ -113,10 +141,29 @@ public class MovieInfoActivity extends Activity implements
         {
             case R.id.movie_info_commit:
                 addOrUpdateMovie();
+                finish();
                 break;
             case R.id.movie_info_cancel:
+                finish();
+                break;
+            case R.id.movie_info_edit:
+                findViewById(R.id.movie_info_edit)
+                        .setVisibility(View.INVISIBLE);
+                editable = true;
+                updateEditable();
                 break;
         }
+    }
+
+    private void updateEditable()
+    {
+        titleEditText.setEnabled(editable);
+        ratedSpinner.setEnabled(editable);
+        formatSpinner.setEnabled(editable);
+        genreSpinner.setEnabled(editable);
+        ratingSeekBar.setEnabled(editable);
+        ratingProgressText.setEnabled(editable);
+        runtimeText.setEnabled(editable);
     }
 
     private void addOrUpdateMovie()
@@ -155,32 +202,34 @@ public class MovieInfoActivity extends Activity implements
         currentMovie.setRunTime(Short.parseShort(runtimeText.getText()
                 .toString()));
 
-        MovieManagementSystem movieMangementSystem =
-                new MovieManagementSystem(getApplication());
         movieMangementSystem.open();
 
         if (isUpdate)
         {
             if (movieMangementSystem.updateMovie(currentMovie))
             {
-
+                Toast.makeText(getApplication(),
+                        currentMovie.getTitle() + " has been updated!",
+                        Toast.LENGTH_LONG).show();
             }
             else
             {
-
+                Toast.makeText(getApplication(),
+                        currentMovie.getTitle() + " was not updated.",
+                        Toast.LENGTH_LONG).show();
             }
         }
         else
         {
             if (movieMangementSystem.addMovie(currentMovie))
             {
-                Toast.makeText(this,
+                Toast.makeText(getApplication(),
                         currentMovie.getTitle() + " has been added!",
                         Toast.LENGTH_LONG).show();
             }
             else
             {
-                Toast.makeText(this,
+                Toast.makeText(getApplication(),
                         currentMovie.getTitle() + " was not added.",
                         Toast.LENGTH_LONG).show();
             }

@@ -321,7 +321,7 @@ public class MovieManagementSystem
      * @param movieCategory
      * @return
      */
-    public synchronized boolean addMovieTomovieCategory(Movie movie,
+    public synchronized boolean addMovieToMovieCategory(Movie movie,
             MovieCategory movieCategory)
     {
         boolean movieAddedToList = true;
@@ -424,5 +424,19 @@ public class MovieManagementSystem
         }
 
         return movieCategory;
+    }
+
+    public Movie getMovie(String movieTitle)
+    {
+        Cursor cursor =
+                database.query(MovieTable.TABLE_MOVIES,
+                        movieTable.getColumnNames(), MovieTable.COLUMN_TITLE +
+                                "=" + "?", new String[] { movieTitle }, null,
+                        null, null);
+        cursor.moveToFirst();
+
+        Movie movie = cursorToMovie(cursor);
+
+        return movie;
     }
 }

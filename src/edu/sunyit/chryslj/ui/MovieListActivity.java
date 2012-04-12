@@ -55,6 +55,8 @@ public class MovieListActivity extends Activity implements OnClickListener
     protected void onResume()
     {
         super.onResume();
+        bodyTableLayout.removeAllViews();
+        updateTableLayouts();
     }
 
     @Override
@@ -105,9 +107,11 @@ public class MovieListActivity extends Activity implements OnClickListener
                 TableRow.LayoutParams layoutParams =
                         new TableRow.LayoutParams(dPValue,
                                 LayoutParams.FILL_PARENT);
-                newTableRow.addView(
-                        createIndexView(movieIndex + 1,
-                                bodyTableLayout.getContext()), 0, layoutParams);
+                newTableRow
+                        .addView(
+                                createView(movieIndex + 1,
+                                        bodyTableLayout.getContext()), 0,
+                                layoutParams);
 
                 // Get the DP value of the column in the table row. 60 dp is
                 // equivalent to 60 pixels.
@@ -119,7 +123,7 @@ public class MovieListActivity extends Activity implements OnClickListener
                         new TableRow.LayoutParams(dPValue,
                                 LayoutParams.FILL_PARENT);
                 newTableRow.addView(
-                        createTitleView(currentMovie.getTitle(),
+                        createView(currentMovie.getTitle(),
                                 bodyTableLayout.getContext()), 1, layoutParams);
 
                 // Get the DP value of the column in the table row. 40 dp is
@@ -132,14 +136,14 @@ public class MovieListActivity extends Activity implements OnClickListener
                         new TableRow.LayoutParams(dPValue,
                                 LayoutParams.FILL_PARENT);
                 newTableRow.addView(
-                        createCategoryView(currentMovie.getPersonalRaiting(),
+                        createView(currentMovie.getPersonalRaiting(),
                                 bodyTableLayout.getContext()), 2, layoutParams);
 
                 if (isSorted)
                 {
                     // TODO Figure out the sorted thing.
                     newTableRow.addView(
-                            createSortedView(currentMovie.getTitle(),
+                            createView(currentMovie.getTitle(),
                                     bodyTableLayout.getContext()), 3);
                 }
                 else
@@ -159,39 +163,26 @@ public class MovieListActivity extends Activity implements OnClickListener
         }
     }
 
-    private TextView createIndexView(int index, Context context)
+    private TextView createView(int value, Context context)
     {
         TextView textView = new TextView(context);
-        textView.setText("" + index);
+        int dPValue =
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3,
+                        getResources().getDisplayMetrics());
+        textView.setPadding(dPValue, dPValue, dPValue, dPValue);
+        textView.setText("" + value);
 
         return textView;
     }
 
-    private TextView createTitleView(String title, Context context)
+    private TextView createView(String value, Context context)
     {
         TextView textView = new TextView(context);
-        textView.setText(title);
-
-        return textView;
-    }
-
-    private TextView createCategoryView(int personalRating, Context context)
-    {
-        TextView indexView = new TextView(context);
-        indexView.setText("" + personalRating);
-
-        return indexView;
-    }
-
-    private TextView createSortedView(String sorted, Context context)
-    {
-        TextView textView = new TextView(context);
-        LayoutParams params = textView.getLayoutParams();
-        params.width =
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        55, getResources().getDisplayMetrics());
-        textView.setLayoutParams(params);
-        textView.setText(sorted);
+        int dPValue =
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3,
+                        getResources().getDisplayMetrics());
+        textView.setPadding(dPValue, dPValue, dPValue, dPValue);
+        textView.setText(value);
 
         return textView;
     }
@@ -229,6 +220,15 @@ public class MovieListActivity extends Activity implements OnClickListener
             Log.d(TAG, "View: " +
                     ((TextView) clickedTableRow.getChildAt(0)).getText()
                             .toString());
+
+            TextView titleView = (TextView) clickedTableRow.getChildAt(1);
+
+            Intent intent = new Intent();
+            intent.putExtra(
+                    getResources().getString(R.string.movie_info_intent_title),
+                    titleView.getText().toString());
+            intent.setClass(getApplication(), MovieInfoActivity.class);
+            startActivity(intent);
         }
     }
 }

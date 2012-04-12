@@ -12,6 +12,8 @@
         android:text="@string/movie_info_main_title"
         android:textSize="25dp" />
             
+    <View android:layout_width="match_parent" android:layout_height="2dip" android:background="#FF909090" />
+    
 	<TableLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
@@ -21,71 +23,98 @@
 			<TextView
 			    android:layout_width="80dp"
 			    android:layout_gravity="center_vertical"
-			    android:text="@string/movie_info_title" />
+			    android:text="@string/movie_info_title"
+                android:padding="3dip" />
 
 			<EditText
 			    android:id="@+id/movie_info_title_text"
 			    android:layout_width="wrap_content"
 			    android:layout_gravity="center_vertical"
-			    android:inputType="text" />
+			    android:inputType="text"
+                android:padding="3dip" />
 		</TableRow>
 		
 		<TableRow>
 			<TextView android:text="@string/movie_info_rating"
                 android:layout_gravity="center_vertical"
-				android:layout_width="80dp" />
+				android:layout_width="80dp"
+                android:padding="3dip" />
 
 			<Spinner
 			    android:id="@+id/movie_info_rating"
 			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content" />
+			    android:layout_height="wrap_content"
+                android:padding="3dip" />
 
 		</TableRow>
 		
 		<TableRow>
 			<TextView android:text="@string/movie_info_genre"
                 android:layout_gravity="center_vertical"
-				android:layout_width="80dp" />
+				android:layout_width="80dp"
+                android:padding="3dip" />
 
 			<Spinner
 			    android:id="@+id/movie_info_genre"
 			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content" />
+			    android:layout_height="wrap_content"
+                android:padding="3dip" />
 
 		</TableRow>
 		
 		<TableRow>
 			<TextView android:text="@string/movie_info_format"
                 android:layout_gravity="center_vertical"
-				android:layout_width="80dp" />
+				android:layout_width="80dp"
+                android:padding="3dip" />
 
 			<Spinner
 			    android:id="@+id/movie_info_format"
 			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content" />
+			    android:layout_height="wrap_content"
+                android:padding="3dip" />
 		</TableRow>
-        
+                
         <TableRow>
             <TextView
                 android:layout_width="80dp"
                 android:layout_gravity="center_vertical"
-                android:text="@string/movie_info_runtime" />
+                android:text="@string/movie_info_runtime"
+                android:padding="3dip" />
 
-            <EditText
-                android:id="@+id/movie_info_runtime_text"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:inputType="number" />
+                android:layout_height="wrap_content"
+                android:padding="3dip" >
+                
+	            <EditText
+	                android:id="@+id/movie_info_runtime_text"
+	                android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+	                android:layout_gravity="center_vertical"
+	                android:inputType="number" />
+	            
+	            <TextView
+	                android:id="@+id/movie_info_runtime_mins"
+	                android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+	                android:layout_gravity="center_vertical"
+	                android:text="@string/movie_info_runtime_mins" />
+	            
+	        </LinearLayout>
         </TableRow>
 		
 		<TableRow>
 			<TextView android:text="@string/movie_info_personalrating"
                 android:layout_gravity="center_vertical"
-				android:layout_width="80dp" />
+				android:layout_width="80dp"
+                android:padding="3dip" />
 			<LinearLayout
 			    android:layout_width="wrap_content"
                 android:layout_gravity="center_vertical"
-			    android:layout_height="wrap_content" >
+			    android:layout_height="wrap_content"
+                android:padding="3dip" >
 				<SeekBar
 				    android:id="@+id/movie_info_seek_bar"
 				    android:layout_width="0dip"
@@ -103,22 +132,32 @@
 		</TableRow>
 	
 	</TableLayout>
-
+
+    <View android:layout_width="match_parent" android:layout_height="2dip" android:background="#FF909090" />
 	<LinearLayout
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="horizontal" >
+
+		<Button
+		    android:id="@+id/movie_info_edit"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onButtonClick"
+		    android:text="@string/movie_info_edit" />
+
 		<Button
 		    android:id="@+id/movie_info_commit"
-		    android:layout_width="wrap_content"
+		    android:layout_width="80dp"
 		    android:layout_height="wrap_content"
 		    android:layout_gravity="center_horizontal"
 		    android:onClick="onButtonClick"
 		    android:text="@string/movie_info_commit" />
 		<Button
 		    android:id="@+id/movie_info_cancel"
-		    android:layout_width="wrap_content"
+		    android:layout_width="80dp"
 		    android:layout_height="wrap_content"
 		    android:layout_gravity="center_horizontal"
             android:onClick="onButtonClick"

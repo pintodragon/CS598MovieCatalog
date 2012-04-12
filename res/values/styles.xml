@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="personalRatingBar" parent="@android:style/Widget.RatingBar">
-        <item name="android:minHeight">17dp</item>
-        <item name="android:maxHeight">17dp</item>
-        <item name="android:minWidth">12dp</item>
-        <item name="android:maxWidth">12dp</item>
-    </style>
-</resources>

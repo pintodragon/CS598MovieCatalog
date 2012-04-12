@@ -27,19 +27,23 @@
             <TableRow>
                 <TextView
                     android:layout_width="5dp"
-                    android:text="@string/movie_table_index" />
+                    android:text="@string/movie_table_index"
+                    android:padding="3dp" />
                 
                 <TextView
                     android:layout_width="60dp"
-                    android:text="@string/movie_table_title" />
+                    android:text="@string/movie_table_title"
+                    android:padding="3dp" />
 
                 <TextView
                     android:layout_width="40dp"
-                    android:text="@string/movie_table_personal_rating" />
+                    android:text="@string/movie_table_personal_rating"
+                    android:padding="3dp" />
 
                 <TextView
                     android:layout_width="50dp"
-                    android:text="@string/movie_table_sort" />
+                    android:text="@string/movie_table_sort"
+                    android:padding="3dp" />
             </TableRow>
 
             <ScrollView android:layout_width="match_parent" android:layout_height="410dp" >
@@ -48,23 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:stretchColumns="0, 1, 2, 3" >
-                    <TableRow>
-                <TextView
-                    android:layout_width="5dp"
-                    android:text="@string/movie_table_index" />
-                
-                <TextView
-                    android:layout_width="60dp"
-                    android:text="@string/movie_table_title" />
-
-                <TextView
-                    android:layout_width="40dp"
-                    android:text="@string/movie_table_personal_rating" />
-
-                <TextView
-                    android:layout_width="50dp"
-                    android:text="@string/movie_table_sort" />
-                    </TableRow>
+                    
                 </TableLayout>
             </ScrollView>
         </TableLayout>
