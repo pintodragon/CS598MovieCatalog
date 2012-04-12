@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -93,6 +94,7 @@ public class MovieListActivity extends Activity implements OnClickListener
                 newTableRow
                         .setBackgroundColor(android.R.drawable.list_selector_background);
                 newTableRow.setOnClickListener(this);
+                newTableRow.setClickable(true);
 
                 // Get the DP value of the column in the table row. 5 dp is
                 // equivalent to 5 pixels.
@@ -219,6 +221,14 @@ public class MovieListActivity extends Activity implements OnClickListener
     public void onClick(View view)
     {
         // TODO Logic for when a table row is clicked.
-        Log.d(TAG, "View: " + view.getId());
+        if (view instanceof TableRow)
+        {
+            TableRow clickedTableRow = (TableRow) view;
+            view.setBackgroundColor(Color.CYAN);
+            Log.d(TAG, "View: " + clickedTableRow.getChildCount());
+            Log.d(TAG, "View: " +
+                    ((TextView) clickedTableRow.getChildAt(0)).getText()
+                            .toString());
+        }
     }
 }

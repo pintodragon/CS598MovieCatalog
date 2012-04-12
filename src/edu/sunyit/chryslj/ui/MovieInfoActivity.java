@@ -22,6 +22,7 @@ public class MovieInfoActivity extends Activity implements
         SeekBar.OnSeekBarChangeListener
 {
     private static final String TAG = MovieInfoActivity.class.getSimpleName();
+    private MovieManagementSystem movieManagementSystem;
 
     private Movie currentMovie = null;
 
@@ -38,6 +39,9 @@ public class MovieInfoActivity extends Activity implements
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_info);
+
+        // Connect to the movie management system.
+        movieManagementSystem = new MovieManagementSystem(getApplication());
 
         titleEditText = (EditText) findViewById(R.id.movie_info_title_text);
 

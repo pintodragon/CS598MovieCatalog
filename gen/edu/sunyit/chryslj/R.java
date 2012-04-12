@@ -46,8 +46,7 @@ public final class R {
         public static final int preview_running=0x7f060001;
         public static final int preview_surface=0x7f060004;
         public static final int preview_taken=0x7f060003;
-        public static final int quit=0x7f06001d;
-        public static final int spinner1=0x7f06001c;
+        public static final int quit=0x7f06001c;
         public static final int take_preview=0x7f060002;
         public static final int textView1=0x7f060007;
     }
@@ -57,7 +56,6 @@ public final class R {
         public static final int main=0x7f030002;
         public static final int movie_info=0x7f030003;
         public static final int movie_list=0x7f030004;
-        public static final int testing=0x7f030005;
     }
     public static final class menu {
         public static final int app_menu=0x7f090000;
