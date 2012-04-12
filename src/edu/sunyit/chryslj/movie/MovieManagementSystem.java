@@ -5,12 +5,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.util.Log;
 import edu.sunyit.chryslj.database.CategoryMovieAssociationTable;
 import edu.sunyit.chryslj.database.GenreTable;
@@ -23,12 +22,12 @@ import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
-public class MovieManagementSystem extends ContentProvider
+public class MovieManagementSystem
 {
     private static final String TAG = MovieManagementSystem.class
             .getSimpleName();
 
-    private SQLiteDatabase database;
+    private SQLiteDatabase database = null;
     private MovieDatabaseHelper dbHelper;
 
     private MediaFormatTable mediaFormatTable = new MediaFormatTable();
@@ -39,24 +38,30 @@ public class MovieManagementSystem extends ContentProvider
     private CategoryMovieAssociationTable associationTable =
             new CategoryMovieAssociationTable();
 
-    @Override
-    public boolean onCreate()
+    public MovieManagementSystem(Context context)
     {
         dbHelper =
-                new MovieDatabaseHelper(getContext(), Arrays.asList(
+                new MovieDatabaseHelper(context, Arrays.asList(
                         mediaFormatTable, ratingTable, genreTable, movieTable,
                         movieCategoryTable, associationTable));
-        return false;
+        Log.d(TAG, "Database helper created for context: " + context);
     }
 
-    public void open() throws SQLException
+    public synchronized void open() throws SQLException
     {
-        database = dbHelper.getWritableDatabase();
+        if (database == null || !database.isOpen())
+        {
+            database = dbHelper.getWritableDatabase();
+        }
     }
 
-    public void close()
+    public synchronized void close()
     {
-        dbHelper.close();
+        if (database.isOpen())
+        {
+            database.close();
+            dbHelper.close();
+        }
     }
 
     /**
@@ -64,7 +69,7 @@ public class MovieManagementSystem extends ContentProvider
      * @param newMovie
      * @return
      */
-    public boolean addMovie(Movie newMovie)
+    public synchronized boolean addMovie(Movie newMovie)
     {
         boolean movieAdded = true;
 
@@ -107,12 +112,19 @@ public class MovieManagementSystem extends ContentProvider
         return movieAdded;
     }
 
+    public synchronized boolean updateMovie(Movie movie)
+    {
+        boolean movieUpdated = false;
+
+        return movieUpdated;
+    }
+
     /**
      * 
      * @param movie
      * @return
      */
-    public boolean removeMovie(Movie movie)
+    public synchronized boolean removeMovie(Movie movie)
     {
         boolean movieRemoved = false;
 
@@ -142,7 +154,7 @@ public class MovieManagementSystem extends ContentProvider
      * @param movies
      * @return
      */
-    public boolean removeMovie(List<Movie> movies)
+    public synchronized boolean removeMovie(List<Movie> movies)
     {
         boolean moviesRemoved = true;
 
@@ -158,7 +170,7 @@ public class MovieManagementSystem extends ContentProvider
      * 
      * @return
      */
-    public List<Movie> getAllMovies()
+    public synchronized List<Movie> getAllMovies()
     {
         List<Movie> movies = new ArrayList<Movie>();
         Cursor cursor =
@@ -187,7 +199,7 @@ public class MovieManagementSystem extends ContentProvider
      * @param movieCategory
      * @return
      */
-    public boolean addList(MovieCategory movieCategory)
+    public synchronized boolean addList(MovieCategory movieCategory)
     {
         boolean listAdded = true;
 
@@ -229,7 +241,7 @@ public class MovieManagementSystem extends ContentProvider
      * @param movieCategory
      * @return
      */
-    public boolean removeList(MovieCategory movieCategory)
+    public synchronized boolean removeList(MovieCategory movieCategory)
     {
         boolean ListRemoved = false;
 
@@ -264,7 +276,7 @@ public class MovieManagementSystem extends ContentProvider
      * @param lists
      * @return
      */
-    public boolean removeList(List<MovieCategory> lists)
+    public synchronized boolean removeList(List<MovieCategory> lists)
     {
         boolean listsRemoved = true;
 
@@ -280,19 +292,18 @@ public class MovieManagementSystem extends ContentProvider
      * 
      * @return
      */
-    public List<MovieCategory> getAllLists()
+    public synchronized List<MovieCategory> getAllCategories()
     {
         List<MovieCategory> movieCategorys = new ArrayList<MovieCategory>();
         Cursor cursor =
-                database.query(
-                        edu.sunyit.chryslj.database.MovieCategoryTable.TABLE_CATEGORY,
+                database.query(MovieCategoryTable.TABLE_CATEGORY,
                         movieCategoryTable.getColumnNames(), null, null, null,
                         null, null);
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast())
         {
-            MovieCategory movieCategory = cursorTomovieCategory(cursor);
+            MovieCategory movieCategory = cursorToMovieCategory(cursor);
             if (movieCategory != null)
             {
                 movieCategorys.add(movieCategory);
@@ -310,7 +321,7 @@ public class MovieManagementSystem extends ContentProvider
      * @param movieCategory
      * @return
      */
-    public boolean addMovieTomovieCategory(Movie movie,
+    public synchronized boolean addMovieTomovieCategory(Movie movie,
             MovieCategory movieCategory)
     {
         boolean movieAddedToList = true;
@@ -356,7 +367,7 @@ public class MovieManagementSystem extends ContentProvider
      * @param currentLists
      * @return
      */
-    public String promptForList(List<MovieCategory> currentLists)
+    public synchronized String promptForList(List<MovieCategory> currentLists)
     {
         // TODO create the dialog to prompt for a list or create one.
         return null;
@@ -366,7 +377,7 @@ public class MovieManagementSystem extends ContentProvider
      * 
      * @return
      */
-    public Collection<String> getChangesSinceLastSync()
+    public synchronized Collection<String> getChangesSinceLastSync()
     {
         // TODO
         return null;
@@ -401,7 +412,7 @@ public class MovieManagementSystem extends ContentProvider
      * @param cursor
      * @return
      */
-    private MovieCategory cursorTomovieCategory(Cursor cursor)
+    private MovieCategory cursorToMovieCategory(Cursor cursor)
     {
         MovieCategory movieCategory = null;
         if (cursor.getCount() != 0)
@@ -413,42 +424,5 @@ public class MovieManagementSystem extends ContentProvider
         }
 
         return movieCategory;
-    }
-
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public String getType(Uri uri)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Uri insert(Uri uri, ContentValues values)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
-            String[] selectionArgs, String sortOrder)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public int update(Uri uri, ContentValues values, String selection,
-            String[] selectionArgs)
-    {
-        // TODO Auto-generated method stub
-        return 0;
     }
 }

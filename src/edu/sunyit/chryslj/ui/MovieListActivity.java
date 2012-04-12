@@ -35,8 +35,7 @@ public class MovieListActivity extends Activity implements OnClickListener
         setContentView(R.layout.movie_list);
 
         // Connect to the movie management system.
-        movieManagementSystem = new MovieManagementSystem();
-        movieManagementSystem.open();
+        movieManagementSystem = new MovieManagementSystem(getApplication());
 
         headerTableLayout =
                 (TableLayout) findViewById(R.id.movie_main_table_layout);
@@ -54,25 +53,25 @@ public class MovieListActivity extends Activity implements OnClickListener
     @Override
     protected void onResume()
     {
-        movieManagementSystem.open();
         super.onResume();
     }
 
     @Override
     protected void onPause()
     {
-        movieManagementSystem.close();
         super.onPause();
     }
 
     private void updateTableLayouts()
     {
+        movieManagementSystem.open();
         List<Movie> movieList = movieManagementSystem.getAllMovies();
+        movieManagementSystem.close();
 
         if (movieList.isEmpty())
         {
             findViewById(R.id.movie_list_table_container).setVisibility(
-                    View.GONE);
+                    View.INVISIBLE);
             bodyTableLayout.removeAllViews();
             findViewById(R.id.movie_list_empty_textview).setVisibility(
                     View.VISIBLE);
@@ -88,20 +87,51 @@ public class MovieListActivity extends Activity implements OnClickListener
             for (int movieIndex = 0; movieIndex < movieList.size(); movieIndex++)
             {
                 Movie currentMovie = movieList.get(movieIndex);
-                TableRow newTableRow =
-                        new TableRow(bodyTableLayout.getContext());
+                TableRow newTableRow = new TableRow(getApplication());
+                newTableRow.setLayoutParams(new TableRow.LayoutParams(
+                        LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
                 newTableRow
                         .setBackgroundColor(android.R.drawable.list_selector_background);
                 newTableRow.setOnClickListener(this);
+
+                // Get the DP value of the column in the table row. 5 dp is
+                // equivalent to 5 pixels.
+                int dPValue =
+                        (int) TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP, 5, getResources()
+                                        .getDisplayMetrics());
+                TableRow.LayoutParams layoutParams =
+                        new TableRow.LayoutParams(dPValue,
+                                LayoutParams.FILL_PARENT);
                 newTableRow.addView(
                         createIndexView(movieIndex + 1,
-                                bodyTableLayout.getContext()), 0);
+                                bodyTableLayout.getContext()), 0, layoutParams);
+
+                // Get the DP value of the column in the table row. 60 dp is
+                // equivalent to 60 pixels.
+                dPValue =
+                        (int) TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP, 60, getResources()
+                                        .getDisplayMetrics());
+                layoutParams =
+                        new TableRow.LayoutParams(dPValue,
+                                LayoutParams.FILL_PARENT);
                 newTableRow.addView(
                         createTitleView(currentMovie.getTitle(),
-                                bodyTableLayout.getContext()), 1);
+                                bodyTableLayout.getContext()), 1, layoutParams);
+
+                // Get the DP value of the column in the table row. 40 dp is
+                // equivalent to 40 pixels.
+                dPValue =
+                        (int) TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP, 40, getResources()
+                                        .getDisplayMetrics());
+                layoutParams =
+                        new TableRow.LayoutParams(dPValue,
+                                LayoutParams.FILL_PARENT);
                 newTableRow.addView(
                         createCategoryView(currentMovie.getPersonalRaiting(),
-                                bodyTableLayout.getContext()), 2);
+                                bodyTableLayout.getContext()), 2, layoutParams);
 
                 if (isSorted)
                 {
@@ -112,13 +142,17 @@ public class MovieListActivity extends Activity implements OnClickListener
                 }
                 else
                 {
+                    headerTableLayout.setColumnCollapsed(3, true);
                     bodyTableLayout.setColumnCollapsed(3, true);
                 }
 
-                bodyTableLayout.addView(newTableRow);
+                bodyTableLayout.addView(newTableRow,
+                        new TableLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                                LayoutParams.WRAP_CONTENT));
             }
 
             // Force a redraw.
+            bodyTableLayout.setVisibility(View.VISIBLE);
             bodyTableLayout.invalidate();
         }
     }
@@ -126,12 +160,7 @@ public class MovieListActivity extends Activity implements OnClickListener
     private TextView createIndexView(int index, Context context)
     {
         TextView textView = new TextView(context);
-        LayoutParams params = textView.getLayoutParams();
-        params.width =
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5,
-                        getResources().getDisplayMetrics());
-        textView.setLayoutParams(params);
-        textView.setText(index);
+        textView.setText("" + index);
 
         return textView;
     }
@@ -139,11 +168,6 @@ public class MovieListActivity extends Activity implements OnClickListener
     private TextView createTitleView(String title, Context context)
     {
         TextView textView = new TextView(context);
-        LayoutParams params = textView.getLayoutParams();
-        params.width =
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        60, getResources().getDisplayMetrics());
-        textView.setLayoutParams(params);
         textView.setText(title);
 
         return textView;
@@ -152,12 +176,7 @@ public class MovieListActivity extends Activity implements OnClickListener
     private TextView createCategoryView(int personalRating, Context context)
     {
         TextView indexView = new TextView(context);
-        LayoutParams params = indexView.getLayoutParams();
-        params.width =
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        40, getResources().getDisplayMetrics());
-        indexView.setLayoutParams(params);
-        indexView.setText(personalRating);
+        indexView.setText("" + personalRating);
 
         return indexView;
     }

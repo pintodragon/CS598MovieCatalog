@@ -19,19 +19,13 @@
 
     <string name="movie_info_main_title">Movie Information</string>
 	<string name="movie_info_title">Title:</string>
-	<string name="movie_info_title_text"></string>
-	<string name="movie_info_rating">Rating:</string>
-	<string name="movie_info_rating_text"></string>
+	<string name="movie_info_rating">Rated:</string>
     <string name="movie_info_genre">Genre:</string>
-    <string name="movie_info_genre_text"></string>
     <string name="movie_info_format">Format:</string>
-    <string name="movie_info_format_text"></string>
     <string name="movie_info_personalrating">Personal Rating:</string>
     <string name="movie_info_personalrating_text"></string>
     <string name="movie_info_runtime">Run Time:</string>
-    <string name="movie_info_runtime_text"></string>
     <string name="movie_info_lists">Associated Lists:</string>
-    <string name="movie_info_lists_text"></string>
     <string name="movie_info_commit">Commit</string>
     <string name="movie_info_cancel">Cancel</string>
 </resources>

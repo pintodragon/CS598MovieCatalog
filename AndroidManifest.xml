@@ -27,7 +27,6 @@
         </activity>
        <activity android:name=".ui.MovieInfoActivity" android:screenOrientation="portrait"></activity>
        <activity android:name=".ui.MovieListActivity" android:screenOrientation="portrait"></activity>
-       <provider android:authorities="@string/provider_authority" android:name=".movie.MovieManagementSystem" android:exported="false" android:multiprocess="false" android:enabled="true"></provider>
     </application>
 
 </manifest>
