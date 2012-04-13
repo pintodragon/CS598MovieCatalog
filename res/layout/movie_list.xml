@@ -22,7 +22,8 @@
             android:id="@+id/movie_main_table_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:stretchColumns="0, 1, 2, 3" >
+            android:stretchColumns="*"
+            android:shrinkColumns="3" >
 
             <TableRow>
                 <TextView
@@ -46,14 +47,19 @@
                     android:padding="3dp" />
             </TableRow>
 
-            <ScrollView android:layout_width="match_parent" android:layout_height="410dp" >
-                <TableLayout
-                    android:id="@+id/movie_data_table_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:stretchColumns="0, 1, 2, 3" >
-                    
-                </TableLayout>
+            <ScrollView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:isScrollContainer="true" >
+	            <TableLayout
+	                android:id="@+id/movie_data_table_layout"
+	                android:layout_width="match_parent"
+	                android:layout_height="410dp"
+			        android:stretchColumns="*"
+			        android:shrinkColumns="3"
+			        android:scrollbars="vertical" >
+	                
+	            </TableLayout>
             </ScrollView>
         </TableLayout>
     </LinearLayout>

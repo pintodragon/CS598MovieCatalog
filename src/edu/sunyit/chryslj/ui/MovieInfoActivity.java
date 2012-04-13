@@ -1,6 +1,8 @@
 package edu.sunyit.chryslj.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -125,6 +127,11 @@ public class MovieInfoActivity extends Activity implements
         // Do nothing
     }
 
+    /**
+     * This method is called when a button on this activity is pressed.
+     * 
+     * @param view
+     */
     public void onButtonClick(View view)
     {
         switch (view.getId())
@@ -137,8 +144,7 @@ public class MovieInfoActivity extends Activity implements
                 finish();
                 break;
             case R.id.movie_info_delete:
-                deleteMovie();
-                finish();
+                showConfirmDialog();
                 break;
         }
     }
@@ -235,5 +241,34 @@ public class MovieInfoActivity extends Activity implements
 
             movieMangementSystem.close();
         }
+    }
+
+    private void showConfirmDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(
+                "Are you sure you want to delete \"" +
+                        MovieInfoActivity.this.currentMovie.getTitle() + "\"?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        MovieInfoActivity.this.deleteMovie();
+                        MovieInfoActivity.this.finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.create().show();
     }
 }
