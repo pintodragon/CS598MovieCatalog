@@ -72,6 +72,9 @@ public class MovieInfoActivity extends Activity implements
 
         Log.d(TAG, "TextView: " + ratingProgressText.getId() + " SeekBar: " +
                 ratingSeekBar.getId());
+
+        editable = true;
+        updateEditable();
     }
 
     @Override
@@ -104,10 +107,15 @@ public class MovieInfoActivity extends Activity implements
                 ratingProgressText.setText("" +
                         currentMovie.getPersonalRaiting());
                 runtimeText.setText("" + currentMovie.getRunTime());
-            }
 
-            editable = false;
-            updateEditable();
+                editable = false;
+                updateEditable();
+            }
+            else
+            {
+                editable = true;
+                updateEditable();
+            }
         }
         else
         {
@@ -147,8 +155,6 @@ public class MovieInfoActivity extends Activity implements
                 finish();
                 break;
             case R.id.movie_info_edit:
-                findViewById(R.id.movie_info_edit)
-                        .setVisibility(View.INVISIBLE);
                 editable = true;
                 updateEditable();
                 break;
@@ -164,6 +170,15 @@ public class MovieInfoActivity extends Activity implements
         ratingSeekBar.setEnabled(editable);
         ratingProgressText.setEnabled(editable);
         runtimeText.setEnabled(editable);
+
+        if (editable)
+        {
+            findViewById(R.id.movie_info_edit).setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            findViewById(R.id.movie_info_edit).setVisibility(View.INVISIBLE);
+        }
     }
 
     private void addOrUpdateMovie()
