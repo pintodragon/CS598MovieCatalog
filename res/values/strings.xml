@@ -28,7 +28,7 @@
     <string name="movie_info_runtime">Run Time:</string>
     <string name="movie_info_runtime_mins">Minutes</string>
     <string name="movie_info_lists">Associated Lists:</string>
-    <string name="movie_info_edit">Edit</string>
+    <string name="movie_info_delete">Delete</string>
     <string name="movie_info_commit">Commit</string>
     <string name="movie_info_cancel">Cancel</string>
 </resources>

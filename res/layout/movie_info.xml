@@ -141,14 +141,6 @@
         android:orientation="horizontal" >
 
 		<Button
-		    android:id="@+id/movie_info_edit"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:onClick="onButtonClick"
-		    android:text="@string/movie_info_edit" />
-
-		<Button
 		    android:id="@+id/movie_info_commit"
 		    android:layout_width="80dp"
 		    android:layout_height="wrap_content"
@@ -162,6 +154,15 @@
 		    android:layout_gravity="center_horizontal"
             android:onClick="onButtonClick"
 		    android:text="@string/movie_info_cancel" />
+
+		<Button
+		    android:id="@+id/movie_info_delete"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onButtonClick"
+            android:text="@string/movie_info_delete" />
+
 	</LinearLayout>
 
 </LinearLayout>

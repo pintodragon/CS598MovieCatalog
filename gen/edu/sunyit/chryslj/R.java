@@ -29,9 +29,9 @@ public final class R {
         public static final int movie_add_camera=0x7f06001d;
         public static final int movie_add_manual=0x7f06001c;
         public static final int movie_data_table_layout=0x7f06001a;
-        public static final int movie_info_cancel=0x7f060016;
-        public static final int movie_info_commit=0x7f060015;
-        public static final int movie_info_edit=0x7f060014;
+        public static final int movie_info_cancel=0x7f060015;
+        public static final int movie_info_commit=0x7f060014;
+        public static final int movie_info_delete=0x7f060016;
         public static final int movie_info_format=0x7f06000f;
         public static final int movie_info_genre=0x7f06000e;
         public static final int movie_info_rating=0x7f06000d;
@@ -77,7 +77,7 @@ public final class R {
         public static final int movie_empty_text=0x7f07000d;
         public static final int movie_info_cancel=0x7f07001b;
         public static final int movie_info_commit=0x7f07001a;
-        public static final int movie_info_edit=0x7f070019;
+        public static final int movie_info_delete=0x7f070019;
         public static final int movie_info_format=0x7f070013;
         public static final int movie_info_genre=0x7f070012;
         public static final int movie_info_intent_title=0x7f07000e;

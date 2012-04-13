@@ -1,5 +1,6 @@
 package edu.sunyit.chryslj.movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.sunyit.chryslj.movie.enums.Genre;
@@ -8,14 +9,14 @@ import edu.sunyit.chryslj.movie.enums.Rating;
 
 public class Movie
 {
-    private int id;
+    private int id = -1;
     private String title = "";
-    private Rating rated;
-    private Genre genre;
+    private Rating rated = Rating.UNRATED;
+    private Genre genre = Genre.UNKNOWN;
     private int personalRaiting = 0;
-    private MediaFormat format;
+    private MediaFormat format = MediaFormat.DVD;
     private Short runTime = 0;
-    private List<String> associatedLists;
+    private List<String> associatedLists = new ArrayList<String>();
 
     /**
      * @return the title

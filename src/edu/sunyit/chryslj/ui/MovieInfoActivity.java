@@ -26,7 +26,6 @@ public class MovieInfoActivity extends Activity implements
     private MovieManagementSystem movieMangementSystem;
 
     private Movie currentMovie = null;
-    private boolean editable = true;
 
     private SeekBar ratingSeekBar;
     private Spinner formatSpinner;
@@ -72,9 +71,6 @@ public class MovieInfoActivity extends Activity implements
 
         Log.d(TAG, "TextView: " + ratingProgressText.getId() + " SeekBar: " +
                 ratingSeekBar.getId());
-
-        editable = true;
-        updateEditable();
     }
 
     @Override
@@ -107,20 +103,7 @@ public class MovieInfoActivity extends Activity implements
                 ratingProgressText.setText("" +
                         currentMovie.getPersonalRaiting());
                 runtimeText.setText("" + currentMovie.getRunTime());
-
-                editable = false;
-                updateEditable();
             }
-            else
-            {
-                editable = true;
-                updateEditable();
-            }
-        }
-        else
-        {
-            editable = true;
-            updateEditable();
         }
     }
 
@@ -133,14 +116,13 @@ public class MovieInfoActivity extends Activity implements
     @Override
     public void onStartTrackingTouch(SeekBar seekBar)
     {
-        // TODO Auto-generated method stub
-
+        // Do nothing
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar)
     {
-        // TODO Auto-generated method stub
+        // Do nothing
     }
 
     public void onButtonClick(View view)
@@ -154,30 +136,10 @@ public class MovieInfoActivity extends Activity implements
             case R.id.movie_info_cancel:
                 finish();
                 break;
-            case R.id.movie_info_edit:
-                editable = true;
-                updateEditable();
+            case R.id.movie_info_delete:
+                deleteMovie();
+                finish();
                 break;
-        }
-    }
-
-    private void updateEditable()
-    {
-        titleEditText.setEnabled(editable);
-        ratedSpinner.setEnabled(editable);
-        formatSpinner.setEnabled(editable);
-        genreSpinner.setEnabled(editable);
-        ratingSeekBar.setEnabled(editable);
-        ratingProgressText.setEnabled(editable);
-        runtimeText.setEnabled(editable);
-
-        if (editable)
-        {
-            findViewById(R.id.movie_info_edit).setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-            findViewById(R.id.movie_info_edit).setVisibility(View.INVISIBLE);
         }
     }
 
@@ -218,38 +180,60 @@ public class MovieInfoActivity extends Activity implements
                 .toString()));
 
         movieMangementSystem.open();
+        StringBuilder toastMessage = new StringBuilder();
+        toastMessage.append(currentMovie.getTitle());
 
         if (isUpdate)
         {
             if (movieMangementSystem.updateMovie(currentMovie))
             {
-                Toast.makeText(getApplication(),
-                        currentMovie.getTitle() + " has been updated!",
-                        Toast.LENGTH_LONG).show();
+                toastMessage.append(" has been updated!");
             }
             else
             {
-                Toast.makeText(getApplication(),
-                        currentMovie.getTitle() + " was not updated.",
-                        Toast.LENGTH_LONG).show();
+                toastMessage.append(" was not updated!");
             }
         }
         else
         {
             if (movieMangementSystem.addMovie(currentMovie))
             {
-                Toast.makeText(getApplication(),
-                        currentMovie.getTitle() + " has been added!",
-                        Toast.LENGTH_LONG).show();
+                toastMessage.append(" has been added!");
             }
             else
             {
-                Toast.makeText(getApplication(),
-                        currentMovie.getTitle() + " was not added.",
-                        Toast.LENGTH_LONG).show();
+                toastMessage.append(" was not added!");
             }
         }
         movieMangementSystem.close();
 
+        Toast.makeText(getApplication(), toastMessage.toString(),
+                Toast.LENGTH_LONG).show();
+    }
+
+    private void deleteMovie()
+    {
+        if (currentMovie != null)
+        {
+            movieMangementSystem.open();
+
+            StringBuilder toastMessage = new StringBuilder();
+            toastMessage.append(currentMovie.getTitle());
+
+            // TODO add a prompt asking if the user is sure.
+            if (movieMangementSystem.removeMovie(currentMovie))
+            {
+                toastMessage.append(" has been deleted!");
+            }
+            else
+            {
+                toastMessage.append(" was not deleted!");
+            }
+
+            Toast.makeText(getApplication(), toastMessage.toString(),
+                    Toast.LENGTH_LONG).show();
+
+            movieMangementSystem.close();
+        }
     }
 }

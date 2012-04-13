@@ -2,7 +2,6 @@ package edu.sunyit.chryslj.movie;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -73,40 +72,44 @@ public class MovieManagementSystem
     {
         boolean movieAdded = true;
 
-        ContentValues values = new ContentValues();
-        values.put(MovieTable.COLUMN_TITLE, newMovie.getTitle());
-        values.put(MovieTable.COLUMN_RATED, newMovie.getRated().getId());
-        values.put(MovieTable.COLUMN_GENRE, newMovie.getGenre().getId());
-        values.put(MovieTable.COLUMN_PERSONALRATING,
-                newMovie.getPersonalRaiting());
-        values.put(MovieTable.COLUMN_FORMAT, newMovie.getFormat().ordinal());
-        values.put(MovieTable.COLUMN_RUNTIME, newMovie.getRunTime());
-
-        database.beginTransaction();
-        try
+        if (!"".equals(newMovie.getTitle()))
         {
-            long insertId =
-                    database.insertOrThrow(MovieTable.TABLE_MOVIES, null,
-                            values);
+            ContentValues values = new ContentValues();
+            values.put(MovieTable.COLUMN_TITLE, newMovie.getTitle());
+            values.put(MovieTable.COLUMN_RATED, newMovie.getRated().getId());
+            values.put(MovieTable.COLUMN_GENRE, newMovie.getGenre().getId());
+            values.put(MovieTable.COLUMN_PERSONALRATING,
+                    newMovie.getPersonalRaiting());
+            values.put(MovieTable.COLUMN_FORMAT, newMovie.getFormat().ordinal());
+            values.put(MovieTable.COLUMN_RUNTIME, newMovie.getRunTime());
 
-            // In the event the insert doesn't throw like it is suppose to be.
-            if (insertId == -1)
+            database.beginTransaction();
+            try
             {
-                throw new SQLException();
-            }
+                long insertId =
+                        database.insertOrThrow(MovieTable.TABLE_MOVIES, null,
+                                values);
 
-            Log.d(TAG, "InsertedId: " + insertId);
-            database.setTransactionSuccessful();
-        }
-        catch (SQLException sqlException)
-        {
-            Log.e(TAG, "Unable to add \"" + newMovie + "\" to the database." +
-                    sqlException.getMessage());
-            movieAdded = false;
-        }
-        finally
-        {
-            database.endTransaction();
+                // In the event the insert doesn't throw like it is suppose to
+                // be.
+                if (insertId == -1)
+                {
+                    throw new SQLException();
+                }
+
+                Log.d(TAG, "InsertedId: " + insertId);
+                database.setTransactionSuccessful();
+            }
+            catch (SQLException sqlException)
+            {
+                Log.e(TAG, "Unable to add \"" + newMovie +
+                        "\" to the database." + sqlException.getMessage());
+                movieAdded = false;
+            }
+            finally
+            {
+                database.endTransaction();
+            }
         }
 
         return movieAdded;
@@ -128,42 +131,28 @@ public class MovieManagementSystem
     {
         boolean movieRemoved = false;
 
-        database.beginTransaction();
-        try
+        if (movie.getId() != -1 && !"".equals(movie.getTitle()))
         {
-            database.delete(MovieTable.TABLE_MOVIES, MovieTable.COLUMN_ID +
-                    " = " + movie.getId(), null);
-            database.setTransactionSuccessful();
-            movieRemoved = true;
-        }
-        finally
-        {
-            database.endTransaction();
-        }
+            database.beginTransaction();
+            try
+            {
+                database.delete(MovieTable.TABLE_MOVIES, MovieTable.COLUMN_ID +
+                        " = " + movie.getId(), null);
+                database.setTransactionSuccessful();
+                movieRemoved = true;
+            }
+            finally
+            {
+                database.endTransaction();
+            }
 
-        if (!movieRemoved)
-        {
-            Log.e(TAG, "Unable to delete movie: " + movie);
+            if (!movieRemoved)
+            {
+                Log.e(TAG, "Unable to delete movie: " + movie);
+            }
         }
 
         return movieRemoved;
-    }
-
-    /**
-     * 
-     * @param movies
-     * @return
-     */
-    public synchronized boolean removeMovie(List<Movie> movies)
-    {
-        boolean moviesRemoved = true;
-
-        for (Movie movie : movies)
-        {
-            moviesRemoved = removeMovie(movie);
-        }
-
-        return moviesRemoved;
     }
 
     /**
@@ -203,34 +192,39 @@ public class MovieManagementSystem
     {
         boolean listAdded = true;
 
-        ContentValues values = new ContentValues();
-        values.put(MovieCategoryTable.COLUMN_TITLE, movieCategory.getTitle());
-
-        database.beginTransaction();
-        try
+        if (!"".equals(movieCategory.getTitle()))
         {
-            long insertId =
-                    database.insertOrThrow(MovieCategoryTable.TABLE_CATEGORY,
-                            null, values);
+            ContentValues values = new ContentValues();
+            values.put(MovieCategoryTable.COLUMN_TITLE,
+                    movieCategory.getTitle());
 
-            // In the event the insert doesn't throw like it is suppose to be.
-            if (insertId == -1)
+            database.beginTransaction();
+            try
             {
-                throw new SQLException();
-            }
+                long insertId =
+                        database.insertOrThrow(
+                                MovieCategoryTable.TABLE_CATEGORY, null, values);
 
-            Log.d(TAG, "InsertedId: " + insertId);
-            database.setTransactionSuccessful();
-        }
-        catch (SQLException sqlException)
-        {
-            Log.e(TAG, "Unable to add \"" + movieCategory +
-                    "\" to the database." + sqlException.getMessage());
-            listAdded = false;
-        }
-        finally
-        {
-            database.endTransaction();
+                // In the event the insert doesn't throw like it is suppose to
+                // be.
+                if (insertId == -1)
+                {
+                    throw new SQLException();
+                }
+
+                Log.d(TAG, "InsertedId: " + insertId);
+                database.setTransactionSuccessful();
+            }
+            catch (SQLException sqlException)
+            {
+                Log.e(TAG, "Unable to add \"" + movieCategory +
+                        "\" to the database." + sqlException.getMessage());
+                listAdded = false;
+            }
+            finally
+            {
+                database.endTransaction();
+            }
         }
 
         return listAdded;
@@ -245,47 +239,34 @@ public class MovieManagementSystem
     {
         boolean ListRemoved = false;
 
-        database.beginTransaction();
-        try
+        if (movieCategory != null && !"".equals(movieCategory.getTitle()))
         {
-            database.delete(
-                    edu.sunyit.chryslj.database.MovieCategoryTable.TABLE_CATEGORY,
-                    edu.sunyit.chryslj.database.MovieCategoryTable.COLUMN_ID +
-                            " = " + movieCategory.getId(), null);
-            database.delete(CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
-                    CategoryMovieAssociationTable.COLUMN_CATEGORYID + " = " +
-                            movieCategory.getId(), null);
-            database.setTransactionSuccessful();
-            ListRemoved = true;
-        }
-        finally
-        {
-            database.endTransaction();
-        }
+            database.beginTransaction();
+            try
+            {
+                database.delete(
+                        edu.sunyit.chryslj.database.MovieCategoryTable.TABLE_CATEGORY,
+                        edu.sunyit.chryslj.database.MovieCategoryTable.COLUMN_ID +
+                                " = " + movieCategory.getId(), null);
+                database.delete(
+                        CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
+                        CategoryMovieAssociationTable.COLUMN_CATEGORYID +
+                                " = " + movieCategory.getId(), null);
+                database.setTransactionSuccessful();
+                ListRemoved = true;
+            }
+            finally
+            {
+                database.endTransaction();
+            }
 
-        if (!ListRemoved)
-        {
-            Log.e(TAG, "Unable to delete list: " + movieCategory);
+            if (!ListRemoved)
+            {
+                Log.e(TAG, "Unable to delete list: " + movieCategory);
+            }
         }
 
         return ListRemoved;
-    }
-
-    /**
-     * 
-     * @param lists
-     * @return
-     */
-    public synchronized boolean removeList(List<MovieCategory> lists)
-    {
-        boolean listsRemoved = true;
-
-        for (MovieCategory list : lists)
-        {
-            listsRemoved = removeList(list);
-        }
-
-        return listsRemoved;
     }
 
     /**
@@ -370,16 +351,6 @@ public class MovieManagementSystem
     public synchronized String promptForList(List<MovieCategory> currentLists)
     {
         // TODO create the dialog to prompt for a list or create one.
-        return null;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public synchronized Collection<String> getChangesSinceLastSync()
-    {
-        // TODO
         return null;
     }
 
