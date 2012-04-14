@@ -1,5 +1,6 @@
 package edu.sunyit.chryslj.movie;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +8,10 @@ import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
-public class Movie
+public class Movie implements Serializable
 {
+    private static final long serialVersionUID = -8950948224949570678L;
+
     private int id = -1;
     private String title = "";
     private Rating rated = Rating.UNRATED;

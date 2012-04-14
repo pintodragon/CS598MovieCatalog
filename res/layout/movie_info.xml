@@ -35,7 +35,7 @@
 		</TableRow>
 		
 		<TableRow>
-			<TextView android:text="@string/movie_info_rating"
+			<TextView android:text="@string/movie_info_rated"
                 android:layout_gravity="center_vertical"
 				android:layout_width="80dp"
                 android:padding="3dip" />

@@ -44,22 +44,24 @@ public class MovieInfoActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_info);
 
-        movieMangementSystem = new MovieManagementSystem(getApplication());
+        movieMangementSystem = new MovieManagementSystem(
+                getApplication());
 
         titleEditText = (EditText) findViewById(R.id.movie_info_title_text);
         titleEditText.setText("");
 
         ratedSpinner = (Spinner) findViewById(R.id.movie_info_rating);
-        ratedSpinner.setAdapter(new ArrayAdapter<Rating>(this,
-                android.R.layout.simple_spinner_item, Rating.values()));
+        ratedSpinner.setAdapter(new ArrayAdapter<Rating>(
+                this, android.R.layout.simple_spinner_item, Rating.values()));
 
         formatSpinner = (Spinner) findViewById(R.id.movie_info_format);
-        formatSpinner.setAdapter(new ArrayAdapter<MediaFormat>(this,
-                android.R.layout.simple_spinner_item, MediaFormat.values()));
+        formatSpinner.setAdapter(new ArrayAdapter<MediaFormat>(
+                this, android.R.layout.simple_spinner_item, MediaFormat
+                        .values()));
 
         genreSpinner = (Spinner) findViewById(R.id.movie_info_genre);
-        genreSpinner.setAdapter(new ArrayAdapter<Genre>(this,
-                android.R.layout.simple_spinner_item, Genre.values()));
+        genreSpinner.setAdapter(new ArrayAdapter<Genre>(
+                this, android.R.layout.simple_spinner_item, Genre.values()));
 
         ratingSeekBar = (SeekBar) findViewById(R.id.movie_info_seek_bar);
         ratingSeekBar.setOnSeekBarChangeListener(this);
@@ -90,10 +92,19 @@ public class MovieInfoActivity extends Activity implements
         Intent intent = getIntent();
         if (intent != null)
         {
-            currentMovie = (Movie) intent.getSerializableExtra(
-                    getString(R.string.aquired_movie_info));
+            currentMovie =
+                    (Movie) intent
+                            .getSerializableExtra(getString(R.string.aquired_movie_info));
             if (currentMovie != null)
             {
+                Log.d(TAG,
+                        "Movie Info: " + currentMovie.getTitle() + " Rated: " +
+                                currentMovie.getRated() + " Format: " +
+                                currentMovie.getFormat() + " Genre: " +
+                                currentMovie.getGenre() + " Personal: " +
+                                currentMovie.getPersonalRaiting() +
+                                " RunTime: " + currentMovie.getRunTime());
+
                 titleEditText.setText(currentMovie.getTitle());
                 ratedSpinner.setSelection(currentMovie.getRated().getId());
                 formatSpinner.setSelection(currentMovie.getFormat().getId());
@@ -233,7 +244,8 @@ public class MovieInfoActivity extends Activity implements
     {
         if (currentMovie != null)
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    this);
 
             builder.setMessage(
                     "Are you sure you want to delete \"" +

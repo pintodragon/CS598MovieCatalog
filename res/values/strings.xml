@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Application Level Strings -->
     <string name="app_name">CS598MovieCatalog</string>
     <string name="main_title">CSC 598 Movie Catalog Project</string>
     <string name="main_movie_list">Movie List</string>
     <string name="app_quit">Quit</string>
     
+    <!-- Image Data Strings -->
     <string name="ycrcb_image_data">imageData</string>
     <string name="ycrcb_image_width">imageWidth</string>
     <string name="ycrcb_image_height">imageHeight</string>
+    
+    <!-- Aquired Movie Info Strings -->
     <string name="aquired_movie_info">aquired_movie_info</string>
     
+    <!-- Movie List Strings -->
     <string name="movie_table_index">#</string>
     <string name="movie_table_title">Title</string>
     <string name="movie_table_personal_rating">Personal Rating</string>
@@ -18,10 +23,11 @@
     <string name="movie_add_camera">Add Camera</string>
     <string name="movie_empty_text">There are no movies currently in the system</string>
 
+    <!-- Movie Info Strings -->
     <string name="movie_info_intent_title">movie_info_intent_title</string>
     <string name="movie_info_main_title">Movie Information</string>
 	<string name="movie_info_title">Title:</string>
-	<string name="movie_info_rating">Rated:</string>
+	<string name="movie_info_rated">Rated:</string>
     <string name="movie_info_genre">Genre:</string>
     <string name="movie_info_format">Format:</string>
     <string name="movie_info_personalrating">Personal Rating:</string>

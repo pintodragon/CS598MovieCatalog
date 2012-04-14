@@ -23,7 +23,6 @@ public class BarcodeActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.image_test);
     }
 
     @Override
@@ -58,24 +57,25 @@ public class BarcodeActivity extends Activity
                 {
                     // TODO Also might be a good candidate for a separate thread
                     // with a handler.
-                    MovieLookup movieLookup =
-                            new UPCDatabaseMovieLookup(getResources());
+                    MovieLookup movieLookup = new UPCDatabaseMovieLookup(
+                            getResources());
                     Movie movie = movieLookup.lookupMovieByBarcode(barcode);
 
                     if (movie != null)
                     {
                         MovieLookup movieInfoLookup =
-                                new RottenTomatoesMovieLookup(getResources());
+                                new RottenTomatoesMovieLookup(
+                                        getResources());
                         movie = movieInfoLookup.gatherMoreInformation(movie);
 
-                        Log.d(TAG, "Movie: " + movie.getTitle() + " Rated: " + 
-                                movie.getRated() + " Runtime: " + 
-                                movie.getRunTime() + " Genre: " +
-                                movie.getGenre() + " Format: " +
-                                movie.getFormat());
+                        Log.d(TAG,
+                                "Movie: " + movie.getTitle() + " Rated: " +
+                                        movie.getRated() + " Runtime: " +
+                                        movie.getRunTime() + " Genre: " +
+                                        movie.getGenre() + " Format: " +
+                                        movie.getFormat());
 
-                        // TODO Need to send each peice of information about the
-                        // movie seperately.
+                        // Send our movie to the movie info intent.
                         returnIntent.putExtra(
                                 getString(R.string.aquired_movie_info), movie);
                         resultCode = RESULT_OK;
