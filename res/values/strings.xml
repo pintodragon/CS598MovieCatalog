@@ -4,6 +4,7 @@
     <string name="app_name">CS598MovieCatalog</string>
     <string name="main_title">CSC 598 Movie Catalog Project</string>
     <string name="main_movie_list">Movie List</string>
+    <string name="main_category_list">Category List</string>
     <string name="app_quit">Quit</string>
     
     <!-- Image Data Strings -->
@@ -14,6 +15,12 @@
     <!-- Aquired Movie Info Strings -->
     <string name="aquired_movie_info">aquired_movie_info</string>
     
+    <!-- Category List Strings -->
+    <string name="category_table_index">#</string>
+    <string name="category_table_title">Title</string>
+    <string name="category_table_count">Count</string>
+    <string name="category_add">Add List</string>
+    
     <!-- Movie List Strings -->
     <string name="movie_table_index">#</string>
     <string name="movie_table_title">Title</string>
@@ -21,7 +28,8 @@
     <string name="movie_table_sort">Sorted By: %1$s</string>
     <string name="movie_add_manual">Add Manual</string>
     <string name="movie_add_camera">Add Camera</string>
-    <string name="movie_empty_text">There are no movies currently in the system</string>
+    <string name="movie_empty_text">There are no movies
+         currently in the system</string>
 
     <!-- Movie Info Strings -->
     <string name="movie_info_intent_title">movie_info_intent_title</string>

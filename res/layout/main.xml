@@ -18,5 +18,11 @@
         android:layout_height="wrap_content"
         android:text="@string/main_movie_list"
         android:onClick="onClick" />
+    <Button
+        android:id="@+id/main_category_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_category_list"
+        android:onClick="onClick" />
 
 </LinearLayout>

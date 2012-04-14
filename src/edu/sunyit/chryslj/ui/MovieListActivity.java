@@ -86,6 +86,7 @@ public class MovieListActivity extends Activity implements OnClickListener
                     View.GONE);
             findViewById(R.id.movie_list_table_container).setVisibility(
                     View.VISIBLE);
+            // Clear all entries.
             bodyTableLayout.removeAllViews();
 
             for (int movieIndex = 0; movieIndex < movieList.size(); movieIndex++)

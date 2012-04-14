@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import edu.sunyit.chryslj.ui.MovieCategoryListActivity;
 import edu.sunyit.chryslj.ui.MovieListActivity;
 
 public class MainActivity extends Activity
@@ -29,6 +30,11 @@ public class MainActivity extends Activity
         {
             case R.id.main_movie_list:
                 intent.setClass(view.getContext(), MovieListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.main_category_list:
+                intent.setClass(view.getContext(),
+                        MovieCategoryListActivity.class);
                 startActivity(intent);
                 break;
         }

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TableLayout
+        android:id="@+id/category_main_table_layout"
+        android:layout_width="match_parent"
+        android:layout_height="420dp"
+        android:stretchColumns="*" >
+
+        <TableRow>
+            <TextView
+                android:layout_width="5dp"
+                android:text="@string/category_table_index"
+                android:padding="3dp" />
+            
+            <TextView
+                android:layout_width="150dp"
+                android:text="@string/category_table_title"
+                android:padding="3dp" />
+
+            <TextView
+                android:layout_width="5dp"
+                android:text="@string/category_table_count"
+                android:padding="3dp" />
+        </TableRow>
+
+        <ScrollView 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="true" >
+            <TableLayout
+                android:id="@+id/category_data_table_layout"
+                android:layout_width="match_parent"
+                android:layout_height="410dp"
+                android:stretchColumns="*"
+                android:scrollbars="vertical" >
+                
+            </TableLayout>
+        </ScrollView>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+        <Button
+            android:id="@+id/category_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onButtonClick"
+            android:text="@string/category_add" />
+    </LinearLayout>
+</RelativeLayout>

@@ -399,6 +399,25 @@ public class MovieManagementSystem
         return movieAddedToList;
     }
 
+    public synchronized int getNumMoviesInCategory(int categoryId)
+    {
+        int count = 0;
+
+        Cursor cursorCount =
+                database.rawQuery("SELECT COUNT(" +
+                        CategoryMovieAssociationTable.COLUMN_CATEGORYID +
+                        ") FROM " +
+                        CategoryMovieAssociationTable.TABLE_ASSOCIATIONS +
+                        " WHERE " +
+                        CategoryMovieAssociationTable.COLUMN_CATEGORYID +
+                        " = ?", new String[] { "" + categoryId });
+
+        cursorCount.moveToFirst();
+        count = cursorCount.getInt(0);
+
+        return count;
+    }
+
     /**
      * 
      * @param currentLists
