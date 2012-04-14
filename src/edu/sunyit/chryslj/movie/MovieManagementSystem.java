@@ -74,51 +74,110 @@ public class MovieManagementSystem
 
         if (!"".equals(newMovie.getTitle()))
         {
-            ContentValues values = new ContentValues();
-            values.put(MovieTable.COLUMN_TITLE, newMovie.getTitle());
-            values.put(MovieTable.COLUMN_RATED, newMovie.getRated().getId());
-            values.put(MovieTable.COLUMN_GENRE, newMovie.getGenre().getId());
-            values.put(MovieTable.COLUMN_PERSONALRATING,
-                    newMovie.getPersonalRaiting());
-            values.put(MovieTable.COLUMN_FORMAT, newMovie.getFormat().ordinal());
-            values.put(MovieTable.COLUMN_RUNTIME, newMovie.getRunTime());
 
-            database.beginTransaction();
-            try
+            if (getMovie(newMovie.getTitle()) == null)
             {
-                long insertId =
-                        database.insertOrThrow(MovieTable.TABLE_MOVIES, null,
-                                values);
+                ContentValues values = new ContentValues();
+                values.put(MovieTable.COLUMN_TITLE, 
+                        newMovie.getTitle());
+                values.put(MovieTable.COLUMN_RATED, 
+                        newMovie.getRated().getId());
+                values.put(MovieTable.COLUMN_GENRE, 
+                        newMovie.getGenre().getId());
+                values.put(MovieTable.COLUMN_PERSONALRATING,
+                        newMovie.getPersonalRaiting());
+                values.put(MovieTable.COLUMN_FORMAT, 
+                        newMovie.getFormat().ordinal());
+                values.put(MovieTable.COLUMN_RUNTIME, 
+                        newMovie.getRunTime());
 
-                // In the event the insert doesn't throw like it is suppose to
-                // be.
-                if (insertId == -1)
+                database.beginTransaction();
+                try
                 {
-                    throw new SQLException();
+                    long insertId = database.insertOrThrow(
+                            MovieTable.TABLE_MOVIES, null, values);
+    
+                    // In the event the insert doesn't throw like it is suppose
+                    // to be.
+                    if (insertId == -1)
+                    {
+                        throw new SQLException();
+                    }
+    
+                    Log.d(TAG, "InsertedId: " + insertId);
+                    database.setTransactionSuccessful();
                 }
-
-                Log.d(TAG, "InsertedId: " + insertId);
-                database.setTransactionSuccessful();
+                catch (SQLException sqlException)
+                {
+                    Log.e(TAG, "Unable to add \"" + newMovie +
+                            "\" to the database." + sqlException.getMessage());
+                    movieAdded = false;
+                }
+                finally
+                {
+                    database.endTransaction();
+                }
             }
-            catch (SQLException sqlException)
+            else
             {
-                Log.e(TAG, "Unable to add \"" + newMovie +
-                        "\" to the database." + sqlException.getMessage());
-                movieAdded = false;
-            }
-            finally
-            {
-                database.endTransaction();
+                updateMovie(newMovie);
             }
         }
 
         return movieAdded;
     }
 
-    public synchronized boolean updateMovie(Movie movie)
+    /**
+     * 
+     * @param movie
+     * @return
+     */
+    private synchronized boolean updateMovie(Movie movie)
     {
         boolean movieUpdated = false;
 
+        ContentValues values = new ContentValues();
+        values.put(MovieTable.COLUMN_TITLE, 
+                movie.getTitle());
+        values.put(MovieTable.COLUMN_RATED, 
+                movie.getRated().getId());
+        values.put(MovieTable.COLUMN_GENRE, 
+                movie.getGenre().getId());
+        values.put(MovieTable.COLUMN_PERSONALRATING,
+                movie.getPersonalRaiting());
+        values.put(MovieTable.COLUMN_FORMAT, 
+                movie.getFormat().ordinal());
+        values.put(MovieTable.COLUMN_RUNTIME, 
+                movie.getRunTime());
+
+        database.beginTransaction();
+        try
+        {
+            int updateId = database.update(MovieTable.TABLE_MOVIES, values,
+                    "\"" + MovieTable.COLUMN_TITLE + "\"=" + "\"?\"", 
+                    new String[] { movie.getTitle() });
+            
+            // In the event the insert doesn't throw like it is suppose
+            // to be.
+            if (updateId == -1)
+            {
+                throw new SQLException();
+            }
+
+            Log.d(TAG, "InsertedId: " + updateId);
+            database.setTransactionSuccessful();
+        }
+        catch (SQLException sqlException)
+        {
+            Log.e(TAG, "Unable to update \"" + movie +
+                    "\"." + sqlException.getMessage());
+            movieUpdated = false;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
+        
         return movieUpdated;
     }
 
@@ -401,12 +460,17 @@ public class MovieManagementSystem
     {
         Cursor cursor =
                 database.query(MovieTable.TABLE_MOVIES,
-                        movieTable.getColumnNames(), MovieTable.COLUMN_TITLE +
-                                "=" + "?", new String[] { movieTitle }, null,
+                        movieTable.getColumnNames(), "\"" + MovieTable.COLUMN_TITLE +
+                                "\"=" + "?", new String[] { movieTitle }, null,
                         null, null);
         cursor.moveToFirst();
-
-        Movie movie = cursorToMovie(cursor);
+        
+        Movie movie = null;
+        
+        if (cursor.getCount() == 1)
+        {
+            movie = cursorToMovie(cursor);
+        }
 
         return movie;
     }

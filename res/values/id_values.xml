@@ -4,4 +4,7 @@
   <item name="preview_running" type="id" />
   <item name="take_preview" type="id" />
   <item name="preview_taken" type="id" />
+  
+  <item type="id" name="TAKE_PICTURE_REQUEST">0</item>
+  <item type="id" name="DECODE_PICTURE">1</item>
 </resources>

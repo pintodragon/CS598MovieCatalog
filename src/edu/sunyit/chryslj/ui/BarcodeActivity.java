@@ -1,27 +1,16 @@
 package edu.sunyit.chryslj.ui;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.barcode.BarcodeProcessor;
 import edu.sunyit.chryslj.exceptions.InvalidImageException;
 import edu.sunyit.chryslj.movie.Movie;
-import edu.sunyit.chryslj.ws.AmazonMovieLookup;
 import edu.sunyit.chryslj.ws.MovieLookup;
 import edu.sunyit.chryslj.ws.RottenTomatoesMovieLookup;
 import edu.sunyit.chryslj.ws.UPCDatabaseMovieLookup;
@@ -43,6 +32,8 @@ public class BarcodeActivity extends Activity
         super.onResume();
 
         Intent intent = getIntent();
+        Intent returnIntent = new Intent();
+        int resultCode = RESULT_CANCELED;
 
         if (intent != null)
         {
@@ -60,7 +51,6 @@ public class BarcodeActivity extends Activity
             {
                 barcode =
                         BarcodeProcessor.decodeImage(width, height, imageData);
-                Log.d(TAG, "Barcode: " + barcode);
                 Toast.makeText(getApplication(), barcode, Toast.LENGTH_LONG)
                         .show();
 
@@ -72,80 +62,54 @@ public class BarcodeActivity extends Activity
                             new UPCDatabaseMovieLookup(getResources());
                     Movie movie = movieLookup.lookupMovieByBarcode(barcode);
 
-                    // First attempt failed so try Amazon WS
-                    if (movie == null)
-                    {
-                        try
-                        {
-                            movieLookup = new AmazonMovieLookup(getResources());
-                            movie = movieLookup.lookupMovieByBarcode(barcode);
-                        }
-                        catch (InvalidKeyException e)
-                        {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        catch (NoSuchAlgorithmException e)
-                        {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-
                     if (movie != null)
                     {
                         MovieLookup movieInfoLookup =
                                 new RottenTomatoesMovieLookup(getResources());
                         movie = movieInfoLookup.gatherMoreInformation(movie);
 
-                        TextView barcodeText =
-                                (TextView) findViewById(R.id.textView1);
-                        barcodeText.setText("Movie: " + movie.getTitle() +
-                                " Rated: " + movie.getRated() + " Runtime: " +
+                        Log.d(TAG, "Movie: " + movie.getTitle() + " Rated: " + 
+                                movie.getRated() + " Runtime: " + 
                                 movie.getRunTime() + " Genre: " +
                                 movie.getGenre() + " Format: " +
                                 movie.getFormat());
-                        barcodeText.setVisibility(TextView.VISIBLE);
 
-                        Log.d(TAG,
-                                "Movie: " + movie.getTitle() + " Rated: " +
-                                        movie.getRated() + " Runtime: " +
-                                        movie.getRunTime() + " Genre: " +
-                                        movie.getGenre() + " Format: " +
-                                        movie.getFormat());
+                        // TODO Need to send each peice of information about the
+                        // movie seperately.
+                        returnIntent.putExtra(
+                                getString(R.string.aquired_movie_info), movie);
+                        resultCode = RESULT_OK;
                     }
+                    else
+                    {
+                        Log.d(TAG, "Unable to lookup info for the movie.");
+                    }
+                }
+                else
+                {
+                    Toast.makeText(getApplication(), "The barcode is invalid.",
+                            Toast.LENGTH_LONG);
                 }
             }
             catch (InvalidImageException e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Toast.makeText(
+                        getApplication(),
+                        "Encountered an NoSuchAlgorithmException. "
+                                + "The Amazon API Key being used is"
+                                + " not valid.", Toast.LENGTH_LONG).show();
             }
             catch (IOException e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Toast.makeText(
+                        getApplication(),
+                        "Encountered an NoSuchAlgorithmException. "
+                                + "The Amazon API Key being used is"
+                                + " not valid.", Toast.LENGTH_LONG).show();
             }
-
-            Bitmap barcodeBMP =
-                    convertYuvImageToBitmap(imageData, width, height);
-            ImageView myImage = (ImageView) findViewById(R.id.binary);
-            myImage.setImageBitmap(barcodeBMP);
-            myImage.setVisibility(ImageView.VISIBLE);
         }
-    }
 
-    private Bitmap convertYuvImageToBitmap(byte[] imageData, int width,
-            int height)
-    {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        YuvImage yuvImage =
-                new YuvImage(imageData, ImageFormat.NV21, width, height, null);
-        yuvImage.compressToJpeg(new Rect(0, 0, width, height), 50, out);
-        byte[] imageBytes = out.toByteArray();
-        Bitmap image =
-                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-
-        return image;
+        setResult(resultCode, returnIntent);
+        finish();
     }
 }

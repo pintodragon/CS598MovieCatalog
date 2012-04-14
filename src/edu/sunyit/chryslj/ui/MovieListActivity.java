@@ -21,7 +21,7 @@ import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
 public class MovieListActivity extends Activity implements OnClickListener
 {
-    private static final String TAG = MovieListActivity.class.getName();
+    private static final String TAG = MovieListActivity.class.getSimpleName();
     private MovieManagementSystem movieManagementSystem;
 
     private TableLayout headerTableLayout;
@@ -93,57 +93,46 @@ public class MovieListActivity extends Activity implements OnClickListener
                 TableRow newTableRow = new TableRow(getApplication());
                 newTableRow.setLayoutParams(new TableRow.LayoutParams(
                         LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-                newTableRow
-                        .setBackgroundColor(android.R.drawable.list_selector_background);
+                newTableRow.setBackgroundColor(
+                        android.R.drawable.list_selector_background);
                 newTableRow.setOnClickListener(this);
                 newTableRow.setClickable(true);
 
                 // Get the DP value of the column in the table row. 5 dp is
                 // equivalent to 5 pixels.
-                int dPValue =
-                        (int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 5, getResources()
-                                        .getDisplayMetrics());
-                TableRow.LayoutParams layoutParams =
-                        new TableRow.LayoutParams(dPValue,
-                                LayoutParams.FILL_PARENT);
-                newTableRow
-                        .addView(
-                                createView(movieIndex + 1,
-                                        bodyTableLayout.getContext()), 0,
-                                layoutParams);
+                int dPValue = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, 5, 
+                        getResources().getDisplayMetrics());
+                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
+                        dPValue, LayoutParams.FILL_PARENT);
+                newTableRow.addView(createView(movieIndex + 1, 
+                        bodyTableLayout.getContext()), 0, layoutParams);
 
                 // Get the DP value of the column in the table row. 60 dp is
                 // equivalent to 60 pixels.
-                dPValue =
-                        (int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 60, getResources()
+                dPValue = (int) TypedValue.applyDimension( 
+                        TypedValue.COMPLEX_UNIT_DIP, 60, getResources()
                                         .getDisplayMetrics());
-                layoutParams =
-                        new TableRow.LayoutParams(dPValue,
-                                LayoutParams.FILL_PARENT);
-                newTableRow.addView(
-                        createView(currentMovie.getTitle(),
-                                bodyTableLayout.getContext()), 1, layoutParams);
+                layoutParams = new TableRow.LayoutParams(dPValue, 
+                        LayoutParams.FILL_PARENT);
+                newTableRow.addView(createView(currentMovie.getTitle(), 
+                        bodyTableLayout.getContext()), 1, layoutParams);
 
                 // Get the DP value of the column in the table row. 40 dp is
                 // equivalent to 40 pixels.
-                dPValue =
-                        (int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 40, getResources()
+                dPValue = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, 40, getResources()
                                         .getDisplayMetrics());
-                layoutParams =
-                        new TableRow.LayoutParams(dPValue,
-                                LayoutParams.FILL_PARENT);
-                newTableRow.addView(
-                        createView(currentMovie.getPersonalRaiting(),
-                                bodyTableLayout.getContext()), 2, layoutParams);
+                layoutParams = new TableRow.LayoutParams(dPValue, 
+                        LayoutParams.FILL_PARENT);
+                newTableRow.addView(createView(
+                        currentMovie.getPersonalRaiting(),
+                        bodyTableLayout.getContext()), 2, layoutParams);
 
                 if (isSorted)
                 {
                     // TODO Figure out the sorted thing.
-                    newTableRow.addView(
-                            createView(currentMovie.getTitle(),
+                    newTableRow.addView(createView(currentMovie.getTitle(),
                                     bodyTableLayout.getContext()), 3);
                 }
                 else
@@ -152,7 +141,7 @@ public class MovieListActivity extends Activity implements OnClickListener
                     bodyTableLayout.setColumnCollapsed(3, true);
                 }
 
-                bodyTableLayout.addView(newTableRow,
+                bodyTableLayout.addView(newTableRow, 
                         new TableLayout.LayoutParams(LayoutParams.FILL_PARENT,
                                 LayoutParams.WRAP_CONTENT));
             }
@@ -200,18 +189,72 @@ public class MovieListActivity extends Activity implements OnClickListener
         {
             case R.id.movie_add_manual:
                 Intent intent = new Intent();
-                intent.setClass(getApplication(), MovieInfoActivity.class);
+                intent.setClass(view.getContext(), MovieInfoActivity.class);
                 startActivity(intent);
                 break;
             case R.id.movie_add_camera:
+                intent = new Intent();
+                intent.setClass(view.getContext(), CameraPreviewActivity.class);
+                startActivityForResult(intent, R.id.TAKE_PICTURE_REQUEST);
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (resultCode == Activity.RESULT_OK)
+        {
+            Log.d(TAG, "Result returned to activity");
+            switch (requestCode)
+            {
+                case R.id.TAKE_PICTURE_REQUEST:
+                    // imageData is the YCrCB data acquired from the preview.
+                    byte[] imageData =
+                            data.getByteArrayExtra(
+                                    getString(R.string.ycrcb_image_data));
+                    int width =
+                            data.getIntExtra(
+                                    getString(R.string.ycrcb_image_width), 0);
+                    int height =
+                            data.getIntExtra(
+                                    getString(R.string.ycrcb_image_height), 0);
+
+                    Intent intent = new Intent();
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                    intent.setClass(getApplication(),
+                            BarcodeActivity.class);
+                    intent.putExtra(getString(R.string.ycrcb_image_data),
+                            imageData);
+                    intent.putExtra(getString(R.string.ycrcb_image_width),
+                            width);
+                    intent.putExtra(getString(R.string.ycrcb_image_height),
+                            height);
+                    startActivityForResult(intent, R.id.DECODE_PICTURE);
+                    break;
+                case R.id.DECODE_PICTURE:
+                    Movie aquiredMovie = (Movie) data.getSerializableExtra(
+                            getString(R.string.aquired_movie_info));
+                    if (aquiredMovie != null)
+                    {
+                        Intent movieInfoIntent = new Intent();
+                        movieInfoIntent.putExtra(
+                                getString(R.string.aquired_movie_info), 
+                                aquiredMovie);
+                        movieInfoIntent.setClass(getApplication(),
+                                MovieInfoActivity.class);
+                        startActivity(movieInfoIntent);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
     @Override
     public void onClick(View view)
     {
-        // TODO Logic for when a table row is clicked.
         if (view instanceof TableRow)
         {
             TableRow clickedTableRow = (TableRow) view;

@@ -80,14 +80,12 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal" >
 
-
         <Button
             android:id="@+id/movie_add_manual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onButtonClick"
             android:text="@string/movie_add_manual" />
-
 
         <Button
             android:id="@+id/movie_add_camera"

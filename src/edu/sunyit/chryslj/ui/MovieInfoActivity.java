@@ -24,6 +24,7 @@ public class MovieInfoActivity extends Activity implements
         SeekBar.OnSeekBarChangeListener
 {
     private static final String TAG = MovieInfoActivity.class.getSimpleName();
+    public static final int TAKE_PICTURE_REQUEST = 0;
 
     private MovieManagementSystem movieMangementSystem;
 
@@ -89,14 +90,10 @@ public class MovieInfoActivity extends Activity implements
         Intent intent = getIntent();
         if (intent != null)
         {
-            String movieTitle =
-                    intent.getStringExtra(getResources().getString(
-                            R.string.movie_info_intent_title));
-            if (movieTitle != null)
+            currentMovie = (Movie) intent.getSerializableExtra(
+                    getString(R.string.aquired_movie_info));
+            if (currentMovie != null)
             {
-                movieMangementSystem.open();
-                currentMovie = movieMangementSystem.getMovie(movieTitle);
-
                 titleEditText.setText(currentMovie.getTitle());
                 ratedSpinner.setSelection(currentMovie.getRated().getId());
                 formatSpinner.setSelection(currentMovie.getFormat().getId());
@@ -151,12 +148,9 @@ public class MovieInfoActivity extends Activity implements
 
     private void addOrUpdateMovie()
     {
-        boolean isUpdate = true;
-
         if (currentMovie == null)
         {
             currentMovie = new Movie();
-            isUpdate = false;
         }
 
         currentMovie.setTitle(titleEditText.getText().toString());
@@ -189,27 +183,13 @@ public class MovieInfoActivity extends Activity implements
         StringBuilder toastMessage = new StringBuilder();
         toastMessage.append(currentMovie.getTitle());
 
-        if (isUpdate)
+        if (movieMangementSystem.addMovie(currentMovie))
         {
-            if (movieMangementSystem.updateMovie(currentMovie))
-            {
-                toastMessage.append(" has been updated!");
-            }
-            else
-            {
-                toastMessage.append(" was not updated!");
-            }
+            toastMessage.append(" has been added or updated!");
         }
         else
         {
-            if (movieMangementSystem.addMovie(currentMovie))
-            {
-                toastMessage.append(" has been added!");
-            }
-            else
-            {
-                toastMessage.append(" was not added!");
-            }
+            toastMessage.append(" was not added or updated!");
         }
         movieMangementSystem.close();
 
@@ -217,6 +197,9 @@ public class MovieInfoActivity extends Activity implements
                 Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Delete the movie that is currently being displayed on this view.
+     */
     private void deleteMovie()
     {
         if (currentMovie != null)
@@ -226,7 +209,6 @@ public class MovieInfoActivity extends Activity implements
             StringBuilder toastMessage = new StringBuilder();
             toastMessage.append(currentMovie.getTitle());
 
-            // TODO add a prompt asking if the user is sure.
             if (movieMangementSystem.removeMovie(currentMovie))
             {
                 toastMessage.append(" has been deleted!");
@@ -243,32 +225,50 @@ public class MovieInfoActivity extends Activity implements
         }
     }
 
+    /**
+     * Show the confirm dialog on whether the movie selected should be deleted
+     * or not.
+     */
     private void showConfirmDialog()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (currentMovie != null)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage(
-                "Are you sure you want to delete \"" +
-                        MovieInfoActivity.this.currentMovie.getTitle() + "\"?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        MovieInfoActivity.this.deleteMovie();
-                        MovieInfoActivity.this.finish();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.cancel();
-                    }
-                });
+            builder.setMessage(
+                    "Are you sure you want to delete \"" +
+                            MovieInfoActivity.this.currentMovie.getTitle() +
+                            "\"?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which)
+                                {
+                                    MovieInfoActivity.this.deleteMovie();
+                                    MovieInfoActivity.this.finish();
+                                }
+                            })
+                    .setNegativeButton("No",
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which)
+                                {
+                                    dialog.cancel();
+                                }
+                            });
 
-        builder.create().show();
+            builder.create().show();
+        }
+        else
+        {
+            Toast.makeText(getApplication(),
+                    "You can not delete that which does not exist!",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

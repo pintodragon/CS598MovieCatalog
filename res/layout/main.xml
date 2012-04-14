@@ -7,28 +7,16 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/main_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/main_title"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/main_movie_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="List"
+        android:text="@string/main_movie_list"
         android:onClick="onClick" />
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ImgTest"
-        android:onClick="onClick"  />
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CameraTest"
-        android:onClick="onClick"  />
 
 </LinearLayout>

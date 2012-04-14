@@ -66,6 +66,7 @@ public class UPCDatabaseMovieLookup implements MovieLookup
                 // field.
                 movie = new Movie();
                 movie.setTitle(result.get("description").toString());
+                Log.d(TAG, "Got the title: " + movie.getTitle());
             }
             catch (NullPointerException npe)
             {
@@ -81,6 +82,7 @@ public class UPCDatabaseMovieLookup implements MovieLookup
                 {
                     String formatStr =
                             result.get("size").toString().toLowerCase();
+                    Log.d(TAG, "Size string: " + formatStr);
 
                     // Default to DVD
                     MediaFormat mediaFormat = MediaFormat.DVD;
@@ -100,6 +102,7 @@ public class UPCDatabaseMovieLookup implements MovieLookup
                     // Sometimes the UPC Database doesn't always have
                     // information about the format of the movie. Set the
                     // default to DVD.
+                    Log.d(TAG, "Default dvd");
                     movie.setFormat(MediaFormat.DVD);
                 }
             }

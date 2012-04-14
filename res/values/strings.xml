@@ -2,12 +2,13 @@
 <resources>
     <string name="app_name">CS598MovieCatalog</string>
     <string name="main_title">CSC 598 Movie Catalog Project</string>
-    <string name="provider_authority">edu.sunyit.chryslj.movie.contentprovider</string>
+    <string name="main_movie_list">Movie List</string>
     <string name="app_quit">Quit</string>
     
     <string name="ycrcb_image_data">imageData</string>
     <string name="ycrcb_image_width">imageWidth</string>
     <string name="ycrcb_image_height">imageHeight</string>
+    <string name="aquired_movie_info">aquired_movie_info</string>
     
     <string name="movie_table_index">#</string>
     <string name="movie_table_title">Title</string>
