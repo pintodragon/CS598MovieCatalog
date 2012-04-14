@@ -66,7 +66,6 @@ public class UPCABarcode implements BarcodeDecoder
             xOffset = digitAndOffset[1];
         }
 
-        // Log.d(TAG, "Middle Guard");
         // Middle guard
         xOffset = getMiddlePastGuard(binaryRowData, xOffset);
         // Only care about the new x offset.
@@ -84,6 +83,7 @@ public class UPCABarcode implements BarcodeDecoder
 
         if (!isCheckDigitValid(barcodeBuilder.toString()))
         {
+            Log.e(TAG, "Check digit did not match checksum");
             throw new InvalidImageException(
                     "Check digit did not match checksum");
         }
@@ -106,14 +106,9 @@ public class UPCABarcode implements BarcodeDecoder
                 int totalWidth = digitWidths[digitIndex];
                 int discrepancy = digitWidths[digitIndex] % moduleWidth;
 
-                // StringBuilder sb = new StringBuilder();
-                // sb.append("Width: " + totalWidth + " Discrepency: " +
-                // discrepancy);
-
                 if (discrepancy != 0)
                 {
                     int adjustment = moduleWidth - discrepancy;
-                    // sb.append(" Adjustment: " + adjustment);
 
                     // Check the rounded up value of the division by 2. This
                     // helps cover the case where we want to check the
@@ -129,10 +124,7 @@ public class UPCABarcode implements BarcodeDecoder
                         totalWidth += adjustment;
                     }
                 }
-                // Log.d(TAG, sb.toString());
                 digitWidths[digitIndex] = totalWidth / moduleWidth;
-                // Log.d(TAG, "Digit: " + digitIndex + " TotalWidth: " +
-                // totalWidth + " EndWidth: " + digitWidths[digitIndex]);
 
                 digitIndex++;
                 previousPixel = binaryRowData[x];
@@ -188,14 +180,14 @@ public class UPCABarcode implements BarcodeDecoder
         if (Math.abs(barWidth - spaceWidth) > MODULE_WIDTH_VAR)
         {
             Log.e(TAG, "Invalid guard patern.");
-            throw new InvalidImageException("Invalid guard patern.");
+            throw new InvalidImageException(
+                    "Invalid guard patern.");
         }
 
         int[] widthAndStart = new int[2];
         widthAndStart[0] = (int) Math.ceil(totalBarWidth / 3.0);
         widthAndStart[1] = currentX;
 
-        // Log.d(TAG, "TotalWidth: " + widthAndStart[0]);
         return widthAndStart;
     }
 
@@ -263,7 +255,7 @@ public class UPCABarcode implements BarcodeDecoder
                 // Make sure we have enough quietZone
                 if (quietZone >= QUIET_ZONE_VALID)
                 {
-                    // Log.d(TAG, "We found our first bar at: " + x);
+                    Log.d(TAG, "We found our first bar at: " + x);
                     xOffset = x;
                     break;
                 }

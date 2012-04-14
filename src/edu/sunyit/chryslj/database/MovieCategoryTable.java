@@ -67,7 +67,6 @@ public class MovieCategoryTable implements DatabaseTable
     {
         try
         {
-
             for (String[] categoryVals : defaultCategories)
             {
                 ContentValues values = new ContentValues();
@@ -80,5 +79,26 @@ public class MovieCategoryTable implements DatabaseTable
         {
             Log.e("Error in transaction", e.toString());
         }
+    }
+
+    /**
+     * 
+     * @param categoryName
+     * @return
+     */
+    public static boolean isDefaultCategory(String categoryName)
+    {
+        boolean isDefault = false;
+
+        for (String[] categoryVals : defaultCategories)
+        {
+            if (categoryName.equals(categoryVals[1]))
+            {
+                isDefault = true;
+                break;
+            }
+        }
+
+        return isDefault;
     }
 }

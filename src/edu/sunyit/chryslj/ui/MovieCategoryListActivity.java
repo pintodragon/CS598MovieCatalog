@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,20 +24,16 @@ public class MovieCategoryListActivity extends Activity implements
             .getSimpleName();
     private MovieManagementSystem movieManagementSystem;
 
-    private TableLayout headerTableLayout;
     private TableLayout bodyTableLayout;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category_list);
 
         movieManagementSystem = new MovieManagementSystem(
                 getApplication());
-
-        headerTableLayout =
-                (TableLayout) findViewById(R.id.category_main_table_layout);
         bodyTableLayout =
                 (TableLayout) findViewById(R.id.category_data_table_layout);
 
@@ -48,6 +45,13 @@ public class MovieCategoryListActivity extends Activity implements
     {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        updateTableLayouts();
     }
 
     public void onButtonClick(View view)
@@ -74,6 +78,8 @@ public class MovieCategoryListActivity extends Activity implements
         for (int categoryIndex = 0; categoryIndex < categoryList.size(); categoryIndex++)
         {
             MovieCategory currentCategory = categoryList.get(categoryIndex);
+            Log.d(TAG, "Adding category: " + currentCategory);
+
             movieManagementSystem.open();
             int movieCount =
                     movieManagementSystem

@@ -93,19 +93,19 @@ public class BarcodeActivity extends Activity
             }
             catch (InvalidImageException e)
             {
-                Toast.makeText(
-                        getApplication(),
-                        "Encountered an NoSuchAlgorithmException. "
-                                + "The Amazon API Key being used is"
-                                + " not valid.", Toast.LENGTH_LONG).show();
+                Log.e(TAG,
+                        "Encountered an InvalidImageException. " +
+                                e.getMessage());
+                Toast.makeText(getApplication(),
+                        "Encountered an InvalidImageException.",
+                        Toast.LENGTH_LONG).show();
             }
             catch (IOException e)
             {
-                Toast.makeText(
-                        getApplication(),
-                        "Encountered an NoSuchAlgorithmException. "
-                                + "The Amazon API Key being used is"
-                                + " not valid.", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Encountered an IOException. " + e.getMessage());
+                Toast.makeText(getApplication(),
+                        "Encountered an IOException. ", Toast.LENGTH_LONG)
+                        .show();
             }
         }
 
