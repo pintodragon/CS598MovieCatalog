@@ -141,15 +141,18 @@ public class MovieListActivity extends Activity implements OnClickListener
 
                 if (isSorted)
                 {
+                    String sortedBy = "";
+
                     // TODO Figure out the sorted thing.
                     newTableRow.addView(
                             createView(currentMovie.getTitle(),
                                     bodyTableLayout.getContext()), 3);
-                }
-                else
-                {
-                    headerTableLayout.setColumnCollapsed(3, true);
-                    bodyTableLayout.setColumnCollapsed(3, true);
+
+                    TableRow headerRow =
+                            (TableRow) headerTableLayout.getChildAt(0);
+                    ((TextView) headerRow
+                            .getChildAt(headerRow.getChildCount() - 1))
+                            .setText(sortedBy);
                 }
 
                 bodyTableLayout.addView(newTableRow,

@@ -31,6 +31,10 @@
     <string name="movie_empty_text">There are no movies
          currently in the system</string>
 
+    <!-- Category Info Strings -->
+    <string name="category_info_main_title">Category: %1$s</string>
+    <string name="category_info_main_index">#</string>
+    
     <!-- Movie Info Strings -->
     <string name="movie_info_intent_title">movie_info_intent_title</string>
     <string name="movie_info_main_title">Movie Information</string>

@@ -115,6 +115,13 @@ public class MovieManagementSystem
                 {
                     database.endTransaction();
                 }
+
+                MovieCategory category = getCategory("Unsorted");
+                if (!addMovieToMovieCategory(newMovie, category))
+                {
+                    Log.e(TAG, "Could not add " + newMovie.getTitle() + " to " +
+                            category.getTitle() + "!");
+                }
             }
             else
             {
@@ -134,6 +141,9 @@ public class MovieManagementSystem
     {
         boolean movieUpdated = false;
 
+        // Because this movie was retrieved from the movie list we do know know
+        // its ID in the database. Retrieve it so we can use it as the where
+        // clause in the update query.
         int movieId = getMovie(movie.getTitle()).getId();
 
         ContentValues values = new ContentValues();
@@ -150,8 +160,8 @@ public class MovieManagementSystem
         {
             int updateId =
                     database.update(MovieTable.TABLE_MOVIES, values,
-                            MovieTable.COLUMN_TITLE + "=" + "?",
-                            new String[] { movie.getTitle() });
+                            MovieTable.COLUMN_ID + "=" + "?",
+                            new String[] { "" + movie.getId() });
 
             // In the event the insert doesn't throw like it is suppose
             // to be.
@@ -193,7 +203,7 @@ public class MovieManagementSystem
             try
             {
                 database.delete(MovieTable.TABLE_MOVIES, MovieTable.COLUMN_ID +
-                        " = " + movie.getId(), null);
+                        "=" + "?", new String[] { "" + movie.getId() });
                 database.setTransactionSuccessful();
                 movieRemoved = true;
             }
@@ -206,9 +216,41 @@ public class MovieManagementSystem
             {
                 Log.e(TAG, "Unable to delete movie: " + movie);
             }
+
+            removeAssociation(movie);
         }
 
         return movieRemoved;
+    }
+
+    public synchronized boolean removeAssociation(Movie movie)
+    {
+        boolean associationRemoved = false;
+
+        if (movie.getId() != -1)
+        {
+            database.beginTransaction();
+            try
+            {
+                database.delete(
+                        CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
+                        CategoryMovieAssociationTable.COLUMN_MOVIEID + "=" +
+                                "?", new String[] { "" + movie.getId() });
+                database.setTransactionSuccessful();
+                associationRemoved = true;
+            }
+            finally
+            {
+                database.endTransaction();
+            }
+
+            if (!associationRemoved)
+            {
+                Log.e(TAG, "Unable to delete association for " + movie);
+            }
+        }
+
+        return associationRemoved;
     }
 
     /**
@@ -476,9 +518,9 @@ public class MovieManagementSystem
     {
         Cursor cursor =
                 database.query(MovieTable.TABLE_MOVIES,
-                        movieTable.getColumnNames(), "\"" +
-                                MovieTable.COLUMN_TITLE + "\"=" + "?",
-                        new String[] { movieTitle }, null, null, null);
+                        movieTable.getColumnNames(), MovieTable.COLUMN_TITLE +
+                                "=" + "?", new String[] { movieTitle }, null,
+                        null, null);
         cursor.moveToFirst();
 
         Movie movie = null;
@@ -489,5 +531,24 @@ public class MovieManagementSystem
         }
 
         return movie;
+    }
+
+    public MovieCategory getCategory(String categoryTitle)
+    {
+        Cursor cursor =
+                database.query(MovieCategoryTable.TABLE_CATEGORY,
+                        movieCategoryTable.getColumnNames(),
+                        MovieCategoryTable.COLUMN_TITLE + "=" + "?",
+                        new String[] { categoryTitle }, null, null, null);
+        cursor.moveToFirst();
+
+        MovieCategory category = null;
+
+        if (cursor.getCount() == 1)
+        {
+            category = cursorToMovieCategory(cursor);
+        }
+
+        return category;
     }
 }

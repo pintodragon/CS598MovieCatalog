@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_vertical" >
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/category_info_main_title"
+        android:textSize="25dp" />
+            
+    <View android:layout_width="match_parent"
+          android:layout_height="2dip"
+          android:background="#FF909090" />
+
+    <TableLayout
+        android:id="@+id/movie_main_table_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*"
+        android:shrinkColumns="3" >
+
+        <TableRow>
+            <TextView
+                android:layout_width="5dp"
+                android:text="@string/movie_table_index"
+                android:padding="3dp" />
+             
+            <TextView
+                android:layout_width="60dp"
+                android:text="@string/movie_table_title"
+                android:padding="3dp" />
+    
+            <TextView
+                android:layout_width="40dp"
+                android:text="@string/movie_table_personal_rating"
+                android:padding="3dp" />
+    
+            <TextView
+                android:layout_width="50dp"
+                android:text="@string/movie_table_sort"
+                android:padding="3dp" />
+        </TableRow>
+    
+         <ScrollView 
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:isScrollContainer="true" >
+             <TableLayout
+                 android:id="@+id/movie_data_table_layout"
+                 android:layout_width="match_parent"
+                 android:layout_height="410dp"
+                 android:stretchColumns="*"
+                 android:shrinkColumns="3"
+                 android:scrollbars="vertical" >
+                 
+             </TableLayout>
+         </ScrollView>
+    </TableLayout>
+
+    <View android:layout_width="match_parent"
+          android:layout_height="2dip"
+          android:background="#FF909090" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/movie_info_commit"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onButtonClick"
+            android:text="@string/movie_info_commit" />
+        <Button
+            android:id="@+id/movie_info_cancel"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onButtonClick"
+            android:text="@string/movie_info_cancel" />
+        <Button
+            android:id="@+id/movie_info_delete"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onButtonClick"
+            android:text="@string/movie_info_delete" />
+    </LinearLayout>
+
+</LinearLayout>
