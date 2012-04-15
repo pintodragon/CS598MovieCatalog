@@ -5,11 +5,10 @@
     android:orientation="vertical"
     android:gravity="center_vertical" >
     
-    <TextView
+    <TextView android:id="@+id/category_info_main_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/category_info_main_title"
         android:textSize="25dp" />
             
     <View android:layout_width="match_parent"
@@ -19,7 +18,7 @@
     <TableLayout
         android:id="@+id/movie_main_table_layout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="380dp"
         android:stretchColumns="*"
         android:shrinkColumns="3" >
 
@@ -37,11 +36,6 @@
             <TextView
                 android:layout_width="40dp"
                 android:text="@string/movie_table_personal_rating"
-                android:padding="3dp" />
-    
-            <TextView
-                android:layout_width="50dp"
-                android:text="@string/movie_table_sort"
                 android:padding="3dp" />
         </TableRow>
             
@@ -77,22 +71,22 @@
         <Button
             android:id="@+id/category_info_add"
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
             android:onClick="onButtonClick"
             android:text="@string/category_info_add" />
         <Button
             android:id="@+id/category_info_cancel"
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
             android:onClick="onButtonClick"
             android:text="@string/category_info_cancel" />
         <Button
             android:id="@+id/category_info_delete"
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
             android:onClick="onButtonClick"
             android:text="@string/category_info_delete" />
     </LinearLayout>

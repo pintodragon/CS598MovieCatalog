@@ -17,14 +17,14 @@
        <activity android:name=".ui.BarcodeActivity" android:screenOrientation="portrait"></activity>
        <activity android:name=".ui.CameraPreviewActivity" android:screenOrientation="landscape"></activity>
        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name" android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+           android:name=".MainActivity"
+           android:label="@string/app_name" android:screenOrientation="portrait" >
+           <intent-filter>
+               <action android:name="android.intent.action.MAIN" />
+               <category android:name="android.intent.category.LAUNCHER" />
+           </intent-filter>
+       </activity>
+       <activity android:name=".ui.MovieCategoryInfoActivity" android:screenOrientation="portrait"></activity>
        <activity android:name=".ui.MovieCategoryListActivity" android:screenOrientation="portrait"></activity>
        <activity android:name=".ui.MovieInfoActivity" android:screenOrientation="portrait"></activity>
        <activity android:name=".ui.MovieListActivity" android:screenOrientation="portrait"></activity>

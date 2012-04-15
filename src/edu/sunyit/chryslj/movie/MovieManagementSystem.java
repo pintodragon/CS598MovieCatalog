@@ -201,7 +201,7 @@ public class MovieManagementSystem
 
         if (movie.getId() != -1 && !"".equals(movie.getTitle()))
         {
-            removeAssociation(movie);
+            removeAllAssociation(movie);
 
             database.beginTransaction();
             try
@@ -228,7 +228,7 @@ public class MovieManagementSystem
         return movieRemoved;
     }
 
-    public synchronized boolean removeAssociation(Movie movie)
+    private synchronized boolean removeAllAssociation(Movie movie)
     {
         boolean associationRemoved = false;
 
@@ -294,6 +294,11 @@ public class MovieManagementSystem
         return movies;
     }
 
+    /**
+     * 
+     * @param movieTitle
+     * @return
+     */
     public Movie getMovie(String movieTitle)
     {
         Cursor cursor =
@@ -313,6 +318,11 @@ public class MovieManagementSystem
         return movie;
     }
 
+    /**
+     * 
+     * @param categoryTitle
+     * @return
+     */
     public MovieCategory getCategory(String categoryTitle)
     {
         Cursor cursor =
@@ -499,6 +509,54 @@ public class MovieManagementSystem
         return movieAddedToList;
     }
 
+    /**
+     * 
+     * @param movie
+     * @return
+     */
+    public synchronized boolean removeAssociation(Movie movie,
+            MovieCategory movieCategory)
+    {
+        boolean associationRemoved = false;
+
+        if (movie.getId() != -1 && movieCategory.getId() != -1)
+        {
+            Log.d(TAG, "Removing associations for: " + movie.getTitle() +
+                    " and " + movieCategory.getTitle());
+            database.beginTransaction();
+            try
+            {
+                database.delete(
+                        CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
+                        CategoryMovieAssociationTable.COLUMN_MOVIEID +
+                                "=? AND " +
+                                CategoryMovieAssociationTable.COLUMN_CATEGORYID +
+                                "=?", new String[] { "" + movie.getId(),
+                                "" + movieCategory.getId() });
+                database.setTransactionSuccessful();
+                Log.d(TAG, "Removing associations successful");
+                associationRemoved = true;
+            }
+            finally
+            {
+                Log.d(TAG, "Removing associations finished");
+                database.endTransaction();
+            }
+
+            if (!associationRemoved)
+            {
+                Log.e(TAG, "Unable to delete association for " + movie);
+            }
+        }
+
+        return associationRemoved;
+    }
+
+    /**
+     * 
+     * @param categoryId
+     * @return
+     */
     public synchronized int getNumMoviesInCategory(int categoryId)
     {
         int count = 0;

@@ -247,10 +247,11 @@ public class MovieInfoActivity extends Activity implements
             AlertDialog.Builder builder = new AlertDialog.Builder(
                     this);
 
-            builder.setMessage(
-                    "Are you sure you want to delete \"" +
-                            MovieInfoActivity.this.currentMovie.getTitle() +
-                            "\"?")
+            builder.setTitle("Delete " + currentMovie.getTitle() + "?")
+                    .setMessage(
+                            "Are you sure you want to delete \"" +
+                                    MovieInfoActivity.this.currentMovie
+                                            .getTitle() + "\"?")
                     .setCancelable(true)
                     .setPositiveButton("Yes",
                             new DialogInterface.OnClickListener()

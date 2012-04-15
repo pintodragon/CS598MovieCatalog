@@ -6,55 +6,52 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <TableLayout
-        android:id="@+id/category_main_table_layout"
+    <RelativeLayout
+        android:id="@+id/category_list_header"
         android:layout_width="match_parent"
-        android:layout_height="420dp"
-        android:stretchColumns="*" >
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
-        <TableRow>
-            <TextView
-                android:layout_width="5dp"
-                android:text="@string/category_table_index"
-                android:padding="3dp" />
-            
-            <TextView
-                android:layout_width="150dp"
-                android:text="@string/category_table_title"
-                android:padding="3dp" />
+        
 
-            <TextView
-                android:layout_width="5dp"
-                android:text="@string/category_table_count"
-                android:padding="3dp" />
-        </TableRow>
-            
-	    <View android:layout_width="match_parent"
-	          android:layout_height="2dip"
-	          android:background="#FF909090" />
+	    <TextView
+	        android:id="@+id/category_list_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_toLeftOf="@+id/category_list_count"
+            android:text="@string/category_title"
+            android:textSize="18dp" />
 
-        <ScrollView 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:isScrollContainer="true" >
-            <TableLayout
-                android:id="@+id/category_data_table_layout"
-                android:layout_width="match_parent"
-                android:layout_height="410dp"
-                android:stretchColumns="*"
-                android:scrollbars="vertical" >
-                
-            </TableLayout>
-        </ScrollView>
-    </TableLayout>
+	    <TextView
+	        android:id="@+id/category_list_count"
+	        android:layout_width="50dp"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+            android:text="@string/category_count"
+            android:textSize="18dp"
+            android:gravity="right" />
+	    
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/category_list_footer"
+        android:layout_below="@+id/category_list_header" >
 
-    <LinearLayout
+    </ListView>
+
+    <LinearLayout android:id="@+id/category_list_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:gravity="center_horizontal"
         android:orientation="horizontal" >
+
         <Button
             android:id="@+id/category_add"
             android:layout_width="wrap_content"
@@ -62,4 +59,5 @@
             android:onClick="onButtonClick"
             android:text="@string/category_add" />
     </LinearLayout>
+
 </RelativeLayout>

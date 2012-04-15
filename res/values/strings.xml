@@ -19,9 +19,8 @@
     <string name="aquired_category_info">aquired_category_info</string>
     
     <!-- Category List Strings -->
-    <string name="category_table_index">#</string>
-    <string name="category_table_title">Title</string>
-    <string name="category_table_count">Count</string>
+    <string name="category_title">Title</string>
+    <string name="category_count">Count</string>
     <string name="category_add">Add Category</string>
     
     <!-- Movie List Strings -->
@@ -40,6 +39,7 @@
     <string name="category_info_add">Add Movie</string>
     <string name="category_info_delete">Delete</string>
     <string name="category_info_cancel">Cancel</string>
+    <string name="category_add_movie_empty">No movies currently in system.</string>
     
     <!-- Movie Info Strings -->
     <string name="movie_info_intent_title">movie_info_intent_title</string>
