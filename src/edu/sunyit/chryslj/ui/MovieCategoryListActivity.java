@@ -3,16 +3,23 @@ package edu.sunyit.chryslj.ui;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.MovieCategory;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
@@ -41,10 +48,32 @@ public class MovieCategoryListActivity extends Activity implements
     }
 
     @Override
-    public void onClick(View arg0)
+    public void onClick(View view)
     {
-        // TODO Auto-generated method stub
+        if (view instanceof TableRow)
+        {
+            TableRow clickedTableRow = (TableRow) view;
+            view.setBackgroundColor(Color.CYAN);
+            Log.d(TAG, "View: " + clickedTableRow.getChildCount());
+            Log.d(TAG, "View: " +
+                    ((TextView) clickedTableRow.getChildAt(0)).getText()
+                            .toString());
 
+            TextView titleView = (TextView) clickedTableRow.getChildAt(1);
+
+            movieManagementSystem.open();
+            MovieCategory movieCategory =
+                    movieManagementSystem.getCategory(titleView.getText()
+                            .toString());
+            movieManagementSystem.close();
+
+            // TODO Should do a check to make sure the movie isn't null.
+            Intent intent = new Intent();
+            intent.putExtra(getString(R.string.aquired_category_info),
+                    movieCategory);
+            intent.setClass(getApplication(), MovieCategoryInfoActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -59,10 +88,79 @@ public class MovieCategoryListActivity extends Activity implements
         switch (view.getId())
         {
             case R.id.category_add:
-
-                break;
+                addNewCategory();
+                updateTableLayouts();
             default:
                 break;
+        }
+    }
+
+    private void addNewCategory()
+    {
+        LayoutInflater inflater =
+                (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.category_add_dialog, null);
+        // (ViewGroup) findViewById(R.id.category_add_dialog));
+        final EditText titleBox =
+                (EditText) layout.findViewById(R.id.category_add_title);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                this);
+        builder.setView(layout);
+        builder.setCancelable(true);
+        builder.setPositiveButton("Add", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                MovieCategoryListActivity.this.addNewCategory(titleBox
+                        .getText().toString());
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+            }
+        });
+
+        builder.create().show();
+    }
+
+    protected void addNewCategory(String categoryTitle)
+    {
+        if (!"".equals(categoryTitle))
+        {
+            movieManagementSystem.open();
+            MovieCategory newCategory =
+                    movieManagementSystem.getCategory(categoryTitle);
+
+            StringBuilder toastText = new StringBuilder();
+            toastText.append(categoryTitle + " ");
+
+            if (newCategory == null)
+            {
+                newCategory = new MovieCategory();
+                newCategory.setTitle(categoryTitle);
+                if (movieManagementSystem.addCategory(newCategory))
+                {
+                    toastText.append("added successfully!");
+                }
+                else
+                {
+                    toastText.append("was not added!");
+                }
+            }
+            else
+            {
+                toastText.append(" already exists!");
+            }
+            Toast.makeText(getApplication(), toastText.toString(),
+                    Toast.LENGTH_LONG).show();
+
+            movieManagementSystem.close();
         }
     }
 
@@ -71,6 +169,7 @@ public class MovieCategoryListActivity extends Activity implements
         movieManagementSystem.open();
         List<MovieCategory> categoryList =
                 movieManagementSystem.getAllCategories();
+        movieManagementSystem.close();
 
         // Clear all entries.
         bodyTableLayout.removeAllViews();
@@ -138,8 +237,7 @@ public class MovieCategoryListActivity extends Activity implements
         }
 
         // Force a redraw.
-        bodyTableLayout.setVisibility(View.VISIBLE);
-        bodyTableLayout.invalidate();
+        bodyTableLayout.postInvalidate();
     }
 
     private TextView createView(int value, Context context)

@@ -15,11 +15,14 @@
     <!-- Aquired Movie Info Strings -->
     <string name="aquired_movie_info">aquired_movie_info</string>
     
+    <!-- Aquired Category Info Strings -->
+    <string name="aquired_category_info">aquired_category_info</string>
+    
     <!-- Category List Strings -->
     <string name="category_table_index">#</string>
     <string name="category_table_title">Title</string>
     <string name="category_table_count">Count</string>
-    <string name="category_add">Add List</string>
+    <string name="category_add">Add Category</string>
     
     <!-- Movie List Strings -->
     <string name="movie_table_index">#</string>
@@ -34,6 +37,9 @@
     <!-- Category Info Strings -->
     <string name="category_info_main_title">Category: %1$s</string>
     <string name="category_info_main_index">#</string>
+    <string name="category_info_add">Add Movie</string>
+    <string name="category_info_delete">Delete</string>
+    <string name="category_info_cancel">Cancel</string>
     
     <!-- Movie Info Strings -->
     <string name="movie_info_intent_title">movie_info_intent_title</string>
@@ -46,8 +52,12 @@
     <string name="movie_info_personalrating_text"></string>
     <string name="movie_info_runtime">Run Time:</string>
     <string name="movie_info_runtime_mins">Minutes</string>
-    <string name="movie_info_lists">Associated Lists:</string>
     <string name="movie_info_delete">Delete</string>
     <string name="movie_info_commit">Commit</string>
     <string name="movie_info_cancel">Cancel</string>
+    
+    <!-- Category Add Dialog Strings -->
+    <string name="category_add_title_label">Title:</string>
+    <string name="category_add_ok">Add</string>
+    <string name="category_add_cancel">Cancel</string>
 </resources>

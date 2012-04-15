@@ -19,7 +19,7 @@
     <TableLayout
         android:id="@+id/movie_main_table_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="400dp"
         android:stretchColumns="*"
         android:shrinkColumns="3" >
 
@@ -44,21 +44,25 @@
                 android:text="@string/movie_table_sort"
                 android:padding="3dp" />
         </TableRow>
+            
+	    <View android:layout_width="match_parent"
+	          android:layout_height="2dip"
+	          android:background="#FF909090" />
     
-         <ScrollView 
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:isScrollContainer="true" >
-             <TableLayout
-                 android:id="@+id/movie_data_table_layout"
-                 android:layout_width="match_parent"
-                 android:layout_height="410dp"
-                 android:stretchColumns="*"
-                 android:shrinkColumns="3"
-                 android:scrollbars="vertical" >
+        <ScrollView 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="true" >
+            <TableLayout
+                android:id="@+id/movie_data_table_layout"
+                android:layout_width="match_parent"
+                android:layout_height="410dp"
+                android:stretchColumns="*"
+                android:shrinkColumns="3"
+                android:scrollbars="vertical" >
                  
-             </TableLayout>
-         </ScrollView>
+            </TableLayout>
+        </ScrollView>
     </TableLayout>
 
     <View android:layout_width="match_parent"
@@ -71,26 +75,26 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/movie_info_commit"
+            android:id="@+id/category_info_add"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onButtonClick"
-            android:text="@string/movie_info_commit" />
+            android:text="@string/category_info_add" />
         <Button
-            android:id="@+id/movie_info_cancel"
+            android:id="@+id/category_info_cancel"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onButtonClick"
-            android:text="@string/movie_info_cancel" />
+            android:text="@string/category_info_cancel" />
         <Button
-            android:id="@+id/movie_info_delete"
+            android:id="@+id/category_info_delete"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onButtonClick"
-            android:text="@string/movie_info_delete" />
+            android:text="@string/category_info_delete" />
     </LinearLayout>
 
 </LinearLayout>

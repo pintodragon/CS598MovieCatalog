@@ -12,7 +12,9 @@
         android:text="@string/movie_info_main_title"
         android:textSize="25dp" />
             
-    <View android:layout_width="match_parent" android:layout_height="2dip" android:background="#FF909090" />
+    <View android:layout_width="match_parent"
+          android:layout_height="2dip"
+          android:background="#FF909090" />
     
 	<TableLayout 
 	    android:layout_width="match_parent"
@@ -133,7 +135,10 @@
 	
 	</TableLayout>
 
-    <View android:layout_width="match_parent" android:layout_height="2dip" android:background="#FF909090" />
+            
+    <View android:layout_width="match_parent"
+          android:layout_height="2dip"
+          android:background="#FF909090" />
 	<LinearLayout
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"

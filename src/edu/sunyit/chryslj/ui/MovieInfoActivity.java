@@ -251,7 +251,7 @@ public class MovieInfoActivity extends Activity implements
                     "Are you sure you want to delete \"" +
                             MovieInfoActivity.this.currentMovie.getTitle() +
                             "\"?")
-                    .setCancelable(false)
+                    .setCancelable(true)
                     .setPositiveButton("Yes",
                             new DialogInterface.OnClickListener()
                             {

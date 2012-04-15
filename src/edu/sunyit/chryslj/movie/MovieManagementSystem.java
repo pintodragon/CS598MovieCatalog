@@ -294,14 +294,52 @@ public class MovieManagementSystem
         return movies;
     }
 
+    public Movie getMovie(String movieTitle)
+    {
+        Cursor cursor =
+                database.query(MovieTable.TABLE_MOVIES,
+                        movieTable.getColumnNames(), MovieTable.COLUMN_TITLE +
+                                "=?", new String[] { movieTitle }, null, null,
+                        null);
+        cursor.moveToFirst();
+
+        Movie movie = null;
+
+        if (cursor.getCount() == 1)
+        {
+            movie = cursorToMovie(cursor);
+        }
+
+        return movie;
+    }
+
+    public MovieCategory getCategory(String categoryTitle)
+    {
+        Cursor cursor =
+                database.query(MovieCategoryTable.TABLE_CATEGORY,
+                        movieCategoryTable.getColumnNames(),
+                        MovieCategoryTable.COLUMN_TITLE + "=?",
+                        new String[] { categoryTitle }, null, null, null);
+        cursor.moveToFirst();
+
+        MovieCategory category = null;
+
+        if (cursor.getCount() == 1)
+        {
+            category = cursorToMovieCategory(cursor);
+        }
+
+        return category;
+    }
+
     /**
      * 
      * @param movieCategory
      * @return
      */
-    public synchronized boolean addList(MovieCategory movieCategory)
+    public synchronized boolean addCategory(MovieCategory movieCategory)
     {
-        boolean listAdded = true;
+        boolean categoryAdded = true;
 
         if (!"".equals(movieCategory.getTitle()))
         {
@@ -330,7 +368,7 @@ public class MovieManagementSystem
             {
                 Log.e(TAG, "Unable to add \"" + movieCategory +
                         "\" to the database." + sqlException.getMessage());
-                listAdded = false;
+                categoryAdded = false;
             }
             finally
             {
@@ -338,7 +376,7 @@ public class MovieManagementSystem
             }
         }
 
-        return listAdded;
+        return categoryAdded;
     }
 
     /**
@@ -346,9 +384,9 @@ public class MovieManagementSystem
      * @param movieCategory
      * @return
      */
-    public synchronized boolean removeList(MovieCategory movieCategory)
+    public synchronized boolean removeCategory(MovieCategory movieCategory)
     {
-        boolean ListRemoved = false;
+        boolean categoryRemoved = false;
 
         if (movieCategory != null && !"".equals(movieCategory.getTitle()))
         {
@@ -358,28 +396,33 @@ public class MovieManagementSystem
                 try
                 {
                     database.delete(MovieCategoryTable.TABLE_CATEGORY,
-                            MovieCategoryTable.COLUMN_ID + " = " +
-                                    movieCategory.getId(), null);
+                            MovieCategoryTable.COLUMN_ID + "=?",
+                            new String[] { "" + movieCategory.getId() });
                     database.delete(
                             CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
                             CategoryMovieAssociationTable.COLUMN_CATEGORYID +
-                                    " = " + movieCategory.getId(), null);
+                                    "=?",
+                            new String[] { "" + movieCategory.getId() });
                     database.setTransactionSuccessful();
-                    ListRemoved = true;
+                    categoryRemoved = true;
                 }
                 finally
                 {
                     database.endTransaction();
                 }
 
-                if (!ListRemoved)
+                if (!categoryRemoved)
                 {
                     Log.e(TAG, "Unable to delete list: " + movieCategory);
                 }
             }
+            else
+            {
+                Log.e(TAG, "Tried to delete a default category!");
+            }
         }
 
-        return ListRemoved;
+        return categoryRemoved;
     }
 
     /**
@@ -483,8 +526,11 @@ public class MovieManagementSystem
     public synchronized MovieCategory promptForList()
     {
         List<MovieCategory> availableCategories = getAllCategories();
-        // TODO Create a dialog that has a spinner. Might already have one int
-        // he API.
+        MovieCategory[] movieCategoryArray =
+                new MovieCategory[availableCategories.size()];
+        movieCategoryArray = availableCategories.toArray(movieCategoryArray);
+        // TODO Create a dialog that has a spinner. Might already have one in
+        // the API.
         return null;
     }
 
@@ -529,43 +575,5 @@ public class MovieManagementSystem
         }
 
         return movieCategory;
-    }
-
-    public Movie getMovie(String movieTitle)
-    {
-        Cursor cursor =
-                database.query(MovieTable.TABLE_MOVIES,
-                        movieTable.getColumnNames(), MovieTable.COLUMN_TITLE +
-                                "=?", new String[] { movieTitle }, null, null,
-                        null);
-        cursor.moveToFirst();
-
-        Movie movie = null;
-
-        if (cursor.getCount() == 1)
-        {
-            movie = cursorToMovie(cursor);
-        }
-
-        return movie;
-    }
-
-    public MovieCategory getCategory(String categoryTitle)
-    {
-        Cursor cursor =
-                database.query(MovieCategoryTable.TABLE_CATEGORY,
-                        movieCategoryTable.getColumnNames(),
-                        MovieCategoryTable.COLUMN_TITLE + "=?",
-                        new String[] { categoryTitle }, null, null, null);
-        cursor.moveToFirst();
-
-        MovieCategory category = null;
-
-        if (cursor.getCount() == 1)
-        {
-            category = cursorToMovieCategory(cursor);
-        }
-
-        return category;
     }
 }

@@ -1,7 +1,11 @@
 package edu.sunyit.chryslj.movie;
 
-public class MovieCategory
+import java.io.Serializable;
+
+public class MovieCategory implements Serializable
 {
+    private static final long serialVersionUID = 2238873589530985224L;
+
     private int id = 0;
     private String title = "";
 
