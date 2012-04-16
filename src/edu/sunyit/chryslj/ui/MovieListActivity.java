@@ -63,11 +63,20 @@ public class MovieListActivity extends ListActivity implements
     {
         super.onResume();
 
-        // TODO Need to return a movie object from the movie info screen now and
-        // add it to the movieAdapter then do a notify.
         movieManagementSystem.open();
         movies = movieManagementSystem.getAllMovies();
         movieManagementSystem.close();
+
+        // By doing this we ensure the newly added movies or deleted movies are
+        // added to the list. This would be horrible for a large amount of
+        // movies and should probably only have the one movie that was added
+        // returned and added to the list.
+        movieAdapter.clear();
+
+        for (int index = 0; index < movies.size(); index++)
+        {
+            movieAdapter.add(movies.get(index));
+        }
 
         movieAdapter.notifyDataSetChanged();
 
