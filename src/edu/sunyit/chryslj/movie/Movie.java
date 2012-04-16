@@ -16,7 +16,7 @@ public class Movie implements Serializable
     private String title = "";
     private Rating rated = Rating.UNRATED;
     private Genre genre = Genre.UNKNOWN;
-    private int personalRaiting = 0;
+    private int personalRating = 0;
     private MediaFormat format = MediaFormat.DVD;
     private Short runTime = 0;
     private List<String> associatedLists = new ArrayList<String>();
@@ -75,18 +75,18 @@ public class Movie implements Serializable
     /**
      * @return the personalRaiting
      */
-    public int getPersonalRaiting()
+    public int getPersonalRating()
     {
-        return personalRaiting;
+        return personalRating;
     }
 
     /**
      * @param personalRaiting
      *            the personalRaiting to set
      */
-    public void setPersonalRaiting(int personalRaiting)
+    public void setPersonalRating(int personalRating)
     {
-        this.personalRaiting = personalRaiting;
+        this.personalRating = personalRating;
     }
 
     /**

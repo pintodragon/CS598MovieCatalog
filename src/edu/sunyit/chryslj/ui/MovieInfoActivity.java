@@ -102,16 +102,16 @@ public class MovieInfoActivity extends Activity implements
                                 currentMovie.getRated() + " Format: " +
                                 currentMovie.getFormat() + " Genre: " +
                                 currentMovie.getGenre() + " Personal: " +
-                                currentMovie.getPersonalRaiting() +
+                                currentMovie.getPersonalRating() +
                                 " RunTime: " + currentMovie.getRunTime());
 
                 titleEditText.setText(currentMovie.getTitle());
                 ratedSpinner.setSelection(currentMovie.getRated().getId());
                 formatSpinner.setSelection(currentMovie.getFormat().getId());
                 genreSpinner.setSelection(currentMovie.getGenre().getId());
-                ratingSeekBar.setProgress(currentMovie.getPersonalRaiting());
+                ratingSeekBar.setProgress(currentMovie.getPersonalRating());
                 ratingProgressText.setText("" +
-                        currentMovie.getPersonalRaiting());
+                        currentMovie.getPersonalRating());
                 runtimeText.setText("" + currentMovie.getRunTime());
             }
         }
@@ -184,7 +184,7 @@ public class MovieInfoActivity extends Activity implements
             currentMovie.setRated((Rating) rated);
         }
 
-        currentMovie.setPersonalRaiting(Integer.parseInt(ratingProgressText
+        currentMovie.setPersonalRating(Integer.parseInt(ratingProgressText
                 .getText().toString()));
 
         currentMovie.setRunTime(Short.parseShort(runtimeText.getText()

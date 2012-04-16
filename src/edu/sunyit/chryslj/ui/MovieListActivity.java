@@ -3,31 +3,33 @@ package edu.sunyit.chryslj.ui;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.ListActivity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
-public class MovieListActivity extends Activity implements OnClickListener
+public class MovieListActivity extends ListActivity implements
+        OnItemClickListener, OnItemSelectedListener
 {
     private static final String TAG = MovieListActivity.class.getSimpleName();
     private MovieManagementSystem movieManagementSystem;
 
-    private TableLayout headerTableLayout;
-    private TableLayout bodyTableLayout;
+    private List<Movie> movies = null;
+    private MovieAdapter movieAdapter;
+    private Spinner sortBySpinner;
 
-    private boolean isSorted = false;
+    private String[] spinnerValues = { "None", "Title", "Rated",
+            "Personal Rating", "Genre", "Format", "Runtime" };
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -39,158 +41,49 @@ public class MovieListActivity extends Activity implements OnClickListener
         movieManagementSystem = new MovieManagementSystem(
                 getApplication());
 
-        headerTableLayout =
-                (TableLayout) findViewById(R.id.movie_main_table_layout);
-        String sortedBy =
-                getResources().getString(R.string.movie_table_sort, "None");
-        TableRow headerRow = (TableRow) headerTableLayout.getChildAt(0);
-        ((TextView) headerRow.getChildAt(headerRow.getChildCount() - 1))
-                .setText(sortedBy);
-        bodyTableLayout =
-                (TableLayout) findViewById(R.id.movie_data_table_layout);
+        movieManagementSystem.open();
+        movies = movieManagementSystem.getAllMovies();
+        movieManagementSystem.close();
 
-        updateTableLayouts();
+        movieAdapter = new MovieAdapter(
+                this, R.layout.category_list_item, movies);
+        setListAdapter(movieAdapter);
+        getListView().setOnItemClickListener(this);
+
+        sortBySpinner = (Spinner) findViewById(R.id.movie_list_sort_spinner);
+        ArrayAdapter<String> movieSpinnerAdapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, spinnerValues);
+
+        sortBySpinner.setAdapter(movieSpinnerAdapter);
+        sortBySpinner.setOnItemSelectedListener(this);
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        bodyTableLayout.removeAllViews();
-        updateTableLayouts();
-    }
 
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-    }
-
-    private void updateTableLayouts()
-    {
+        // TODO Need to return a movie object from the movie info screen now and
+        // add it to the movieAdapter then do a notify.
         movieManagementSystem.open();
-        List<Movie> movieList = movieManagementSystem.getAllMovies();
+        movies = movieManagementSystem.getAllMovies();
         movieManagementSystem.close();
 
-        if (movieList.isEmpty())
+        movieAdapter.notifyDataSetChanged();
+
+        if (movies.size() > 0)
         {
-            findViewById(R.id.movie_list_table_container).setVisibility(
-                    View.INVISIBLE);
-            bodyTableLayout.removeAllViews();
+            findViewById(R.id.movie_list_container).setVisibility(View.VISIBLE);
             findViewById(R.id.movie_list_empty_textview).setVisibility(
-                    View.VISIBLE);
+                    View.INVISIBLE);
         }
         else
         {
+            findViewById(R.id.movie_list_container).setVisibility(
+                    View.INVISIBLE);
             findViewById(R.id.movie_list_empty_textview).setVisibility(
-                    View.GONE);
-            findViewById(R.id.movie_list_table_container).setVisibility(
                     View.VISIBLE);
-            // Clear all entries.
-            bodyTableLayout.removeAllViews();
-
-            for (int movieIndex = 0; movieIndex < movieList.size(); movieIndex++)
-            {
-                Movie currentMovie = movieList.get(movieIndex);
-                TableRow newTableRow = new TableRow(
-                        getApplication());
-                newTableRow.setLayoutParams(new TableRow.LayoutParams(
-                        LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-                newTableRow
-                        .setBackgroundColor(android.R.drawable.list_selector_background);
-                newTableRow.setOnClickListener(this);
-                newTableRow.setClickable(true);
-
-                // Get the DP value of the column in the table row. 5 dp is
-                // equivalent to 5 pixels.
-                int dPValue =
-                        (int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 5, getResources()
-                                        .getDisplayMetrics());
-                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
-                        dPValue, LayoutParams.FILL_PARENT);
-                newTableRow
-                        .addView(
-                                createView(movieIndex + 1,
-                                        bodyTableLayout.getContext()), 0,
-                                layoutParams);
-
-                // Get the DP value of the column in the table row. 60 dp is
-                // equivalent to 60 pixels.
-                dPValue =
-                        (int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 60, getResources()
-                                        .getDisplayMetrics());
-                layoutParams = new TableRow.LayoutParams(
-                        dPValue, LayoutParams.FILL_PARENT);
-                newTableRow.addView(
-                        createView(currentMovie.getTitle(),
-                                bodyTableLayout.getContext()), 1, layoutParams);
-
-                // Get the DP value of the column in the table row. 40 dp is
-                // equivalent to 40 pixels.
-                dPValue =
-                        (int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 40, getResources()
-                                        .getDisplayMetrics());
-                layoutParams = new TableRow.LayoutParams(
-                        dPValue, LayoutParams.FILL_PARENT);
-                newTableRow.addView(
-                        createView(currentMovie.getPersonalRaiting(),
-                                bodyTableLayout.getContext()), 2, layoutParams);
-
-                if (isSorted)
-                {
-                    String sortedBy = "";
-
-                    // TODO Figure out the sorted thing.
-                    newTableRow.addView(
-                            createView(currentMovie.getTitle(),
-                                    bodyTableLayout.getContext()), 3);
-
-                    TableRow headerRow =
-                            (TableRow) headerTableLayout.getChildAt(0);
-                    ((TextView) headerRow
-                            .getChildAt(headerRow.getChildCount() - 1))
-                            .setText(sortedBy);
-                }
-
-                bodyTableLayout.addView(newTableRow,
-                        new TableLayout.LayoutParams(
-                                LayoutParams.FILL_PARENT,
-                                LayoutParams.WRAP_CONTENT));
-            }
-
-            // Force a redraw.
-            bodyTableLayout.setVisibility(View.VISIBLE);
-            bodyTableLayout.invalidate();
         }
-    }
-
-    private TextView createView(int value, Context context)
-    {
-        TextView textView = new TextView(
-                context);
-        int dPValue =
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3,
-                        getResources().getDisplayMetrics());
-        textView.setPadding(dPValue, dPValue, dPValue, dPValue);
-        textView.setText("" + value);
-
-        return textView;
-    }
-
-    private TextView createView(String value, Context context)
-    {
-        TextView textView = new TextView(
-                context);
-        int dPValue =
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3,
-                        getResources().getDisplayMetrics());
-        textView.setPadding(dPValue, dPValue, dPValue, dPValue);
-        textView.setText(value);
-
-        return textView;
     }
 
     /**
@@ -226,41 +119,10 @@ public class MovieListActivity extends Activity implements OnClickListener
             switch (requestCode)
             {
                 case R.id.TAKE_PICTURE_REQUEST:
-                    // imageData is the YCrCB data acquired from the preview.
-                    byte[] imageData =
-                            data.getByteArrayExtra(getString(R.string.ycrcb_image_data));
-                    int width =
-                            data.getIntExtra(
-                                    getString(R.string.ycrcb_image_width), 0);
-                    int height =
-                            data.getIntExtra(
-                                    getString(R.string.ycrcb_image_height), 0);
-
-                    Intent intent = new Intent();
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                    intent.setClass(getApplication(), BarcodeActivity.class);
-                    intent.putExtra(getString(R.string.ycrcb_image_data),
-                            imageData);
-                    intent.putExtra(getString(R.string.ycrcb_image_width),
-                            width);
-                    intent.putExtra(getString(R.string.ycrcb_image_height),
-                            height);
-                    startActivityForResult(intent, R.id.DECODE_PICTURE);
+                    startDecodeActivity(data);
                     break;
                 case R.id.DECODE_PICTURE:
-                    Movie aquiredMovie =
-                            (Movie) data
-                                    .getSerializableExtra(getString(R.string.aquired_movie_info));
-                    if (aquiredMovie != null)
-                    {
-                        Intent movieInfoIntent = new Intent();
-                        movieInfoIntent.putExtra(
-                                getString(R.string.aquired_movie_info),
-                                aquiredMovie);
-                        movieInfoIntent.setClass(getApplication(),
-                                MovieInfoActivity.class);
-                        startActivity(movieInfoIntent);
-                    }
+                    showDecodedMovieInfo(data);
                     break;
                 default:
                     break;
@@ -269,30 +131,79 @@ public class MovieListActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public void onClick(View view)
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+            long id)
     {
-        if (view instanceof TableRow)
+        TextView movieTitle =
+                (TextView) view.findViewById(R.id.movie_list_item_title);
+
+        if (movieTitle != null)
         {
-            TableRow clickedTableRow = (TableRow) view;
-            view.setBackgroundColor(Color.CYAN);
-            Log.d(TAG, "View: " + clickedTableRow.getChildCount());
-            Log.d(TAG, "View: " +
-                    ((TextView) clickedTableRow.getChildAt(0)).getText()
-                            .toString());
-
-            TextView titleView = (TextView) clickedTableRow.getChildAt(1);
-
+            String title =
+                    movieTitle.getText().toString().replaceFirst("Title: ", "");
+            Log.d(TAG, "Title: " + title);
             movieManagementSystem.open();
-            Movie movie =
-                    movieManagementSystem.getMovie(titleView.getText()
-                            .toString());
+            Movie movie = movieManagementSystem.getMovie(title);
             movieManagementSystem.close();
 
-            // TODO Should do a check to make sure the movie isn't null.
             Intent intent = new Intent();
             intent.putExtra(getString(R.string.aquired_movie_info), movie);
             intent.setClass(getApplication(), MovieInfoActivity.class);
             startActivity(intent);
+        }
+    }
+
+    // //////////////////////
+    // Used by the Spinner //
+    // //////////////////////
+
+    /**
+     * 
+     */
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+            long id)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent)
+    {
+        // Do nothing.
+    }
+
+    private void startDecodeActivity(Intent data)
+    {
+        // imageData is the YCrCB data acquired from the preview.
+        byte[] imageData =
+                data.getByteArrayExtra(getString(R.string.ycrcb_image_data));
+        int width = data.getIntExtra(getString(R.string.ycrcb_image_width), 0);
+        int height =
+                data.getIntExtra(getString(R.string.ycrcb_image_height), 0);
+
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.setClass(getApplication(), BarcodeActivity.class);
+        intent.putExtra(getString(R.string.ycrcb_image_data), imageData);
+        intent.putExtra(getString(R.string.ycrcb_image_width), width);
+        intent.putExtra(getString(R.string.ycrcb_image_height), height);
+        startActivityForResult(intent, R.id.DECODE_PICTURE);
+    }
+
+    private void showDecodedMovieInfo(Intent data)
+    {
+        Movie aquiredMovie =
+                (Movie) data
+                        .getSerializableExtra(getString(R.string.aquired_movie_info));
+        if (aquiredMovie != null)
+        {
+            Intent movieInfoIntent = new Intent();
+            movieInfoIntent.putExtra(getString(R.string.aquired_movie_info),
+                    aquiredMovie);
+            movieInfoIntent.setClass(getApplication(), MovieInfoActivity.class);
+            startActivity(movieInfoIntent);
         }
     }
 }

@@ -84,7 +84,7 @@ public class MovieManagementSystem
                 values.put(MovieTable.COLUMN_RATED, newMovie.getRated().getId());
                 values.put(MovieTable.COLUMN_GENRE, newMovie.getGenre().getId());
                 values.put(MovieTable.COLUMN_PERSONALRATING,
-                        newMovie.getPersonalRaiting());
+                        newMovie.getPersonalRating());
                 values.put(MovieTable.COLUMN_FORMAT, newMovie.getFormat()
                         .ordinal());
                 values.put(MovieTable.COLUMN_RUNTIME, newMovie.getRunTime());
@@ -153,7 +153,7 @@ public class MovieManagementSystem
         values.put(MovieTable.COLUMN_TITLE, movie.getTitle());
         values.put(MovieTable.COLUMN_RATED, movie.getRated().getId());
         values.put(MovieTable.COLUMN_GENRE, movie.getGenre().getId());
-        values.put(MovieTable.COLUMN_PERSONALRATING, movie.getPersonalRaiting());
+        values.put(MovieTable.COLUMN_PERSONALRATING, movie.getPersonalRating());
         values.put(MovieTable.COLUMN_FORMAT, movie.getFormat().ordinal());
         values.put(MovieTable.COLUMN_RUNTIME, movie.getRunTime());
 
@@ -471,42 +471,51 @@ public class MovieManagementSystem
     public synchronized boolean addMovieToMovieCategory(Movie movie,
             MovieCategory movieCategory)
     {
-        boolean movieAddedToList = true;
+        boolean movieAddedToCategory = true;
 
-        ContentValues values = new ContentValues();
-        values.put(CategoryMovieAssociationTable.COLUMN_CATEGORYID,
-                movieCategory.getId());
-        values.put(CategoryMovieAssociationTable.COLUMN_MOVIEID, movie.getId());
-
-        database.beginTransaction();
-
-        try
+        if (!isMovieInCategory(movie.getTitle(), movieCategory.getTitle()))
         {
-            long insertId =
-                    database.insertOrThrow(
-                            CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
-                            null, values);
+            ContentValues values = new ContentValues();
+            values.put(CategoryMovieAssociationTable.COLUMN_CATEGORYID,
+                    movieCategory.getId());
+            values.put(CategoryMovieAssociationTable.COLUMN_MOVIEID,
+                    movie.getId());
 
-            if (insertId == -1)
+            database.beginTransaction();
+
+            try
             {
-                throw new SQLException();
+                long insertId =
+                        database.insertOrThrow(
+                                CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
+                                null, values);
+
+                if (insertId == -1)
+                {
+                    throw new SQLException();
+                }
+
+                Log.d(TAG, "InsertedId: " + insertId);
+                database.setTransactionSuccessful();
             }
-
-            Log.d(TAG, "InsertedId: " + insertId);
-            database.setTransactionSuccessful();
+            catch (SQLException sqlException)
+            {
+                Log.e(TAG, "Unable to add \"" + movie + "\" to \"" +
+                        movieCategory + "\"." + sqlException.getMessage());
+                movieAddedToCategory = false;
+            }
+            finally
+            {
+                database.endTransaction();
+            }
         }
-        catch (SQLException sqlException)
+        else
         {
-            Log.e(TAG, "Unable to add \"" + movie + "\" to \"" + movieCategory +
-                    "\"." + sqlException.getMessage());
-            movieAddedToList = false;
-        }
-        finally
-        {
-            database.endTransaction();
+            Log.e(TAG, "Movie already in the category.");
+            movieAddedToCategory = false;
         }
 
-        return movieAddedToList;
+        return movieAddedToCategory;
     }
 
     /**
@@ -577,19 +586,45 @@ public class MovieManagementSystem
     }
 
     /**
+     * This method checks the database to see if the movie is already associated
+     * with the given category. It uses Strings rather than Objects. This is
+     * done to reduce the information needed on the callers side when doing the
+     * check.
      * 
-     * @param currentLists
+     * @param movieTitle
+     * @param categoryTitle
      * @return
      */
-    public synchronized MovieCategory promptForList()
+    public synchronized boolean isMovieInCategory(String movieTitle,
+            String categoryTitle)
     {
-        List<MovieCategory> availableCategories = getAllCategories();
-        MovieCategory[] movieCategoryArray =
-                new MovieCategory[availableCategories.size()];
-        movieCategoryArray = availableCategories.toArray(movieCategoryArray);
-        // TODO Create a dialog that has a spinner. Might already have one in
-        // the API.
-        return null;
+        boolean isInCategory = false;
+
+        Movie movie = getMovie(movieTitle);
+        MovieCategory movieCategory = getCategory(categoryTitle);
+
+        if (movie != null && movieCategory != null)
+        {
+            String whereString =
+                    CategoryMovieAssociationTable.COLUMN_MOVIEID + "=? AND " +
+                            CategoryMovieAssociationTable.COLUMN_CATEGORYID +
+                            "=?";
+
+            String[] selectionArgs =
+                    { "" + movie.getId(), "" + movieCategory.getId() };
+
+            Cursor cursor =
+                    database.query(
+                            CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
+                            associationTable.getColumnNames(), whereString,
+                            selectionArgs, null, null, null);
+
+            // Should be able to test for = 1 but this is safer. A Movie should
+            // not be in a category twice.
+            isInCategory = cursor.getCount() > 0;
+        }
+
+        return isInCategory;
     }
 
     /**
@@ -607,7 +642,7 @@ public class MovieManagementSystem
             movie.setTitle(cursor.getString(1));
             movie.setRated(Rating.values()[cursor.getInt(2)]);
             movie.setGenre(Genre.values()[cursor.getInt(3)]);
-            movie.setPersonalRaiting(cursor.getInt(4));
+            movie.setPersonalRating(cursor.getInt(4));
             movie.setFormat(MediaFormat.values()[cursor.getInt(5)]);
             movie.setRunTime(cursor.getShort(6));
             Log.d(TAG, "Movie: " + movie.toString());

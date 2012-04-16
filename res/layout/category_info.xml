@@ -15,49 +15,9 @@
           android:layout_height="2dip"
           android:background="#FF909090" />
 
-    <TableLayout
-        android:id="@+id/movie_main_table_layout"
-        android:layout_width="match_parent"
-        android:layout_height="380dp"
-        android:stretchColumns="*"
-        android:shrinkColumns="3" >
-
-        <TableRow>
-            <TextView
-                android:layout_width="5dp"
-                android:text="@string/movie_table_index"
-                android:padding="3dp" />
-             
-            <TextView
-                android:layout_width="60dp"
-                android:text="@string/movie_table_title"
-                android:padding="3dp" />
-    
-            <TextView
-                android:layout_width="40dp"
-                android:text="@string/movie_table_personal_rating"
-                android:padding="3dp" />
-        </TableRow>
-            
-	    <View android:layout_width="match_parent"
-	          android:layout_height="2dip"
-	          android:background="#FF909090" />
-    
-        <ScrollView 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:isScrollContainer="true" >
-            <TableLayout
-                android:id="@+id/movie_data_table_layout"
-                android:layout_width="match_parent"
-                android:layout_height="410dp"
-                android:stretchColumns="*"
-                android:shrinkColumns="3"
-                android:scrollbars="vertical" >
-                 
-            </TableLayout>
-        </ScrollView>
-    </TableLayout>
+    <ListView >
+        
+    </ListView>
 
     <View android:layout_width="match_parent"
           android:layout_height="2dip"

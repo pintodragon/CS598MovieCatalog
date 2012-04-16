@@ -24,10 +24,10 @@
     <string name="category_add">Add Category</string>
     
     <!-- Movie List Strings -->
-    <string name="movie_table_index">#</string>
-    <string name="movie_table_title">Title</string>
-    <string name="movie_table_personal_rating">Personal Rating</string>
-    <string name="movie_table_sort">Sorted By: %1$s</string>
+    <string name="movie_list_item_title">Title: %1$s</string>
+    <string name="movie_list_item_rated">Rated: %1$s</string>
+    <string name="movie_list_item_sort">Sorted By:</string>
+    <string name="movie_list_item_sort_val">%1$s</string>
     <string name="movie_add_manual">Add Manual</string>
     <string name="movie_add_camera">Add Camera</string>
     <string name="movie_empty_text">There are no movies
@@ -35,7 +35,6 @@
 
     <!-- Category Info Strings -->
     <string name="category_info_main_title">Category: %1$s</string>
-    <string name="category_info_main_index">#</string>
     <string name="category_info_add">Add Movie</string>
     <string name="category_info_delete">Delete</string>
     <string name="category_info_cancel">Cancel</string>

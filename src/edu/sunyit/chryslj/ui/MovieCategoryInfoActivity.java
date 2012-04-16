@@ -1,5 +1,6 @@
 package edu.sunyit.chryslj.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -164,11 +165,26 @@ public class MovieCategoryInfoActivity extends Activity
     private void showMovieAddDialog()
     {
         movieMangementSystem.open();
+
         List<Movie> moviesInSystem = movieMangementSystem.getAllMovies();
+        List<Movie> moviesNotInCategory = new ArrayList<Movie>();
+
+        for (int movieIndex = 0; movieIndex < moviesInSystem.size(); movieIndex++)
+        {
+            Movie movie = moviesInSystem.get(movieIndex);
+            if (!movieMangementSystem.isMovieInCategory(movie.getTitle(),
+                    movieCategory.getTitle()))
+            {
+                moviesNotInCategory.add(movie);
+            }
+        }
+
         movieMangementSystem.close();
 
-        ArrayAdapter<Movie> movieSpinnerAdapter = new ArrayAdapter<Movie>(
-                this, android.R.layout.simple_spinner_item, moviesInSystem);
+        ArrayAdapter<Movie> movieSpinnerAdapter =
+                new ArrayAdapter<Movie>(
+                        this, android.R.layout.simple_spinner_item,
+                        moviesNotInCategory);
 
         LayoutInflater inflater =
                 (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
