@@ -88,6 +88,7 @@ public class MovieCategoryInfoActivity extends Activity
                 showMovieAddDialog();
                 break;
             case R.id.category_info_cancel:
+                setResult(RESULT_CANCELED);
                 finish();
                 break;
             case R.id.category_info_delete:
@@ -111,10 +112,15 @@ public class MovieCategoryInfoActivity extends Activity
         if (movieMangementSystem.removeCategory(movieCategory))
         {
             toastMessage.append(" has been deleted!");
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(getString(R.string.deleted_category_info),
+                    movieCategory);
+            setResult(RESULT_OK, returnIntent);
         }
         else
         {
             toastMessage.append(" was not deleted!");
+            setResult(RESULT_CANCELED);
         }
 
         Toast.makeText(getApplication(), toastMessage.toString(),

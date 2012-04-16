@@ -27,9 +27,8 @@ public class MovieCategoryTable implements DatabaseTable
     private static final String COPY_TABLE_BACK = "INSERT INTO " +
             TABLE_CATEGORY + " SELECT * FROM " + TABLE_CATEGORY_BACKUP + ";";
 
-    private static final String[][] defaultCategories = new String[][] {
-            { "0", "Unsorted" }, { "1", "Wishlist" }, { "2", "Loaned" },
-            { "3", "Borrowing" } };
+    private static final String[] defaultCategories = new String[] {
+            "Unsorted", "Wishlist", "Loaned", "Borrowing" };
 
     @Override
     public String[] getColumnNames()
@@ -67,11 +66,10 @@ public class MovieCategoryTable implements DatabaseTable
     {
         try
         {
-            for (String[] categoryVals : defaultCategories)
+            for (String categoryVals : defaultCategories)
             {
                 ContentValues values = new ContentValues();
-                values.put(COLUMN_ID, Integer.parseInt(categoryVals[0]));
-                values.put(COLUMN_TITLE, categoryVals[1]);
+                values.put(COLUMN_TITLE, categoryVals);
                 database.insertOrThrow(TABLE_CATEGORY, null, values);
             }
         }
@@ -90,9 +88,9 @@ public class MovieCategoryTable implements DatabaseTable
     {
         boolean isDefault = false;
 
-        for (String[] categoryVals : defaultCategories)
+        for (String categoryVals : defaultCategories)
         {
-            if (categoryName.equals(categoryVals[1]))
+            if (categoryName.equals(categoryVals))
             {
                 isDefault = true;
                 break;

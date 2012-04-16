@@ -15,8 +15,11 @@
           android:layout_height="2dip"
           android:background="#FF909090" />
 
-    <ListView >
-        
+    <ListView
+        android:id="@+id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="385dp" >
+
     </ListView>
 
     <View android:layout_width="match_parent"

@@ -7,5 +7,6 @@
   
   <item type="id" name="TAKE_PICTURE_REQUEST">0</item>
   <item type="id" name="DECODE_PICTURE">1</item>
-  <item type="id" name="MOVIE_ADDED">2</item>
+  <item type="id" name="MOVIE_INFO">2</item>
+  <item type="id" name="CATEGORY_INFO">3</item>
 </resources>

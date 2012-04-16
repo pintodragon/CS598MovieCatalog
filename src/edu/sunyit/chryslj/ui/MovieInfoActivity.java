@@ -149,6 +149,7 @@ public class MovieInfoActivity extends Activity implements
                 finish();
                 break;
             case R.id.movie_info_cancel:
+                setResult(RESULT_CANCELED);
                 finish();
                 break;
             case R.id.movie_info_delete:
@@ -194,18 +195,25 @@ public class MovieInfoActivity extends Activity implements
         StringBuilder toastMessage = new StringBuilder();
         toastMessage.append(currentMovie.getTitle());
 
-        if (movieMangementSystem.addMovie(currentMovie))
+        long insertId = movieMangementSystem.addMovie(currentMovie);
+        if (insertId != -1)
         {
+            currentMovie.setId((int) insertId);
             toastMessage.append(" has been added or updated!");
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(getString(R.string.added_movie_info),
+                    currentMovie);
+            setResult(RESULT_OK, returnIntent);
         }
         else
         {
             toastMessage.append(" was not added or updated!");
+            setResult(RESULT_CANCELED);
         }
         movieMangementSystem.close();
 
         Toast.makeText(getApplication(), toastMessage.toString(),
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -223,14 +231,19 @@ public class MovieInfoActivity extends Activity implements
             if (movieMangementSystem.removeMovie(currentMovie))
             {
                 toastMessage.append(" has been deleted!");
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(getString(R.string.deleted_movie_info),
+                        currentMovie);
+                setResult(RESULT_OK, returnIntent);
             }
             else
             {
                 toastMessage.append(" was not deleted!");
+                setResult(RESULT_CANCELED);
             }
 
             Toast.makeText(getApplication(), toastMessage.toString(),
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
 
             movieMangementSystem.close();
         }
@@ -281,7 +294,7 @@ public class MovieInfoActivity extends Activity implements
         {
             Toast.makeText(getApplication(),
                     "You can not delete that which does not exist!",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
         }
     }
 }

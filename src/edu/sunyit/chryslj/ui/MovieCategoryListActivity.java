@@ -2,6 +2,7 @@ package edu.sunyit.chryslj.ui;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
@@ -67,8 +68,65 @@ public class MovieCategoryListActivity extends ListActivity implements
             intent.putExtra(getString(R.string.aquired_category_info),
                     movieCategory);
             intent.setClass(getApplication(), MovieCategoryInfoActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, R.id.CATEGORY_INFO);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (resultCode == Activity.RESULT_OK)
+        {
+            Log.d(TAG, "Result returned to activity");
+            switch (requestCode)
+            {
+                case R.id.CATEGORY_INFO:
+                    MovieCategory categoryDeleted =
+                            (MovieCategory) data
+                                    .getSerializableExtra(getString(R.string.deleted_category_info));
+
+                    if (categoryDeleted != null)
+                    {
+                        updateAdapter(categoryDeleted);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void updateAdapter(MovieCategory categoryDeleted)
+    {
+        // For some reason the list isn't updating when I delete an object.
+        // Forcing an update by re adding everything to the adapter. Might be a
+        // bug with the remove method of the adapter.
+
+        // movieManagementSystem.open();
+        // categories = movieManagementSystem.getAllCategories();
+        // movieManagementSystem.close();
+        //
+        // categoryAdapter.clear();
+        //
+        // for (int index = 0; index < categories.size(); index++)
+        // {
+        // categoryAdapter.add(categories.get(index));
+        // }
+        //
+        // categoryAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Updating the adapter: " + categoryDeleted.getId());
+
+        categoryAdapter.remove(categoryDeleted.getId());
+
+        MovieCategoryListActivity.this.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Log.d(TAG, "Updating the adapter from UI Thread");
+                categoryAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     public void onButtonClick(View view)
@@ -135,9 +193,12 @@ public class MovieCategoryListActivity extends ListActivity implements
             {
                 newCategory = new MovieCategory();
                 newCategory.setTitle(categoryTitle);
-                if (movieManagementSystem.addCategory(newCategory))
+
+                long insertId = movieManagementSystem.addCategory(newCategory);
+                if (insertId != -1)
                 {
                     toastText.append("added successfully!");
+                    newCategory.setId((int) insertId);
                     categoryAdapter.add(newCategory);
                     categoryAdapter.notifyDataSetChanged();
                 }

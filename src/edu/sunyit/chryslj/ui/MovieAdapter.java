@@ -3,6 +3,7 @@ package edu.sunyit.chryslj.ui;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import edu.sunyit.chryslj.movie.Movie;
 
 public class MovieAdapter extends ArrayAdapter<Movie>
 {
+    private static final String TAG = MovieAdapter.class.getSimpleName();
     private List<Movie> items;
     private String sortedBy;
 
@@ -130,5 +132,40 @@ public class MovieAdapter extends ArrayAdapter<Movie>
         }
 
         return convertView;
+    }
+
+    /**
+     * Check if the movie we want to add is already in the list.
+     * 
+     * @param addedMovie
+     * @return
+     */
+    public boolean hasMovie(Movie addedMovie)
+    {
+        boolean hasMovie = false;
+
+        for (int index = 0; index < items.size(); index++)
+        {
+            if (addedMovie.getId() == items.get(index).getId())
+            {
+                Log.d(TAG, "Found the movie: " + items.get(index).getId());
+                hasMovie = true;
+                break;
+            }
+        }
+
+        return hasMovie;
+    }
+
+    public void remove(int id)
+    {
+        for (int index = 0; index < items.size(); index++)
+        {
+            if (id == items.get(index).getId())
+            {
+                remove(items.get(index));
+                break;
+            }
+        }
     }
 }

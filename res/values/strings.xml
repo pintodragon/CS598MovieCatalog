@@ -14,8 +14,11 @@
     
     <!-- Aquired Movie Info Strings -->
     <string name="aquired_movie_info">aquired_movie_info</string>
+    <string name="deleted_movie_info">deleted_movie_info</string>
+    <string name="added_movie_info">added_movie_info</string>
     
     <!-- Aquired Category Info Strings -->
+    <string name="deleted_category_info">deleted_category_info</string>
     <string name="aquired_category_info">aquired_category_info</string>
     
     <!-- Category List Strings -->

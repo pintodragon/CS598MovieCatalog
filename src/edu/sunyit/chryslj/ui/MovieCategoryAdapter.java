@@ -3,6 +3,7 @@ package edu.sunyit.chryslj.ui;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
 public class MovieCategoryAdapter extends ArrayAdapter<MovieCategory>
 {
+    private static final String TAG = MovieCategoryAdapter.class
+            .getSimpleName();
     private List<MovieCategory> items;
 
     private MovieManagementSystem movieMangementSystem;
@@ -68,5 +71,18 @@ public class MovieCategoryAdapter extends ArrayAdapter<MovieCategory>
         }
 
         return convertView;
+    }
+
+    public void remove(int id)
+    {
+        for (int index = 0; index < items.size(); index++)
+        {
+            if (id == items.get(index).getId())
+            {
+                Log.d(TAG, "Category to remove: " + items.get(index).getTitle());
+                remove(items.get(index));
+                break;
+            }
+        }
     }
 }

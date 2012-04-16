@@ -69,16 +69,15 @@ public class MovieManagementSystem
      * @param newMovie
      * @return
      */
-    public synchronized boolean addMovie(Movie newMovie)
+    public synchronized long addMovie(Movie newMovie)
     {
-        boolean movieAdded = true;
+        long movieId = -1;
 
         if (!"".equals(newMovie.getTitle()))
         {
 
             if (getMovie(newMovie.getTitle()) == null)
             {
-                long movieId = -1;
                 ContentValues values = new ContentValues();
                 values.put(MovieTable.COLUMN_TITLE, newMovie.getTitle());
                 values.put(MovieTable.COLUMN_RATED, newMovie.getRated().getId());
@@ -111,7 +110,6 @@ public class MovieManagementSystem
                 {
                     Log.e(TAG, "Unable to add \"" + newMovie +
                             "\" to the database." + sqlException.getMessage());
-                    movieAdded = false;
                 }
                 finally
                 {
@@ -131,7 +129,7 @@ public class MovieManagementSystem
             }
         }
 
-        return movieAdded;
+        return movieId;
     }
 
     /**
@@ -347,9 +345,9 @@ public class MovieManagementSystem
      * @param movieCategory
      * @return
      */
-    public synchronized boolean addCategory(MovieCategory movieCategory)
+    public synchronized long addCategory(MovieCategory movieCategory)
     {
-        boolean categoryAdded = true;
+        long insertId = -1;
 
         if (!"".equals(movieCategory.getTitle()))
         {
@@ -360,7 +358,7 @@ public class MovieManagementSystem
             database.beginTransaction();
             try
             {
-                long insertId =
+                insertId =
                         database.insertOrThrow(
                                 MovieCategoryTable.TABLE_CATEGORY, null, values);
 
@@ -378,7 +376,6 @@ public class MovieManagementSystem
             {
                 Log.e(TAG, "Unable to add \"" + movieCategory +
                         "\" to the database." + sqlException.getMessage());
-                categoryAdded = false;
             }
             finally
             {
@@ -386,7 +383,7 @@ public class MovieManagementSystem
             }
         }
 
-        return categoryAdded;
+        return insertId;
     }
 
     /**
