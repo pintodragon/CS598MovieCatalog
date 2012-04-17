@@ -50,6 +50,22 @@ public class MovieCategoryListActivity extends ListActivity implements
     }
 
     @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        MovieCategoryListActivity.this.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Log.d(TAG, "Updating the adapter from UI Thread");
+                categoryAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> adapter, View view, int position,
             long id)
     {

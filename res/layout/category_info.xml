@@ -1,33 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_vertical" >
-    
-    <TextView android:id="@+id/category_info_main_title"
+    android:gravity="center_vertical"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/category_info_main_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:gravity="center_horizontal"
         android:textSize="25dp" />
-            
-    <View android:layout_width="match_parent"
-          android:layout_height="2dip"
-          android:background="#FF909090" />
+
+    <View
+        android:id="@+id/header_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_below="@+id/category_info_main_title"
+        android:background="#FF909090" />
 
     <ListView
         android:id="@+id/android:list"
         android:layout_width="match_parent"
-        android:layout_height="385dp" >
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header_divider"
+        android:layout_above="@+id/footer_divider" >
 
     </ListView>
 
-    <View android:layout_width="match_parent"
-          android:layout_height="2dip"
-          android:background="#FF909090" />
+    <View
+        android:id="@+id/footer_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_above="@+id/footer_layout"
+        android:background="#FF909090" />
+
     <LinearLayout
+        android:id="@+id/footer_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:gravity="center_horizontal"
         android:orientation="horizontal" >
 
@@ -38,6 +55,7 @@
             android:layout_gravity="center"
             android:onClick="onButtonClick"
             android:text="@string/category_info_add" />
+
         <Button
             android:id="@+id/category_info_cancel"
             android:layout_width="80dp"
@@ -45,6 +63,7 @@
             android:layout_gravity="center"
             android:onClick="onButtonClick"
             android:text="@string/category_info_cancel" />
+
         <Button
             android:id="@+id/category_info_delete"
             android:layout_width="80dp"
@@ -54,4 +73,4 @@
             android:text="@string/category_info_delete" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

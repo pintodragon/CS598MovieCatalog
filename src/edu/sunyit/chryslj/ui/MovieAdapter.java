@@ -3,6 +3,7 @@ package edu.sunyit.chryslj.ui;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,9 @@ public class MovieAdapter extends ArrayAdapter<Movie>
     private static final String TAG = MovieAdapter.class.getSimpleName();
     private List<Movie> items;
     private String sortedBy;
-
     private Context context;
+
+    private int selectedIndex = -1;
 
     /**
      * 
@@ -38,6 +40,12 @@ public class MovieAdapter extends ArrayAdapter<Movie>
         sortedBy = "None";
     }
 
+    public void setSelectedIndex(int selectedIndex)
+    {
+        Log.d(TAG, "SelectedIndex: " + selectedIndex);
+        this.selectedIndex = selectedIndex;
+    }
+
     public void setSortedBy(String sortedBy)
     {
         this.sortedBy = sortedBy;
@@ -53,6 +61,18 @@ public class MovieAdapter extends ArrayAdapter<Movie>
                             Context.LAYOUT_INFLATER_SERVICE);
             convertView =
                     layoutInflater.inflate(R.layout.movie_list_item, null);
+
+            Log.d(TAG, "SelectedIndex: " + selectedIndex + " Position: " +
+                    position);
+        }
+
+        if (selectedIndex == position)
+        {
+            convertView.setBackgroundColor(Color.DKGRAY);
+        }
+        else
+        {
+            convertView.setBackgroundColor(Color.BLACK);
         }
 
         Movie currentMovie = items.get(position);

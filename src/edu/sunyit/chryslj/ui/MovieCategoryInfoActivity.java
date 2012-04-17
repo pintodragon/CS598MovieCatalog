@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,13 +22,17 @@ import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.MovieCategory;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
-public class MovieCategoryInfoActivity extends Activity
+public class MovieCategoryInfoActivity extends Activity implements
+        AdapterView.OnItemClickListener
 {
     private static final String TAG = MovieCategoryInfoActivity.class
             .getSimpleName();
 
     private MovieManagementSystem movieMangementSystem;
     private MovieCategory movieCategory = null;
+
+    private MovieAdapter moviesInCategory;
+    private List<Movie> movies;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -36,6 +42,13 @@ public class MovieCategoryInfoActivity extends Activity
 
         movieMangementSystem = new MovieManagementSystem(
                 getApplication());
+
+        movies = new ArrayList<Movie>();
+        moviesInCategory = new MovieAdapter(
+                this, R.layout.movie_list_item, movies);
+        ListView listView = (ListView) findViewById(android.R.id.list);
+        listView.setAdapter(moviesInCategory);
+        listView.setOnItemClickListener(this);
     }
 
     @Override
@@ -56,6 +69,21 @@ public class MovieCategoryInfoActivity extends Activity
                                 movieCategory.getTitle());
                 ((TextView) findViewById(R.id.category_info_main_title))
                         .setText(mainTitle);
+
+                movieMangementSystem.open();
+                movies =
+                        movieMangementSystem
+                                .getAllMoviesInCategory(movieCategory);
+                movieMangementSystem.close();
+
+                moviesInCategory.clear();
+
+                for (int index = 0; index < movies.size(); index++)
+                {
+                    moviesInCategory.add(movies.get(index));
+                }
+
+                moviesInCategory.notifyDataSetChanged();
                 Log.d(TAG, "Displaying category: " + movieCategory.getTitle());
             }
             else
@@ -258,6 +286,18 @@ public class MovieCategoryInfoActivity extends Activity
         movieMangementSystem.open();
         if (movieMangementSystem.addMovieToMovieCategory(movie, movieCategory))
         {
+            // Add it to the adapter.
+            moviesInCategory.add(movie);
+            MovieCategoryInfoActivity.this.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Log.d(TAG, "Updating the adapter from UI Thread");
+                    moviesInCategory.notifyDataSetChanged();
+                }
+            });
+
             toastText.append(" has been added to " + movieCategory.getTitle());
             // Now that it has been added to a category check and remove the
             // association with the Unsorted category.
@@ -277,5 +317,14 @@ public class MovieCategoryInfoActivity extends Activity
 
         Toast.makeText(getApplication(), toastText.toString(),
                 Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+            long id)
+    {
+        // TODO Auto-generated method stub
+        moviesInCategory.setSelectedIndex(position);
+        moviesInCategory.notifyDataSetChanged();
     }
 }

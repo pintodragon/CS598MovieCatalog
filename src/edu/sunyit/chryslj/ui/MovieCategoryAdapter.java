@@ -59,14 +59,13 @@ public class MovieCategoryAdapter extends ArrayAdapter<MovieCategory>
             if (categoryCount != null)
             {
                 movieMangementSystem.open();
-
                 int movieCount =
                         movieMangementSystem
                                 .getNumMoviesInCategory(currentMovieCategory
                                         .getId());
-                categoryCount.setText("" + movieCount);
-
                 movieMangementSystem.close();
+
+                categoryCount.setText(String.valueOf(movieCount));
             }
         }
 

@@ -208,7 +208,7 @@ public class MovieManagementSystem
                         "Delete from " + MovieTable.TABLE_MOVIES + " where " +
                                 MovieTable.COLUMN_ID + " = " + movie.getId());
                 database.delete(MovieTable.TABLE_MOVIES, MovieTable.COLUMN_ID +
-                        "=?", new String[] { "" + movie.getId() });
+                        "=?", new String[] { String.valueOf(movie.getId()) });
                 database.setTransactionSuccessful();
                 movieRemoved = true;
             }
@@ -244,7 +244,7 @@ public class MovieManagementSystem
                 database.delete(
                         CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
                         CategoryMovieAssociationTable.COLUMN_MOVIEID + "=?",
-                        new String[] { "" + movie.getId() });
+                        new String[] { String.valueOf(movie.getId()) });
                 database.setTransactionSuccessful();
                 Log.d(TAG, "Removing associations successful");
                 associationRemoved = true;
@@ -290,6 +290,51 @@ public class MovieManagementSystem
 
         cursor.close();
         return movies;
+    }
+
+    public List<Movie> getAllMoviesInCategory(MovieCategory movieCategory)
+    {
+        List<Movie> moviesInCategory = new ArrayList<Movie>();
+
+        String movieAlias = "movies";
+        String associationAlias = "associations";
+
+        // Inner join to get movie information based on association to Category.
+        String rawSql =
+                "SELECT " + movieAlias + "." + MovieTable.COLUMN_ID + ", " +
+                        movieAlias + "." + MovieTable.COLUMN_TITLE + ", " +
+                        movieAlias + "." + MovieTable.COLUMN_RATED + ", " +
+                        movieAlias + "." + MovieTable.COLUMN_GENRE + ", " +
+                        movieAlias + "." + MovieTable.COLUMN_PERSONALRATING +
+                        ", " + movieAlias + "." + MovieTable.COLUMN_FORMAT +
+                        ", " + movieAlias + "." + MovieTable.COLUMN_RUNTIME +
+                        " FROM " + MovieTable.TABLE_MOVIES + " " + movieAlias +
+                        " INNER JOIN " +
+                        CategoryMovieAssociationTable.TABLE_ASSOCIATIONS + " " +
+                        associationAlias + " ON " + MovieTable.TABLE_MOVIES +
+                        "." + MovieTable.COLUMN_ID + "=" + associationAlias +
+                        "." + CategoryMovieAssociationTable.COLUMN_MOVIEID +
+                        " WHERE " + associationAlias + "." +
+                        CategoryMovieAssociationTable.COLUMN_CATEGORYID + "=?";
+        String[] selectionArgs = { String.valueOf(movieCategory.getId()) };
+
+        Cursor cursor = database.rawQuery(rawSql, selectionArgs);
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast())
+        {
+            Movie movie = cursorToMovie(cursor);
+            if (movie != null)
+            {
+                moviesInCategory.add(movie);
+            }
+
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+
+        return moviesInCategory;
     }
 
     /**
@@ -402,14 +447,15 @@ public class MovieManagementSystem
                 database.beginTransaction();
                 try
                 {
-                    database.delete(MovieCategoryTable.TABLE_CATEGORY,
+                    database.delete(
+                            MovieCategoryTable.TABLE_CATEGORY,
                             MovieCategoryTable.COLUMN_ID + "=?",
-                            new String[] { "" + movieCategory.getId() });
+                            new String[] { String.valueOf(movieCategory.getId()) });
                     database.delete(
                             CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
                             CategoryMovieAssociationTable.COLUMN_CATEGORYID +
-                                    "=?",
-                            new String[] { "" + movieCategory.getId() });
+                                    "=?", new String[] { String
+                                    .valueOf(movieCategory.getId()) });
                     database.setTransactionSuccessful();
                     categoryRemoved = true;
                 }
@@ -537,8 +583,9 @@ public class MovieManagementSystem
                         CategoryMovieAssociationTable.COLUMN_MOVIEID +
                                 "=? AND " +
                                 CategoryMovieAssociationTable.COLUMN_CATEGORYID +
-                                "=?", new String[] { "" + movie.getId(),
-                                "" + movieCategory.getId() });
+                                "=?",
+                        new String[] { String.valueOf(movie.getId()),
+                                String.valueOf(movieCategory.getId()) });
                 database.setTransactionSuccessful();
                 Log.d(TAG, "Removing associations successful");
                 associationRemoved = true;
@@ -574,7 +621,7 @@ public class MovieManagementSystem
                         CategoryMovieAssociationTable.TABLE_ASSOCIATIONS +
                         " WHERE " +
                         CategoryMovieAssociationTable.COLUMN_CATEGORYID +
-                        " = ?", new String[] { "" + categoryId });
+                        " = ?", new String[] { String.valueOf(categoryId) });
 
         cursorCount.moveToFirst();
         count = cursorCount.getInt(0);
@@ -608,7 +655,8 @@ public class MovieManagementSystem
                             "=?";
 
             String[] selectionArgs =
-                    { "" + movie.getId(), "" + movieCategory.getId() };
+                    { String.valueOf(movie.getId()),
+                            String.valueOf(movieCategory.getId()) };
 
             Cursor cursor =
                     database.query(
