@@ -444,6 +444,8 @@ public class MovieManagementSystem
         {
             if (!MovieCategoryTable.isDefaultCategory(movieCategory.getTitle()))
             {
+                List<Movie> moviesInCategory =
+                        getAllMoviesInCategory(movieCategory);
                 database.beginTransaction();
                 try
                 {
@@ -464,7 +466,11 @@ public class MovieManagementSystem
                     database.endTransaction();
                 }
 
-                if (!categoryRemoved)
+                if (categoryRemoved)
+                {
+                    addToUnsortedIfOrphaned(moviesInCategory);
+                }
+                else
                 {
                     Log.e(TAG, "Unable to delete list: " + movieCategory);
                 }
@@ -476,6 +482,25 @@ public class MovieManagementSystem
         }
 
         return categoryRemoved;
+    }
+
+    private void addToUnsortedIfOrphaned(List<Movie> moviesToCheck)
+    {
+        MovieCategory unsortedCategory = getCategory("Unsorted");
+        for (int index = 0; index < moviesToCheck.size(); index++)
+        {
+            Movie currentMovie = moviesToCheck.get(index);
+            int count = getNumCategoriesForMovie(currentMovie.getId());
+
+            if (count == 0)
+            {
+                if (!addMovieToMovieCategory(currentMovie, unsortedCategory))
+                {
+                    Log.e(TAG, "Could not add " + currentMovie.getTitle() +
+                            " to " + unsortedCategory.getTitle() + "!");
+                }
+            }
+        }
     }
 
     /**
@@ -622,6 +647,30 @@ public class MovieManagementSystem
                         " WHERE " +
                         CategoryMovieAssociationTable.COLUMN_CATEGORYID +
                         " = ?", new String[] { String.valueOf(categoryId) });
+
+        cursorCount.moveToFirst();
+        count = cursorCount.getInt(0);
+
+        return count;
+    }
+
+    /**
+     * 
+     * @param movieId
+     * @return
+     */
+    public synchronized int getNumCategoriesForMovie(int movieId)
+    {
+        int count = 0;
+
+        Cursor cursorCount =
+                database.rawQuery("SELECT COUNT(" +
+                        CategoryMovieAssociationTable.COLUMN_MOVIEID +
+                        ") FROM " +
+                        CategoryMovieAssociationTable.TABLE_ASSOCIATIONS +
+                        " WHERE " +
+                        CategoryMovieAssociationTable.COLUMN_MOVIEID + " = ?",
+                        new String[] { String.valueOf(movieId) });
 
         cursorCount.moveToFirst();
         count = cursorCount.getInt(0);

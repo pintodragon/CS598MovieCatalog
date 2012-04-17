@@ -30,7 +30,8 @@
 
 			<EditText
 			    android:id="@+id/movie_info_title_text"
-			    android:layout_width="wrap_content"
+			    android:layout_width="0dp"
+			    android:layout_weight="1"
 			    android:layout_gravity="center_vertical"
 			    android:inputType="text"
                 android:padding="3dip" />

@@ -21,6 +21,8 @@ public class MovieCategoryAdapter extends ArrayAdapter<MovieCategory>
 
     private MovieManagementSystem movieMangementSystem;
 
+    private int selectedIndex = -1;
+
     public MovieCategoryAdapter(Context context, int textViewResourceId,
                                 List<MovieCategory> items)
     {
@@ -70,6 +72,40 @@ public class MovieCategoryAdapter extends ArrayAdapter<MovieCategory>
         }
 
         return convertView;
+    }
+
+    public void setSelectedIndex(int selectedIndex)
+    {
+        this.selectedIndex = selectedIndex;
+    }
+
+    public MovieCategory getSelectedCategory()
+    {
+        MovieCategory category = null;
+
+        if (selectedIndex != -1)
+        {
+            try
+            {
+                category = items.get(selectedIndex);
+            }
+            catch (IndexOutOfBoundsException iobe)
+            {
+                // Movie wasn't valid so still return null.
+            }
+        }
+
+        return category;
+    }
+
+    public void removeSelectedCategory()
+    {
+        if (selectedIndex != -1)
+        {
+            items.remove(getSelectedCategory());
+        }
+
+        selectedIndex = -1;
     }
 
     public void remove(int id)

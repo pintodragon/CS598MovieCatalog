@@ -116,11 +116,10 @@ public class MovieCategoryInfoActivity extends Activity implements
                 showMovieAddDialog();
                 break;
             case R.id.category_info_cancel:
-                setResult(RESULT_CANCELED);
                 finish();
                 break;
             case R.id.category_info_remove:
-                showConfirmDialog();
+                showDeleteConfirm();
                 break;
             default:
                 break;
@@ -131,7 +130,7 @@ public class MovieCategoryInfoActivity extends Activity implements
      * Show the dialog on whether the category selected should be deleted or
      * not.
      */
-    private void showConfirmDialog()
+    private void showDeleteConfirm()
     {
         final Movie movie = moviesInCategory.getSelectedMovie();
 
@@ -193,7 +192,7 @@ public class MovieCategoryInfoActivity extends Activity implements
         }
         movieManagementSystem.close();
 
-        moviesInCategory.remove(movie.getId());
+        moviesInCategory.removeSelectedMovie();
         MovieCategoryInfoActivity.this.runOnUiThread(new Runnable()
         {
             @Override

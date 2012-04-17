@@ -3,7 +3,6 @@ package edu.sunyit.chryslj.ui;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +20,7 @@ public class MovieAdapter extends ArrayAdapter<Movie>
     private Context context;
 
     private int selectedIndex = -1;
+    private boolean colorHightlighted = true;
 
     /**
      * 
@@ -46,6 +46,11 @@ public class MovieAdapter extends ArrayAdapter<Movie>
         this.selectedIndex = selectedIndex;
     }
 
+    public void setColorHightlighted(boolean colorHightlighted)
+    {
+        this.colorHightlighted = colorHightlighted;
+    }
+
     public void setSortedBy(String sortedBy)
     {
         this.sortedBy = sortedBy;
@@ -66,13 +71,18 @@ public class MovieAdapter extends ArrayAdapter<Movie>
                     position);
         }
 
-        if (selectedIndex == position)
+        if (colorHightlighted)
         {
-            convertView.setBackgroundColor(Color.DKGRAY);
-        }
-        else
-        {
-            convertView.setBackgroundColor(Color.BLACK);
+            if (selectedIndex == position)
+            {
+                convertView.setBackgroundDrawable(context.getResources()
+                        .getDrawable(R.drawable.selected));
+            }
+            else
+            {
+                convertView.setBackgroundDrawable(context.getResources()
+                        .getDrawable(R.drawable.not_selected));
+            }
         }
 
         Movie currentMovie = items.get(position);
@@ -81,25 +91,19 @@ public class MovieAdapter extends ArrayAdapter<Movie>
         {
             TextView movieTitle =
                     (TextView) convertView
-                            .findViewById(R.id.movie_list_item_title);
+                            .findViewById(R.id.movie_list_item_title_val);
             if (movieTitle != null)
             {
-                String title =
-                        context.getResources().getString(
-                                R.string.movie_list_item_title,
-                                currentMovie.getTitle());
+                String title = currentMovie.getTitle();
                 movieTitle.setText(title);
             }
 
             TextView movieRated =
                     (TextView) convertView
-                            .findViewById(R.id.movie_list_item_rated);
+                            .findViewById(R.id.movie_list_item_rated_val);
             if (movieRated != null)
             {
-                String rated =
-                        context.getResources().getString(
-                                R.string.movie_list_item_rated,
-                                currentMovie.getRated());
+                String rated = currentMovie.getRated().toString();
                 movieRated.setText(rated);
             }
 
@@ -143,10 +147,6 @@ public class MovieAdapter extends ArrayAdapter<Movie>
                         context.getResources().getString(
                                 R.string.movie_list_item_sort, sortedBy);
                 sortedByView.setText(viewTxt);
-
-                valueTxt =
-                        context.getResources().getString(
-                                R.string.movie_list_item_sort_val, valueTxt);
                 sortedByValue.setText(valueTxt);
             }
         }
@@ -177,22 +177,13 @@ public class MovieAdapter extends ArrayAdapter<Movie>
         return hasMovie;
     }
 
-    public void remove(int id)
-    {
-        for (int index = 0; index < items.size(); index++)
-        {
-            if (id == items.get(index).getId())
-            {
-                remove(items.get(index));
-                break;
-            }
-        }
-    }
-
     public void removeSelectedMovie()
     {
-        // TODO Auto-generated method stub
-
+        if (selectedIndex != -1)
+        {
+            remove(getSelectedMovie());
+            selectedIndex = -1;
+        }
     }
 
     public Movie getSelectedMovie()
@@ -210,7 +201,7 @@ public class MovieAdapter extends ArrayAdapter<Movie>
                 // Movie wasn't valid so still return null.
             }
         }
-        // TODO Auto-generated method stub
+
         return movie;
     }
 }

@@ -2,25 +2,27 @@ package edu.sunyit.chryslj.ui;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.MovieCategory;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
 public class MovieCategoryListActivity extends ListActivity implements
-        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
+        AdapterView.OnItemClickListener
 {
     private static final String TAG = MovieCategoryListActivity.class
             .getSimpleName();
@@ -35,6 +37,10 @@ public class MovieCategoryListActivity extends ListActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category_list);
 
+        // Register the list for context menu events.
+        registerForContextMenu(getListView());
+        getListView().setOnItemClickListener(this);
+
         movieManagementSystem = new MovieManagementSystem(
                 getApplication());
 
@@ -45,7 +51,6 @@ public class MovieCategoryListActivity extends ListActivity implements
         categoryAdapter = new MovieCategoryAdapter(
                 this, R.layout.category_list_item, categories);
         setListAdapter(categoryAdapter);
-        getListView().setOnItemClickListener(this);
     }
 
     @Override
@@ -65,83 +70,69 @@ public class MovieCategoryListActivity extends ListActivity implements
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapter, View view, int position,
-            long id)
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenuInfo menuInfo)
     {
-        TextView categoryTitle =
-                (TextView) view.findViewById(R.id.category_title);
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.category_show_delete, menu);
 
-        if (categoryTitle != null)
+        AdapterView.AdapterContextMenuInfo info = null;
+
+        try
         {
-            movieManagementSystem.open();
-            MovieCategory movieCategory =
-                    movieManagementSystem.getCategory(categoryTitle.getText()
-                            .toString());
-            movieManagementSystem.close();
-
-            Intent intent = new Intent();
-            intent.putExtra(getString(R.string.aquired_category_info),
-                    movieCategory);
-            intent.setClass(getApplication(), MovieCategoryInfoActivity.class);
-            startActivityForResult(intent, R.id.CATEGORY_INFO);
+            info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            categoryAdapter.setSelectedIndex(info.position);
+        }
+        catch (ClassCastException e)
+        {
+            Log.e(TAG, "bad menuInfo", e);
+            Toast.makeText(this, "Invalid selection.", Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    public boolean onContextItemSelected(MenuItem item)
     {
-        if (resultCode == Activity.RESULT_OK)
-        {
-            Log.d(TAG, "Result returned to activity");
-            switch (requestCode)
-            {
-                case R.id.CATEGORY_INFO:
-                    MovieCategory categoryDeleted =
-                            (MovieCategory) data
-                                    .getSerializableExtra(getString(R.string.deleted_category_info));
+        boolean itemHandled = false;
 
-                    if (categoryDeleted != null)
-                    {
-                        updateAdapter(categoryDeleted);
-                    }
-                    break;
-                default:
-                    break;
-            }
+        MovieCategory selectedCategory = categoryAdapter.getSelectedCategory();
+
+        switch (item.getItemId())
+        {
+            case R.id.category_menu_show:
+                showSelectedCategory(selectedCategory);
+                itemHandled = true;
+                break;
+            case R.id.category_menu_delete:
+                showDeleteConfirm(selectedCategory);
+                itemHandled = true;
+                break;
+            default:
+                itemHandled = super.onContextItemSelected(item);
+                break;
         }
+
+        return itemHandled;
     }
 
-    private void updateAdapter(MovieCategory categoryDeleted)
+    @Override
+    public void onItemClick(AdapterView<?> adapter, View view, int position,
+            long id)
     {
-        // For some reason the list isn't updating when I delete an object.
-        // Forcing an update by re adding everything to the adapter. Might be a
-        // bug with the remove method of the adapter.
+        categoryAdapter.setSelectedIndex(position);
 
-        // movieManagementSystem.open();
-        // categories = movieManagementSystem.getAllCategories();
-        // movieManagementSystem.close();
-        //
-        // categoryAdapter.clear();
-        //
-        // for (int index = 0; index < categories.size(); index++)
-        // {
-        // categoryAdapter.add(categories.get(index));
-        // }
-        //
-        // categoryAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Updating the adapter: " + categoryDeleted.getId());
+        showSelectedCategory(categoryAdapter.getSelectedCategory());
+    }
 
-        categoryAdapter.remove(categoryDeleted.getId());
-
-        MovieCategoryListActivity.this.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Log.d(TAG, "Updating the adapter from UI Thread");
-                categoryAdapter.notifyDataSetChanged();
-            }
-        });
+    private void showSelectedCategory(MovieCategory selectedCategory)
+    {
+        Intent intent = new Intent();
+        intent.putExtra(getString(R.string.aquired_category_info),
+                selectedCategory);
+        intent.setClass(getApplication(), MovieCategoryInfoActivity.class);
+        startActivity(intent);
     }
 
     public void onButtonClick(View view)
@@ -233,13 +224,82 @@ public class MovieCategoryListActivity extends ListActivity implements
         }
     }
 
-    @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view,
-            int position, long id)
+    private void showDeleteConfirm(final MovieCategory selectedCategory)
     {
-        // TODO Auto-generated method stub
-        Log.d(TAG, "Display menu here");
-        Toast.makeText(this, "Display Menu Here", Toast.LENGTH_SHORT);
-        return false;
+        if (selectedCategory != null)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    this);
+
+            builder.setTitle("Remove " + selectedCategory.getTitle() + "?")
+                    .setMessage(
+                            "Are you sure you want to remove \"" +
+                                    selectedCategory.getTitle() + "\"?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which)
+                                {
+                                    MovieCategoryListActivity.this
+                                            .removeCategory(selectedCategory);
+                                }
+                            })
+                    .setNegativeButton("No",
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which)
+                                {
+                                    dialog.cancel();
+                                }
+                            });
+
+            builder.create().show();
+        }
+        else
+        {
+            Toast.makeText(this, "No category selected.", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    /**
+     * Delete the movie that is currently being displayed on this view.
+     */
+    private void removeCategory(MovieCategory categoryToRemove)
+    {
+        movieManagementSystem.open();
+
+        StringBuilder toastMessage = new StringBuilder();
+        toastMessage.append(categoryToRemove.getTitle());
+
+        if (movieManagementSystem.removeCategory(categoryToRemove))
+        {
+            categoryAdapter.removeSelectedCategory();
+
+            MovieCategoryListActivity.this.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Log.d(TAG, "Updating the adapter from UI Thread");
+                    categoryAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+        else
+        {
+            toastMessage.append(" was not deleted!");
+            setResult(RESULT_CANCELED);
+        }
+
+        Toast.makeText(getApplication(), toastMessage.toString(),
+                Toast.LENGTH_LONG).show();
+
+        movieManagementSystem.close();
     }
 }

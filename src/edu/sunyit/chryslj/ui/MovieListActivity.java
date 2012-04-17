@@ -47,6 +47,7 @@ public class MovieListActivity extends ListActivity implements
 
         movieAdapter = new MovieAdapter(
                 this, R.layout.movie_list_item, movies);
+        movieAdapter.setColorHightlighted(false);
         setListAdapter(movieAdapter);
         getListView().setOnItemClickListener(this);
 
@@ -115,88 +116,48 @@ public class MovieListActivity extends ListActivity implements
 
                     if (deletedMovie != null && addedMovie == null)
                     {
-                        updateAdapter(deletedMovie);
+                        movieAdapter.removeSelectedMovie();
                     }
 
                     if (addedMovie != null && deletedMovie == null)
                     {
-                        addMovie(addedMovie);
+                        if (!movieAdapter.hasMovie(addedMovie))
+                        {
+                            movieAdapter.add(addedMovie);
+                        }
                     }
                 default:
                     break;
             }
-        }
-    }
 
-    /**
-     * Delete the movie that is currently being displayed on this view.
-     */
-    private void deleteSelectedCategory()
-    {
-        // movieManagementSystem.open();
-        //
-        // StringBuilder toastMessage = new StringBuilder();
-        // toastMessage.append(movieCategory.getTitle());
-        //
-        // if (movieManagementSystem.removeCategory(movieCategory))
-        // {
-        // toastMessage.append(" has been deleted!");
-        // Intent returnIntent = new Intent();
-        // returnIntent.putExtra(getString(R.string.deleted_category_info),
-        // movieCategory);
-        // setResult(RESULT_OK, returnIntent);
-        // }
-        // else
-        // {
-        // toastMessage.append(" was not deleted!");
-        // setResult(RESULT_CANCELED);
-        // }
-        //
-        // Toast.makeText(getApplication(), toastMessage.toString(),
-        // Toast.LENGTH_LONG).show();
-        //
-        // movieManagementSystem.close();
-    }
+            // Update the view. No movies display no movies otherwise display
+            // list.
+            updateView();
 
-    private void updateAdapter(Movie deletedMovie)
-    {
-        // Need to run the notify on the ui thread.
-        movieAdapter.remove(deletedMovie.getId());
-
-        MovieListActivity.this.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
+            // Notify the system that the data may have changed. If it hasn't
+            // this does nothing.
+            MovieListActivity.this.runOnUiThread(new Runnable()
             {
-                movieAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    private void addMovie(Movie addedMovie)
-    {
-        if (!movieAdapter.hasMovie(addedMovie))
-        {
-            movieAdapter.add(addedMovie);
+                @Override
+                public void run()
+                {
+                    movieAdapter.notifyDataSetChanged();
+                }
+            });
         }
-        updateView();
-
-        // Notify even if it already has the movie. There is a possibility that
-        // the title and other displayed information might change.
-        movieAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
             long id)
     {
+        movieAdapter.setSelectedIndex(position);
         TextView movieTitle =
-                (TextView) view.findViewById(R.id.movie_list_item_title);
+                (TextView) view.findViewById(R.id.movie_list_item_title_val);
 
         if (movieTitle != null)
         {
-            String title =
-                    movieTitle.getText().toString().replaceFirst("Title: ", "");
+            String title = movieTitle.getText().toString();
             Log.d(TAG, "Title: " + title);
             movieManagementSystem.open();
             Movie movie = movieManagementSystem.getMovie(title);
