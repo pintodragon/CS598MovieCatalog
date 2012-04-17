@@ -128,6 +128,36 @@ public class MovieListActivity extends ListActivity implements
         }
     }
 
+    /**
+     * Delete the movie that is currently being displayed on this view.
+     */
+    private void deleteSelectedCategory()
+    {
+        // movieManagementSystem.open();
+        //
+        // StringBuilder toastMessage = new StringBuilder();
+        // toastMessage.append(movieCategory.getTitle());
+        //
+        // if (movieManagementSystem.removeCategory(movieCategory))
+        // {
+        // toastMessage.append(" has been deleted!");
+        // Intent returnIntent = new Intent();
+        // returnIntent.putExtra(getString(R.string.deleted_category_info),
+        // movieCategory);
+        // setResult(RESULT_OK, returnIntent);
+        // }
+        // else
+        // {
+        // toastMessage.append(" was not deleted!");
+        // setResult(RESULT_CANCELED);
+        // }
+        //
+        // Toast.makeText(getApplication(), toastMessage.toString(),
+        // Toast.LENGTH_LONG).show();
+        //
+        // movieManagementSystem.close();
+    }
+
     private void updateAdapter(Movie deletedMovie)
     {
         // Need to run the notify on the ui thread.

@@ -28,7 +28,7 @@ public class MovieCategoryInfoActivity extends Activity implements
     private static final String TAG = MovieCategoryInfoActivity.class
             .getSimpleName();
 
-    private MovieManagementSystem movieMangementSystem;
+    private MovieManagementSystem movieManagementSystem;
     private MovieCategory movieCategory = null;
 
     private MovieAdapter moviesInCategory;
@@ -40,7 +40,7 @@ public class MovieCategoryInfoActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category_info);
 
-        movieMangementSystem = new MovieManagementSystem(
+        movieManagementSystem = new MovieManagementSystem(
                 getApplication());
 
         movies = new ArrayList<Movie>();
@@ -70,11 +70,11 @@ public class MovieCategoryInfoActivity extends Activity implements
                 ((TextView) findViewById(R.id.category_info_main_title))
                         .setText(mainTitle);
 
-                movieMangementSystem.open();
+                movieManagementSystem.open();
                 movies =
-                        movieMangementSystem
+                        movieManagementSystem
                                 .getAllMoviesInCategory(movieCategory);
-                movieMangementSystem.close();
+                movieManagementSystem.close();
 
                 moviesInCategory.clear();
 
@@ -119,7 +119,7 @@ public class MovieCategoryInfoActivity extends Activity implements
                 setResult(RESULT_CANCELED);
                 finish();
                 break;
-            case R.id.category_info_delete:
+            case R.id.category_info_remove:
                 showConfirmDialog();
                 break;
             default:
@@ -128,69 +128,83 @@ public class MovieCategoryInfoActivity extends Activity implements
     }
 
     /**
-     * Delete the movie that is currently being displayed on this view.
-     */
-    private void deleteCategory()
-    {
-        movieMangementSystem.open();
-
-        StringBuilder toastMessage = new StringBuilder();
-        toastMessage.append(movieCategory.getTitle());
-
-        if (movieMangementSystem.removeCategory(movieCategory))
-        {
-            toastMessage.append(" has been deleted!");
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra(getString(R.string.deleted_category_info),
-                    movieCategory);
-            setResult(RESULT_OK, returnIntent);
-        }
-        else
-        {
-            toastMessage.append(" was not deleted!");
-            setResult(RESULT_CANCELED);
-        }
-
-        Toast.makeText(getApplication(), toastMessage.toString(),
-                Toast.LENGTH_LONG).show();
-
-        movieMangementSystem.close();
-    }
-
-    /**
      * Show the dialog on whether the category selected should be deleted or
      * not.
      */
     private void showConfirmDialog()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(
-                this);
+        final Movie movie = moviesInCategory.getSelectedMovie();
 
-        builder.setTitle("Delete " + movieCategory.getTitle() + "?")
-                .setMessage(
-                        "Are you sure you want to delete \"" +
-                                MovieCategoryInfoActivity.this.movieCategory
-                                        .getTitle() + "\"?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        MovieCategoryInfoActivity.this.deleteCategory();
-                        MovieCategoryInfoActivity.this.finish();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.cancel();
-                    }
-                });
+        if (movie != null)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    this);
 
-        builder.create().show();
+            builder.setTitle("Remove " + movie.getTitle() + "?")
+                    .setMessage(
+                            "Are you sure you want to remove \"" +
+                                    movie.getTitle() + "\"?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which)
+                                {
+                                    MovieCategoryInfoActivity.this
+                                            .removeSelectedMovie(movie);
+                                }
+                            })
+                    .setNegativeButton("No",
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which)
+                                {
+                                    dialog.cancel();
+                                }
+                            });
+
+            builder.create().show();
+        }
+        else
+        {
+            Toast.makeText(this, "No movie selected.", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    protected void removeSelectedMovie(Movie movie)
+    {
+        StringBuilder toastText = new StringBuilder();
+        toastText.append(movie.getTitle() + " ");
+
+        movieManagementSystem.open();
+        if (movieManagementSystem.removeAssociation(movie, movieCategory))
+        {
+            toastText.append(" was removed from " + movieCategory.getTitle());
+        }
+        else
+        {
+            toastText.append(" was not removed from " +
+                    movieCategory.getTitle());
+        }
+        movieManagementSystem.close();
+
+        moviesInCategory.remove(movie.getId());
+        MovieCategoryInfoActivity.this.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Log.d(TAG, "Updating the adapter from UI Thread");
+                moviesInCategory.notifyDataSetChanged();
+            }
+        });
+
+        Toast.makeText(this, toastText.toString(), Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -198,22 +212,22 @@ public class MovieCategoryInfoActivity extends Activity implements
      */
     private void showMovieAddDialog()
     {
-        movieMangementSystem.open();
+        movieManagementSystem.open();
 
-        List<Movie> moviesInSystem = movieMangementSystem.getAllMovies();
+        List<Movie> moviesInSystem = movieManagementSystem.getAllMovies();
         List<Movie> moviesNotInCategory = new ArrayList<Movie>();
 
         for (int movieIndex = 0; movieIndex < moviesInSystem.size(); movieIndex++)
         {
             Movie movie = moviesInSystem.get(movieIndex);
-            if (!movieMangementSystem.isMovieInCategory(movie.getTitle(),
+            if (!movieManagementSystem.isMovieInCategory(movie.getTitle(),
                     movieCategory.getTitle()))
             {
                 moviesNotInCategory.add(movie);
             }
         }
 
-        movieMangementSystem.close();
+        movieManagementSystem.close();
 
         ArrayAdapter<Movie> movieSpinnerAdapter =
                 new ArrayAdapter<Movie>(
@@ -283,8 +297,8 @@ public class MovieCategoryInfoActivity extends Activity implements
         StringBuilder toastText = new StringBuilder();
         toastText.append(movie.getTitle() + " ");
 
-        movieMangementSystem.open();
-        if (movieMangementSystem.addMovieToMovieCategory(movie, movieCategory))
+        movieManagementSystem.open();
+        if (movieManagementSystem.addMovieToMovieCategory(movie, movieCategory))
         {
             // Add it to the adapter.
             moviesInCategory.add(movie);
@@ -302,18 +316,18 @@ public class MovieCategoryInfoActivity extends Activity implements
             // Now that it has been added to a category check and remove the
             // association with the Unsorted category.
             MovieCategory unsortedCat =
-                    movieMangementSystem.getCategory("Unsorted");
+                    movieManagementSystem.getCategory("Unsorted");
 
             // Do not care if it failed or not. A failure probably means it
             // wasn't a part of that category already.
-            movieMangementSystem.removeAssociation(movie, unsortedCat);
+            movieManagementSystem.removeAssociation(movie, unsortedCat);
         }
         else
         {
             toastText.append(" has not been added to " +
                     movieCategory.getTitle());
         }
-        movieMangementSystem.close();
+        movieManagementSystem.close();
 
         Toast.makeText(getApplication(), toastText.toString(),
                 Toast.LENGTH_LONG).show();

@@ -65,12 +65,12 @@
             android:text="@string/category_info_cancel" />
 
         <Button
-            android:id="@+id/category_info_delete"
+            android:id="@+id/category_info_remove"
             android:layout_width="80dp"
             android:layout_height="55dp"
             android:layout_gravity="center"
             android:onClick="onButtonClick"
-            android:text="@string/category_info_delete" />
+            android:text="@string/category_info_remove" />
     </LinearLayout>
 
 </RelativeLayout>

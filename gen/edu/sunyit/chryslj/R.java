@@ -36,8 +36,8 @@ public final class R {
         public static final int category_count=0x7f06001e;
         public static final int category_info_add=0x7f060013;
         public static final int category_info_cancel=0x7f060014;
-        public static final int category_info_delete=0x7f060015;
         public static final int category_info_main_title=0x7f06000f;
+        public static final int category_info_remove=0x7f060015;
         public static final int category_list_count=0x7f060019;
         public static final int category_list_footer=0x7f06001a;
         public static final int category_list_header=0x7f060017;
@@ -118,10 +118,10 @@ public final class R {
         public static final int category_count=0x7f07000e;
         public static final int category_info_add=0x7f070018;
         public static final int category_info_cancel=0x7f07001a;
-        public static final int category_info_delete=0x7f070019;
         /**  Category Info Strings 
          */
         public static final int category_info_main_title=0x7f070017;
+        public static final int category_info_remove=0x7f070019;
         /**  Category List Strings 
          */
         public static final int category_title=0x7f07000d;

@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +20,7 @@ import edu.sunyit.chryslj.movie.MovieCategory;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
 public class MovieCategoryListActivity extends ListActivity implements
-        OnItemClickListener
+        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
     private static final String TAG = MovieCategoryListActivity.class
             .getSimpleName();
@@ -232,5 +231,15 @@ public class MovieCategoryListActivity extends ListActivity implements
 
             movieManagementSystem.close();
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view,
+            int position, long id)
+    {
+        // TODO Auto-generated method stub
+        Log.d(TAG, "Display menu here");
+        Toast.makeText(this, "Display Menu Here", Toast.LENGTH_SHORT);
+        return false;
     }
 }

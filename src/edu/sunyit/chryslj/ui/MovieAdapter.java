@@ -188,4 +188,29 @@ public class MovieAdapter extends ArrayAdapter<Movie>
             }
         }
     }
+
+    public void removeSelectedMovie()
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public Movie getSelectedMovie()
+    {
+        Movie movie = null;
+
+        if (selectedIndex != -1)
+        {
+            try
+            {
+                movie = items.get(selectedIndex);
+            }
+            catch (IndexOutOfBoundsException iobe)
+            {
+                // Movie wasn't valid so still return null.
+            }
+        }
+        // TODO Auto-generated method stub
+        return movie;
+    }
 }

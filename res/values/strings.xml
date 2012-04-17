@@ -39,7 +39,7 @@
     <!-- Category Info Strings -->
     <string name="category_info_main_title">Category: %1$s</string>
     <string name="category_info_add">Add Movie</string>
-    <string name="category_info_delete">Delete</string>
+    <string name="category_info_remove">Remove</string>
     <string name="category_info_cancel">Cancel</string>
     <string name="category_add_movie_empty">No movies currently in system.</string>
     
