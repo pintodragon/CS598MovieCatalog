@@ -485,19 +485,26 @@ public class MovieManagementSystem
 
     private void addToUnsortedIfOrphaned(List<Movie> moviesToCheck)
     {
-        MovieCategory unsortedCategory = getCategory("Unsorted");
         for (int index = 0; index < moviesToCheck.size(); index++)
         {
-            Movie currentMovie = moviesToCheck.get(index);
-            int count = getNumCategoriesForMovie(currentMovie.getId());
+            addToUnsortedIfOrphaned(moviesToCheck.get(index));
+        }
+    }
 
-            if (count == 0)
+    private void addToUnsortedIfOrphaned(Movie movieToCheck)
+    {
+        MovieCategory unsortedCategory = getCategory("Unsorted");
+
+        int count = getNumCategoriesForMovie(movieToCheck.getId());
+        Log.d(TAG, "Movie " + movieToCheck.getTitle() + " is in " + count +
+                " categories.");
+
+        if (count == 0)
+        {
+            if (!addMovieToMovieCategory(movieToCheck, unsortedCategory))
             {
-                if (!addMovieToMovieCategory(currentMovie, unsortedCategory))
-                {
-                    Log.e(TAG, "Could not add " + currentMovie.getTitle() +
-                            " to " + unsortedCategory.getTitle() + "!");
-                }
+                Log.e(TAG, "Could not add " + movieToCheck.getTitle() + " to " +
+                        unsortedCategory.getTitle() + "!");
             }
         }
     }
@@ -595,7 +602,15 @@ public class MovieManagementSystem
     {
         boolean associationRemoved = false;
 
-        if (movie.getId() != -1 && movieCategory.getId() != -1)
+        int count = getNumCategoriesForMovie(movie.getId());
+
+        if ("Unsorted".equals(movieCategory.getTitle()) && count == 1 &&
+                isMovieInCategory(movie.getTitle(), movieCategory.getTitle()))
+        {
+            Log.e(TAG, "Can not remove movie from unsorted if it is the only"
+                    + " category the movie belongs too.");
+        }
+        else if (movie.getId() != -1 && movieCategory.getId() != -1)
         {
             Log.d(TAG, "Removing associations for: " + movie.getTitle() +
                     " and " + movieCategory.getTitle());
@@ -620,7 +635,11 @@ public class MovieManagementSystem
                 database.endTransaction();
             }
 
-            if (!associationRemoved)
+            if (associationRemoved)
+            {
+                addToUnsortedIfOrphaned(movie);
+            }
+            else
             {
                 Log.e(TAG, "Unable to delete association for " + movie);
             }

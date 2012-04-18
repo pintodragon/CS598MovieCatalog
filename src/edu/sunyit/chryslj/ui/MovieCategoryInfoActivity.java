@@ -181,27 +181,30 @@ public class MovieCategoryInfoActivity extends Activity implements
         toastText.append(movie.getTitle() + " ");
 
         movieManagementSystem.open();
-        if (movieManagementSystem.removeAssociation(movie, movieCategory))
+        boolean associationRemoved =
+                movieManagementSystem.removeAssociation(movie, movieCategory);
+        movieManagementSystem.close();
+
+        if (associationRemoved)
         {
             toastText.append(" was removed from " + movieCategory.getTitle());
+            moviesInCategory.removeSelectedMovie();
+
+            MovieCategoryInfoActivity.this.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Log.d(TAG, "Updating the adapter from UI Thread");
+                    moviesInCategory.notifyDataSetChanged();
+                }
+            });
         }
         else
         {
             toastText.append(" was not removed from " +
                     movieCategory.getTitle());
         }
-        movieManagementSystem.close();
-
-        moviesInCategory.removeSelectedMovie();
-        MovieCategoryInfoActivity.this.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Log.d(TAG, "Updating the adapter from UI Thread");
-                moviesInCategory.notifyDataSetChanged();
-            }
-        });
 
         Toast.makeText(this, toastText.toString(), Toast.LENGTH_SHORT).show();
     }
@@ -313,7 +316,7 @@ public class MovieCategoryInfoActivity extends Activity implements
 
             toastText.append(" has been added to " + movieCategory.getTitle());
 
-            if (!"Unsorted".equals(movieCategory))
+            if (!"Unsorted".equals(movieCategory.getTitle()))
             {
                 // Now that it has been added to a category check and remove the
                 // association with the Unsorted category.
