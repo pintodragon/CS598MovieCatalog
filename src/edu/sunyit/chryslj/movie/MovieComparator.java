@@ -29,7 +29,7 @@ public class MovieComparator implements Comparator<Movie>
             int rated1 = obj1.getRated().getId();
             int rated2 = obj2.getRated().getId();
 
-            compareValue = rated1 - rated2;
+            compareValue = rated2 - rated1;
         }
         else if (compareKey.equals("Personal Rating"))
         {
@@ -43,14 +43,14 @@ public class MovieComparator implements Comparator<Movie>
             int genre1 = obj1.getGenre().getId();
             int genre2 = obj2.getGenre().getId();
 
-            compareValue = genre1 - genre2;
+            compareValue = genre2 - genre1;
         }
         else if (compareKey.equals("Format"))
         {
             int format1 = obj1.getFormat().getId();
             int format2 = obj2.getFormat().getId();
 
-            compareValue = format1 - format2;
+            compareValue = format2 - format1;
         }
         else if (compareKey.equals("Runtime"))
         {

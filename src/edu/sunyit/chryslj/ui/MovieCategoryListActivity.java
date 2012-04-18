@@ -206,7 +206,16 @@ public class MovieCategoryListActivity extends ListActivity implements
                     toastText.append("added successfully!");
                     newCategory.setId((int) insertId);
                     categoryAdapter.add(newCategory);
-                    categoryAdapter.notifyDataSetChanged();
+
+                    MovieCategoryListActivity.this.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            Log.d(TAG, "Updating the adapter from UI Thread");
+                            categoryAdapter.notifyDataSetChanged();
+                        }
+                    });
                 }
                 else
                 {

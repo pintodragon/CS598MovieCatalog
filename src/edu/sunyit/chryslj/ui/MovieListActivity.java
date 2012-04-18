@@ -128,6 +128,10 @@ public class MovieListActivity extends ListActivity implements
                         {
                             movieAdapter.add(addedMovie);
                         }
+                        else
+                        {
+                            movieAdapter.updateMovie(addedMovie);
+                        }
                     }
                 default:
                     break;

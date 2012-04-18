@@ -204,4 +204,16 @@ public class MovieAdapter extends ArrayAdapter<Movie>
 
         return movie;
     }
+
+    public void updateMovie(Movie addedMovie)
+    {
+        for (int index = 0; index < items.size(); index++)
+        {
+            if (addedMovie.getId() == items.get(index).getId())
+            {
+                items.set(index, addedMovie);
+                break;
+            }
+        }
+    }
 }

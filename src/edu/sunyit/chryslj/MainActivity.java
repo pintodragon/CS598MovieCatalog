@@ -9,8 +9,6 @@ import edu.sunyit.chryslj.ui.MovieListActivity;
 
 public class MainActivity extends Activity
 {
-    private static final String TAG = MainActivity.class.getSimpleName();
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {

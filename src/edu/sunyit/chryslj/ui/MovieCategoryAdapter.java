@@ -102,7 +102,7 @@ public class MovieCategoryAdapter extends ArrayAdapter<MovieCategory>
     {
         if (selectedIndex != -1)
         {
-            items.remove(getSelectedCategory());
+            items.remove(selectedIndex);
         }
 
         selectedIndex = -1;
