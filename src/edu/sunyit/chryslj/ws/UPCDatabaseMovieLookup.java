@@ -47,7 +47,8 @@ public class UPCDatabaseMovieLookup implements MovieLookup
             params.put("rpc_key", rpc_key);
             params.put("upc", barcode);
 
-            XMLRPCClient client = new XMLRPCClient(rpc_url);
+            XMLRPCClient client = new XMLRPCClient(
+                    rpc_url);
             result = (HashMap<String, String>) client.call("lookup", params);
         }
         catch (XMLRPCException xe)
@@ -114,14 +115,14 @@ public class UPCDatabaseMovieLookup implements MovieLookup
     @Override
     public Movie lookupMovieByTitle(String title)
     {
-        // TODO Auto-generated method stub
+        // Not used by this class.
         return null;
     }
 
     @Override
     public Movie gatherMoreInformation(Movie movie)
     {
-        // TODO Auto-generated method stub
+        // Not used by this class.
         return null;
     }
 

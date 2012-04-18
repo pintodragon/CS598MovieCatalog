@@ -125,7 +125,7 @@ public class MovieManagementSystem
             }
             else
             {
-                updateMovie(newMovie);
+                movieId = updateMovie(newMovie);
             }
         }
 
@@ -137,9 +137,9 @@ public class MovieManagementSystem
      * @param movie
      * @return
      */
-    private synchronized boolean updateMovie(Movie movie)
+    private synchronized int updateMovie(Movie movie)
     {
-        boolean movieUpdated = false;
+        int updateId = -1;
 
         // Because this movie was retrieved from the movie list we do not know
         // it's ID in the database. Retrieve it so we can use it as the where
@@ -158,7 +158,7 @@ public class MovieManagementSystem
         database.beginTransaction();
         try
         {
-            int updateId =
+            updateId =
                     database.update(MovieTable.TABLE_MOVIES, values,
                             MovieTable.COLUMN_ID + "=?", new String[] { "" +
                                     movie.getId() });
@@ -178,14 +178,13 @@ public class MovieManagementSystem
             Log.e(TAG,
                     "Unable to update \"" + movie + "\"." +
                             sqlException.getMessage());
-            movieUpdated = false;
         }
         finally
         {
             database.endTransaction();
         }
 
-        return movieUpdated;
+        return updateId;
     }
 
     /**

@@ -1,5 +1,6 @@
 package edu.sunyit.chryslj.ui;
 
+import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.Movie;
+import edu.sunyit.chryslj.movie.MovieComparator;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
 public class MovieListActivity extends ListActivity implements
@@ -28,6 +30,7 @@ public class MovieListActivity extends ListActivity implements
     private MovieAdapter movieAdapter;
     private Spinner sortBySpinner;
 
+    private MovieComparator movieComparator = new MovieComparator();
     private String[] spinnerValues = { "None", "Title", "Rated",
             "Personal Rating", "Genre", "Format", "Runtime" };
 
@@ -232,7 +235,26 @@ public class MovieListActivity extends ListActivity implements
     public void onItemSelected(AdapterView<?> parent, View view, int position,
             long id)
     {
-        // TODO Auto-generated method stub
+        TextView spinnerText = (TextView) view;
+        String sortedBy = spinnerText.getText().toString();
+
+        movieAdapter.setSortedBy(sortedBy);
+
+        if (!"None".equals(sortedBy))
+        {
+            movieComparator.setCompareKey(sortedBy);
+
+            Collections.sort(movies, movieComparator);
+        }
+
+        MovieListActivity.this.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                movieAdapter.notifyDataSetChanged();
+            }
+        });
 
     }
 

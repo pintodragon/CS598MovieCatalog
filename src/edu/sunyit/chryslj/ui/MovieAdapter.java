@@ -128,7 +128,7 @@ public class MovieAdapter extends ArrayAdapter<Movie>
                 }
                 else if (sortedBy.equals("Personal Rating"))
                 {
-                    valueTxt = "" + currentMovie.getPersonalRating();
+                    valueTxt = String.valueOf(currentMovie.getPersonalRating());
                 }
                 else if (sortedBy.equals("Genre"))
                 {
@@ -140,7 +140,7 @@ public class MovieAdapter extends ArrayAdapter<Movie>
                 }
                 else if (sortedBy.equals("Runtime"))
                 {
-                    valueTxt = "" + currentMovie.getRunTime();
+                    valueTxt = String.valueOf(currentMovie.getRunTime());
                 }
 
                 String viewTxt =

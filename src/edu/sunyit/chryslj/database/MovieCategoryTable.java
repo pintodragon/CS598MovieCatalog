@@ -39,7 +39,6 @@ public class MovieCategoryTable implements DatabaseTable
     @Override
     public void onCreate(SQLiteDatabase database)
     {
-        // TODO Add default lists
         database.execSQL(TABLE_CREATE);
 
         insertDefaultLists(database);

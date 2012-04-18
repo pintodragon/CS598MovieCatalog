@@ -88,7 +88,8 @@ public class RottenTomatoesMovieLookup implements MovieLookup
                 rotten_title_url + "?" + queryParam + "&" + page_limit + "&" +
                         api_key;
         HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(queryString);
+        HttpGet httpGet = new HttpGet(
+                queryString);
 
         try
         {
@@ -103,8 +104,6 @@ public class RottenTomatoesMovieLookup implements MovieLookup
             else
             {
                 Log.e(TAG, "Failed to get file from host: " + rotten_title_url);
-                // TODO do something so the user knows we were unable to get
-                // information.
             }
         }
         catch (IOException ioe)
@@ -115,10 +114,9 @@ public class RottenTomatoesMovieLookup implements MovieLookup
         {
             Log.e(TAG, ise.toString());
         }
-        catch (JSONException e)
+        catch (JSONException jsone)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.e(TAG, jsone.toString());
         }
 
         return rottenMovieId;
@@ -136,11 +134,13 @@ public class RottenTomatoesMovieLookup implements MovieLookup
             throws IllegalStateException, IOException, JSONException
     {
         String jsonString = convertInputStreamToString(entity.getContent());
-        JSONObject replyObject = new JSONObject(jsonString);
+        JSONObject replyObject = new JSONObject(
+                jsonString);
 
         if (replyObject.getInt("total") == 0)
         {
-            throw new IllegalStateException("Movie not found.");
+            throw new IllegalStateException(
+                    "Movie not found.");
         }
         // Because we put a page limit of 1 we should only get one result back.
         // This result tends to be the closest to what we are looking for.
@@ -159,7 +159,8 @@ public class RottenTomatoesMovieLookup implements MovieLookup
     {
         String queryString = rotten_movie_url + rottenId + ".json?" + api_key;
         HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(queryString);
+        HttpGet httpGet = new HttpGet(
+                queryString);
 
         try
         {
@@ -174,8 +175,6 @@ public class RottenTomatoesMovieLookup implements MovieLookup
             else
             {
                 Log.e(TAG, "Failed to get file from host: " + rotten_title_url);
-                // TODO do something so the user knows we were unable to get
-                // information.
             }
         }
         catch (IOException ioe)
@@ -186,10 +185,9 @@ public class RottenTomatoesMovieLookup implements MovieLookup
         {
             Log.e(TAG, ise.toString());
         }
-        catch (JSONException e)
+        catch (JSONException jsone)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.e(TAG, jsone.toString());
         }
 
         return movie;
@@ -208,12 +206,14 @@ public class RottenTomatoesMovieLookup implements MovieLookup
             throws IllegalStateException, IOException, JSONException
     {
         String jsonString = convertInputStreamToString(entity.getContent());
-        JSONObject replyObject = new JSONObject(jsonString);
+        JSONObject replyObject = new JSONObject(
+                jsonString);
 
         // Check if we have a valid movie or not.
         if (replyObject.has("error"))
         {
-            throw new IllegalStateException("Movie not found.");
+            throw new IllegalStateException(
+                    "Movie not found.");
         }
 
         movie = gatherInfoAboutMovie(movie, replyObject);
@@ -224,8 +224,9 @@ public class RottenTomatoesMovieLookup implements MovieLookup
     private String convertInputStreamToString(InputStream inputStream)
     {
         StringBuilder outputString = new StringBuilder();
-        BufferedReader reader =
-                new BufferedReader(new InputStreamReader(inputStream));
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        inputStream));
 
         try
         {

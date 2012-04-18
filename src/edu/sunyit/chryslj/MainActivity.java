@@ -3,7 +3,6 @@ package edu.sunyit.chryslj;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import edu.sunyit.chryslj.ui.MovieCategoryListActivity;
 import edu.sunyit.chryslj.ui.MovieListActivity;
@@ -17,8 +16,6 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        // TODO Remove this line.
-        Log.e(TAG, "making a filter");
     }
 
     public void onClick(View view)

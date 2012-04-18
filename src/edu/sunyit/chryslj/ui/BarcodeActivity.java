@@ -17,6 +17,8 @@ import edu.sunyit.chryslj.ws.UPCDatabaseMovieLookup;
 
 public class BarcodeActivity extends Activity
 {
+    // This class would make a good candidate for an additional thread.
+
     private static final String TAG = BarcodeActivity.class.getSimpleName();
 
     @Override
@@ -45,18 +47,22 @@ public class BarcodeActivity extends Activity
                     intent.getIntExtra(getString(R.string.ycrcb_image_height),
                             0);
 
+            // Display message that we are starting to decode.
+            Toast.makeText(
+                    getApplication(),
+                    "Starting to decode and look up the movie via the barcode."
+                            + " This may take a few seconds.",
+                    Toast.LENGTH_LONG).show();
             String barcode;
             try
             {
                 barcode =
                         BarcodeProcessor.decodeImage(width, height, imageData);
-                Toast.makeText(getApplication(), barcode, Toast.LENGTH_LONG)
-                        .show();
+                Toast.makeText(getApplication(), "Decoded Value: " + barcode,
+                        Toast.LENGTH_SHORT).show();
 
                 if (!barcode.equals(""))
                 {
-                    // TODO Also might be a good candidate for a separate thread
-                    // with a handler.
                     MovieLookup movieLookup = new UPCDatabaseMovieLookup(
                             getResources());
                     Movie movie = movieLookup.lookupMovieByBarcode(barcode);
@@ -97,15 +103,15 @@ public class BarcodeActivity extends Activity
                         "Encountered an InvalidImageException. " +
                                 e.getMessage());
                 Toast.makeText(getApplication(),
-                        "Encountered an InvalidImageException.",
+                        "Encountered an InvalidImageException. Try again!",
                         Toast.LENGTH_LONG).show();
             }
             catch (IOException e)
             {
                 Log.e(TAG, "Encountered an IOException. " + e.getMessage());
                 Toast.makeText(getApplication(),
-                        "Encountered an IOException. ", Toast.LENGTH_LONG)
-                        .show();
+                        "Encountered an IOException. Try again!",
+                        Toast.LENGTH_LONG).show();
             }
         }
 

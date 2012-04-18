@@ -312,14 +312,18 @@ public class MovieCategoryInfoActivity extends Activity implements
             });
 
             toastText.append(" has been added to " + movieCategory.getTitle());
-            // Now that it has been added to a category check and remove the
-            // association with the Unsorted category.
-            MovieCategory unsortedCat =
-                    movieManagementSystem.getCategory("Unsorted");
 
-            // Do not care if it failed or not. A failure probably means it
-            // wasn't a part of that category already.
-            movieManagementSystem.removeAssociation(movie, unsortedCat);
+            if (!"Unsorted".equals(movieCategory))
+            {
+                // Now that it has been added to a category check and remove the
+                // association with the Unsorted category.
+                MovieCategory unsortedCat =
+                        movieManagementSystem.getCategory("Unsorted");
+
+                // Do not care if it failed or not. A failure probably means it
+                // wasn't a part of that category already.
+                movieManagementSystem.removeAssociation(movie, unsortedCat);
+            }
         }
         else
         {
@@ -336,7 +340,6 @@ public class MovieCategoryInfoActivity extends Activity implements
     public void onItemClick(AdapterView<?> parent, View view, int position,
             long id)
     {
-        // TODO Auto-generated method stub
         moviesInCategory.setSelectedIndex(position);
         moviesInCategory.notifyDataSetChanged();
     }
