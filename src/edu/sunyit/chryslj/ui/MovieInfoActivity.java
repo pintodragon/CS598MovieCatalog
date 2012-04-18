@@ -188,8 +188,16 @@ public class MovieInfoActivity extends Activity implements
         currentMovie.setPersonalRating(Integer.parseInt(ratingProgressText
                 .getText().toString()));
 
-        currentMovie.setRunTime(Short.parseShort(runtimeText.getText()
-                .toString()));
+        try
+        {
+            currentMovie.setRunTime(Short.parseShort(runtimeText.getText()
+                    .toString()));
+        }
+        catch (NumberFormatException nfe)
+        {
+            Log.e(TAG, "Invalid number entered for runtime.");
+            currentMovie.setRunTime((short) 0);
+        }
 
         movieMangementSystem.open();
         StringBuilder toastMessage = new StringBuilder();

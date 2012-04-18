@@ -75,8 +75,7 @@ public class MovieManagementSystem
 
         if (!"".equals(newMovie.getTitle()))
         {
-
-            if (getMovie(newMovie.getTitle()) == null)
+            if (getMovie(newMovie.getId()) == null)
             {
                 ContentValues values = new ContentValues();
                 values.put(MovieTable.COLUMN_TITLE, newMovie.getTitle());
@@ -144,7 +143,7 @@ public class MovieManagementSystem
         // Because this movie was retrieved from the movie list we do not know
         // it's ID in the database. Retrieve it so we can use it as the where
         // clause in the update query.
-        movie.setId(getMovie(movie.getTitle()).getId());
+        // movie.setId(getMovie(movie.getTitle()).getId());
 
         ContentValues values = new ContentValues();
         values.put(MovieTable.COLUMN_ID, movie.getId());
@@ -158,10 +157,10 @@ public class MovieManagementSystem
         database.beginTransaction();
         try
         {
+            String[] selectionArgs = { String.valueOf(movie.getId()) };
             updateId =
                     database.update(MovieTable.TABLE_MOVIES, values,
-                            MovieTable.COLUMN_ID + "=?", new String[] { "" +
-                                    movie.getId() });
+                            MovieTable.COLUMN_ID + "=?", selectionArgs);
 
             // In the event the insert doesn't throw like it is suppose
             // to be.
@@ -235,6 +234,8 @@ public class MovieManagementSystem
             database.beginTransaction();
             try
             {
+                String[] selectionArgs =
+                        new String[] { String.valueOf(movie.getId()) };
                 Log.d(TAG, "Delete from " +
                         CategoryMovieAssociationTable.TABLE_ASSOCIATIONS +
                         " where " +
@@ -243,7 +244,7 @@ public class MovieManagementSystem
                 database.delete(
                         CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
                         CategoryMovieAssociationTable.COLUMN_MOVIEID + "=?",
-                        new String[] { String.valueOf(movie.getId()) });
+                        selectionArgs);
                 database.setTransactionSuccessful();
                 Log.d(TAG, "Removing associations successful");
                 associationRemoved = true;
@@ -343,11 +344,30 @@ public class MovieManagementSystem
      */
     public Movie getMovie(String movieTitle)
     {
+        String[] selectionArgs = { movieTitle };
         Cursor cursor =
                 database.query(MovieTable.TABLE_MOVIES,
                         movieTable.getColumnNames(), MovieTable.COLUMN_TITLE +
-                                "=?", new String[] { movieTitle }, null, null,
-                        null);
+                                "=?", selectionArgs, null, null, null);
+        cursor.moveToFirst();
+
+        Movie movie = null;
+
+        if (cursor.getCount() == 1)
+        {
+            movie = cursorToMovie(cursor);
+        }
+
+        return movie;
+    }
+
+    private Movie getMovie(int id)
+    {
+        String[] selectionArgs = { String.valueOf(id) };
+        Cursor cursor =
+                database.query(MovieTable.TABLE_MOVIES,
+                        movieTable.getColumnNames(), MovieTable.COLUMN_ID +
+                                "=?", selectionArgs, null, null, null);
         cursor.moveToFirst();
 
         Movie movie = null;
@@ -367,11 +387,12 @@ public class MovieManagementSystem
      */
     public MovieCategory getCategory(String categoryTitle)
     {
+        String[] selectionArgs = { categoryTitle };
         Cursor cursor =
                 database.query(MovieCategoryTable.TABLE_CATEGORY,
                         movieCategoryTable.getColumnNames(),
-                        MovieCategoryTable.COLUMN_TITLE + "=?",
-                        new String[] { categoryTitle }, null, null, null);
+                        MovieCategoryTable.COLUMN_TITLE + "=?", selectionArgs,
+                        null, null, null);
         cursor.moveToFirst();
 
         MovieCategory category = null;
@@ -617,14 +638,15 @@ public class MovieManagementSystem
             database.beginTransaction();
             try
             {
+                String[] selectionArgs =
+                        new String[] { String.valueOf(movie.getId()),
+                                String.valueOf(movieCategory.getId()) };
                 database.delete(
                         CategoryMovieAssociationTable.TABLE_ASSOCIATIONS,
                         CategoryMovieAssociationTable.COLUMN_MOVIEID +
                                 "=? AND " +
                                 CategoryMovieAssociationTable.COLUMN_CATEGORYID +
-                                "=?",
-                        new String[] { String.valueOf(movie.getId()),
-                                String.valueOf(movieCategory.getId()) });
+                                "=?", selectionArgs);
                 database.setTransactionSuccessful();
                 Log.d(TAG, "Removing associations successful");
                 associationRemoved = true;
