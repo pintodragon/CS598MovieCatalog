@@ -22,6 +22,13 @@ import edu.sunyit.chryslj.camera.CameraHandler;
 import edu.sunyit.chryslj.camera.OverlayView;
 import edu.sunyit.chryslj.camera.TakePicturePreviewCallback;
 
+/**
+ * This Activity handles the camera preview functionality. This includes
+ * initializing the camera, calling for auto focus, listening for when we should
+ * take a preview image and closing the camera instance.
+ * 
+ * @author Justin Chrysler
+ */
 public class CameraPreviewActivity extends Activity implements
         SurfaceHolder.Callback
 {
@@ -64,7 +71,8 @@ public class CameraPreviewActivity extends Activity implements
             Log.e(TAG, "Unable to get camera instance: " + exc.getMessage());
         }
 
-        cameraHandler = new CameraHandler(this);
+        cameraHandler = new CameraHandler(
+                this);
     }
 
     @Override
@@ -120,8 +128,11 @@ public class CameraPreviewActivity extends Activity implements
     // ******************************//
 
     /**
+     * Tell the camera handler to take the next preview frame and send it to the
+     * BarcodeActivty to be decoded.
      * 
      * @param view
+     *            the OverlayView that was clicked.
      */
     public void onTakePicClick(View view)
     {
@@ -132,7 +143,7 @@ public class CameraPreviewActivity extends Activity implements
     }
 
     /**
-     * 
+     * Tell the camera to take the next preview frame.
      */
     public void takeOneShotPreview()
     {
@@ -142,6 +153,7 @@ public class CameraPreviewActivity extends Activity implements
     }
 
     /**
+     * Send the image data to the BarcodeActivity
      * 
      * @param data
      *            the YCrCB data of the preview image acquired.
@@ -157,9 +169,6 @@ public class CameraPreviewActivity extends Activity implements
         finish();
     }
 
-    /**
-     * 
-     */
     public void drawOverlay()
     {
         Log.d(TAG, "Draw the overlay");
@@ -170,13 +179,11 @@ public class CameraPreviewActivity extends Activity implements
         int width = display.getWidth();
         int height = display.getHeight();
 
-        overlayView.setPreviewSize(new Point(width, height));
+        overlayView.setPreviewSize(new Point(
+                width, height));
         overlayView.invalidate();
     }
 
-    /**
-     * 
-     */
     public void doAutoFocus()
     {
         if (deviceCamera != null && previewRunning)
@@ -187,7 +194,9 @@ public class CameraPreviewActivity extends Activity implements
     }
 
     /**
-     * 
+     * Initialize the camera properties including the screen size, flash mode
+     * and auto focus mode. Currently using the torch mode for the flash to keep
+     * a constant source of light on the bar code as we preview it.
      */
     private void initCameraProperties()
     {
@@ -201,7 +210,8 @@ public class CameraPreviewActivity extends Activity implements
         int height = display.getHeight();
 
         cameraParameters.setPreviewSize(width, height);
-        overlayView.setPreviewSize(new Point(width, height));
+        overlayView.setPreviewSize(new Point(
+                width, height));
 
         if (cameraParameters.getSupportedFlashModes().contains(
                 Parameters.FLASH_MODE_TORCH))
@@ -219,7 +229,9 @@ public class CameraPreviewActivity extends Activity implements
     }
 
     /**
-     * 
+     * Stop the camera and release it back to the system. If this isn't done
+     * then the camera could be out of commission for other applications until
+     * the phone is reinitialized.
      */
     private void stopCamera()
     {
@@ -239,8 +251,10 @@ public class CameraPreviewActivity extends Activity implements
     }
 
     /**
+     * Start the camera and start the preview using the given SurfaceHolder.
      * 
      * @param holder
+     *            the SurfaceHolder to display the preview on.
      */
     private void startCamera(SurfaceHolder holder)
     {

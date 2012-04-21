@@ -12,6 +12,13 @@ import android.widget.TextView;
 import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.Movie;
 
+/**
+ * An extension of the ArrayAdapter to handle Movies. This is used by our
+ * ListView to display the Movies.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieAdapter extends ArrayAdapter<Movie>
 {
     private static final String TAG = MovieAdapter.class.getSimpleName();
@@ -23,10 +30,14 @@ public class MovieAdapter extends ArrayAdapter<Movie>
     private boolean colorHightlighted = true;
 
     /**
+     * Creates a new MovieAdapter.
      * 
      * @param context
+     *            application context to use.
      * @param textViewResourceId
+     *            the ResourceID of the layout to use for each item.
      * @param items
+     *            the underlying List to be used to store the movie information.
      * @param sortedBy
      *            the String that corresponds to a column within the movie
      *            table.
@@ -40,17 +51,35 @@ public class MovieAdapter extends ArrayAdapter<Movie>
         sortedBy = "None";
     }
 
+    /**
+     * An item was clicked so set it as selected.
+     * 
+     * @param selectedIndex
+     *            the index of the item clicked.
+     */
     public void setSelectedIndex(int selectedIndex)
     {
         Log.d(TAG, "SelectedIndex: " + selectedIndex);
         this.selectedIndex = selectedIndex;
     }
 
+    /**
+     * Should we hightlight the selected item?
+     * 
+     * @param colorHightlighted
+     *            wheter to highlight or not.
+     */
     public void setColorHightlighted(boolean colorHightlighted)
     {
         this.colorHightlighted = colorHightlighted;
     }
 
+    /**
+     * Set the sort by value.
+     * 
+     * @param sortedBy
+     *            the sort by value.
+     */
     public void setSortedBy(String sortedBy)
     {
         this.sortedBy = sortedBy;
@@ -158,7 +187,8 @@ public class MovieAdapter extends ArrayAdapter<Movie>
      * Check if the movie we want to add is already in the list.
      * 
      * @param addedMovie
-     * @return
+     *            the movie we would like to add to the list.
+     * @return whether the movie is already in the list or not.
      */
     public boolean hasMovie(Movie addedMovie)
     {
@@ -177,6 +207,9 @@ public class MovieAdapter extends ArrayAdapter<Movie>
         return hasMovie;
     }
 
+    /**
+     * Remove a previously selected Movie only if one was selected previously.
+     */
     public void removeSelectedMovie()
     {
         if (selectedIndex != -1)
@@ -186,6 +219,11 @@ public class MovieAdapter extends ArrayAdapter<Movie>
         }
     }
 
+    /**
+     * Get the currently selected Movie.
+     * 
+     * @return the selected Movie or null if one wasn't selected.
+     */
     public Movie getSelectedMovie()
     {
         Movie movie = null;
@@ -205,6 +243,12 @@ public class MovieAdapter extends ArrayAdapter<Movie>
         return movie;
     }
 
+    /**
+     * Update information about a movie that is already in the list.
+     * 
+     * @param addedMovie
+     *            the movie with updated information.
+     */
     public void updateMovie(Movie addedMovie)
     {
         for (int index = 0; index < items.size(); index++)

@@ -2,6 +2,13 @@ package edu.sunyit.chryslj.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * This class defines the category associations table. It contains methods and
+ * fields for creating and upgrading the table.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class CategoryMovieAssociationTable implements DatabaseTable
 {
     public static final String TABLE_ASSOCIATIONS = "category_associations";

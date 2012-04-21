@@ -1,5 +1,11 @@
 package edu.sunyit.chryslj.movie.enums;
 
+/**
+ * An enum representing the supported Rating values.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public enum Rating
 {
     G(0, "G", "General Audiences. All Ages Admitted."),

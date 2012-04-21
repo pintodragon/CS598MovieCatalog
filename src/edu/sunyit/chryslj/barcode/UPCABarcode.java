@@ -4,6 +4,13 @@ import android.graphics.Color;
 import android.util.Log;
 import edu.sunyit.chryslj.exceptions.InvalidImageException;
 
+/**
+ * This class is an implementation of a UPC-A bar code reader. An UPC-A bar code
+ * consists of 12 numbers encoded via a 7 module wide image.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class UPCABarcode implements BarcodeDecoder
 {
     private static final String TAG = UPCABarcode.class.getSimpleName();
@@ -26,6 +33,12 @@ public class UPCABarcode implements BarcodeDecoder
             { 3, 1, 1, 2 } // 9
             };
 
+    // The decoded barcode will be placed within this string builder.
+    private StringBuilder barcodeBuilder = null;
+
+    // The width of a module
+    private int moduleWidth;
+
     /**
      * UPC-A barcodes start with a guard which is a bar, space, bar pattern. The
      * digits contain four values. These four values are the number of bars and
@@ -38,6 +51,7 @@ public class UPCABarcode implements BarcodeDecoder
      * collectors editions, dvd/blu-ray format, etc.
      * 
      * @param binaryRowData
+     *            the binary row data of the image we want to decode.
      * @return the decoded UPC-A value to be used to search for the product
      *         (Movie).
      */
@@ -45,25 +59,20 @@ public class UPCABarcode implements BarcodeDecoder
     public String decodeImage(int[] binaryRowData) throws InvalidImageException
     {
         int xOffset = locateFirstBar(binaryRowData);
-        int moduleWidth = 1;
+        barcodeBuilder = new StringBuilder();
+        moduleWidth = 1;
 
         // Starting guard
-        int[] widthAndNewStart = getPastGuard(binaryRowData, xOffset);
-        moduleWidth = widthAndNewStart[0];
-        xOffset = widthAndNewStart[1];
-
+        xOffset = getPastGuard(binaryRowData, xOffset);
         // Starting with Odd parity (Space first) so when we hit a bar we
         // increment our digitIndex.
-        StringBuilder barcodeBuilder = new StringBuilder();
 
-        // Start decoding.
+        // Start decoding. First half is 6 digits long.
         for (int digit = 0; digit < 6; digit++)
         {
-            int[] digitAndOffset =
+            xOffset =
                     aquireDigit(binaryRowData, xOffset, SPACE_COLOR,
                             moduleWidth);
-            barcodeBuilder.append(digitAndOffset[0]);
-            xOffset = digitAndOffset[1];
         }
 
         // Middle guard
@@ -71,12 +80,11 @@ public class UPCABarcode implements BarcodeDecoder
         // Only care about the new x offset.
         // Log.d(TAG, "Second set of numbers start at: " + xOffset);
 
+        // Second half is also 6 digits long.
         for (int digit = 0; digit < 6; digit++)
         {
-            int[] digitAndOffset =
+            xOffset =
                     aquireDigit(binaryRowData, xOffset, BAR_COLOR, moduleWidth);
-            barcodeBuilder.append(digitAndOffset[0]);
-            xOffset = digitAndOffset[1];
         }
 
         Log.d(TAG, "Barcode: " + barcodeBuilder.toString());
@@ -91,8 +99,28 @@ public class UPCABarcode implements BarcodeDecoder
         return barcodeBuilder.toString();
     }
 
-    private int[] aquireDigit(int[] binaryRowData, int currentOffset,
-            int startColor, int moduleWidth)
+    /**
+     * This method reads the next digit from a binary row of image data. It
+     * reads in the image data pixel by pixel and stores the widths of the
+     * expected bars in an array. Each digit is a compilation of 4 different
+     * sets of modules of different sizes. This information is then used to
+     * match the digit read from the bar code to the digit pattern of a UPC-A
+     * bar code.
+     * 
+     * @param binaryRowData
+     *            the binary row data of the image we want to decode.
+     * @param currentOffset
+     *            the current location within the row that we are decoding.
+     * @param startColor
+     *            the expected starting color of the module for the next digit.
+     * @param moduleWidth
+     *            the normalized width of a single module.
+     * @return the last location that was used within the binaryRowData.
+     * @throws InvalidImageException
+     *             if we did not find a digit.
+     */
+    private int aquireDigit(int[] binaryRowData, int currentOffset,
+            int startColor, int moduleWidth) throws InvalidImageException
     {
         int[] digitWidths = new int[4];
         int digitIndex = 0;
@@ -139,14 +167,28 @@ public class UPCABarcode implements BarcodeDecoder
             digitWidths[digitIndex]++;
         }
 
-        int[] digitAndOffset = new int[2];
-        digitAndOffset[0] = matchDigitPattern(digitWidths);
-        digitAndOffset[1] = xOffset;
+        // Append the digit to the string builder.
+        barcodeBuilder.append(matchDigitPattern(digitWidths));
 
-        return digitAndOffset;
+        return xOffset;
     }
 
-    private int[] getPastGuard(int[] binaryRowData, int xOffset)
+    /**
+     * This method validates the guard pattern and also helps determine the
+     * width of a given module. The guard pattern is a single bar, a single
+     * space and a single bar. The average width of all three is used as the
+     * width of a module.
+     * 
+     * @param binaryRowData
+     *            the binary row data of the image we want to decode.
+     * @param xOffset
+     *            the starting location in the row of data that we think the
+     *            guard pattern is located at.
+     * @return the location right after the guard pattern.
+     * @throws InvalidImageException
+     *             thrown if the guard pattern is invalid.
+     */
+    private int getPastGuard(int[] binaryRowData, int xOffset)
             throws InvalidImageException
     {
         int barWidth = 0;
@@ -184,11 +226,9 @@ public class UPCABarcode implements BarcodeDecoder
                     "Invalid guard patern.");
         }
 
-        int[] widthAndStart = new int[2];
-        widthAndStart[0] = (int) Math.ceil(totalBarWidth / 3.0);
-        widthAndStart[1] = currentX;
+        moduleWidth = (int) Math.ceil(totalBarWidth / 3.0);
 
-        return widthAndStart;
+        return currentX;
     }
 
     /**
@@ -197,9 +237,13 @@ public class UPCABarcode implements BarcodeDecoder
      * iterate through the spaces until we hit the bars we are looking for.
      * 
      * @param binaryRowData
+     *            the binary row data of the image we want to decode.
      * @param xOffset
-     * @return
+     *            the starting location in the row of data that we think the
+     *            guard pattern is located at.
+     * @return the location right after the guard pattern.
      * @throws InvalidImageException
+     *             thrown if the guard pattern is invalid.
      */
     private int getMiddlePastGuard(int[] binaryRowData, int xOffset)
             throws InvalidImageException
@@ -216,8 +260,7 @@ public class UPCABarcode implements BarcodeDecoder
         }
 
         // Offset returned as second element of the array.
-        int widthAndOffset[] = getPastGuard(binaryRowData, currentX);
-        currentX = widthAndOffset[1];
+        currentX = getPastGuard(binaryRowData, currentX);
 
         for (int x = currentX; x < binaryRowData.length; x++)
         {
@@ -232,13 +275,14 @@ public class UPCABarcode implements BarcodeDecoder
     }
 
     /**
-     * Usually a UPC-A barcode has a quiet zone of 9 modules. We have no idea
+     * Usually a UPC-A bar code has a quiet zone of 9 modules. We have no idea
      * how many pixels are per module yet so we are going to assume 2 pixel per
      * module for now and keep looking for a bar until the we have a quiet zone
      * of at least 18.
      * 
      * @param binaryRowData
-     * @return
+     *            the binary row data of the image we want to decode.
+     * @return the location of what we think is the first bar in the image data.
      */
     private int locateFirstBar(int[] binaryRowData)
     {
@@ -270,9 +314,21 @@ public class UPCABarcode implements BarcodeDecoder
         return xOffset;
     }
 
+    /**
+     * Match the given digit bar widths with the digit pattern expected by a
+     * UPC-A encoding.
+     * 
+     * @param digitWidths
+     *            an array of length 4 with the widths of the sets of modules we
+     *            think is a digit.
+     * @return the digit that we have decoded.
+     * @throws InvalidImageException
+     *             if the digit does not match an expected pattern.
+     */
     private int matchDigitPattern(int[] digitWidths)
+            throws InvalidImageException
     {
-        int digitValue = 0;
+        int digitValue = -1;
 
         for (int index = 0; index < DIGIT_PATTERNS.length; index++)
         {
@@ -290,8 +346,15 @@ public class UPCABarcode implements BarcodeDecoder
             if (isMatch)
             {
                 digitValue = index;
+                isMatch = true;
                 break;
             }
+        }
+
+        if (digitValue == -1)
+        {
+            throw new InvalidImageException(
+                    "The digit did not match an expected pattern.");
         }
 
         return digitValue;
@@ -299,18 +362,19 @@ public class UPCABarcode implements BarcodeDecoder
 
     /**
      * The check digit is calculated according to a few rules. You use the first
-     * eleven digits of the barcode to determine if the check digit is valid.
+     * eleven digits of the bar code to determine if the check digit is valid.
      * <ol>
      * <li>Calculate the sum of all the digits in the odd positions and multiply
      * the result by 3.</li>
      * <li>Calculate the sum of all the digits in the even positions.</li>
      * <li>Add the results of step 1 and 2.</li>
      * <li>If 10 minus the result of step 3 mod 10 is the check digit then the
-     * barcode is valid.</li>
+     * bar code is valid.</li>
      * </ol>
      * 
      * @param barcode
-     * @return
+     *            a string representation of the bar code.
+     * @return if the check digit is valid or not.
      */
     private boolean isCheckDigitValid(String barcode)
     {

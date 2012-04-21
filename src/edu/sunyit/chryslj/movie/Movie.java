@@ -8,6 +8,13 @@ import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
+/**
+ * A Serializable instance of the movie information that we store in the movie
+ * table.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class Movie implements Serializable
 {
     private static final long serialVersionUID = -8950948224949570678L;

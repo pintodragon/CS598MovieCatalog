@@ -7,6 +7,14 @@ import android.view.View;
 import edu.sunyit.chryslj.ui.MovieCategoryListActivity;
 import edu.sunyit.chryslj.ui.MovieListActivity;
 
+/**
+ * This is the main activity of the application. It's only purpose is to display
+ * a few buttons that allow the user to choose which list they would like to
+ * view.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MainActivity extends Activity
 {
     @Override

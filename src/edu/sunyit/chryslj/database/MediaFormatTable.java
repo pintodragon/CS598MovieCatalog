@@ -5,6 +5,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 
+/**
+ * This class defines the media format table. It contains methods and fields for
+ * creating and upgrading the table.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MediaFormatTable implements DatabaseTable
 {
     public static final String TABLE_FORMATS = "mediaFormats";

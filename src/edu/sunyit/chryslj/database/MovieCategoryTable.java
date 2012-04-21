@@ -4,6 +4,13 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+/**
+ * This class defines the category table. It contains methods and fields for
+ * creating and upgrading the table.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieCategoryTable implements DatabaseTable
 {
     public static final String TABLE_CATEGORY = "category";
@@ -79,9 +86,12 @@ public class MovieCategoryTable implements DatabaseTable
     }
 
     /**
+     * This method checks the given category name to see if it is in the list of
+     * default categories.
      * 
      * @param categoryName
-     * @return
+     *            category to check.
+     * @return if the category is a default category.
      */
     public static boolean isDefaultCategory(String categoryName)
     {

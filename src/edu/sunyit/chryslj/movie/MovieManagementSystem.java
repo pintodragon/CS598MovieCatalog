@@ -21,6 +21,13 @@ import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
+/**
+ * This is the main class that does all of the interaction with the database. It
+ * stores, retrieves and updates information about the movies and categories.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieManagementSystem
 {
     private static final String TAG = MovieManagementSystem.class
@@ -47,6 +54,14 @@ public class MovieManagementSystem
         Log.d(TAG, "Database helper created for context: " + context);
     }
 
+    /**
+     * Get a writable database connection. The reason we do not get a read only
+     * version when doing queries is due to the underlying implementation of the
+     * dbHelper. It returns the same database reference no matter which choice
+     * you make unless there is no more room on the device.
+     * 
+     * @throws SQLException
+     */
     public synchronized void open() throws SQLException
     {
         if (database == null || !database.isOpen())
@@ -55,6 +70,9 @@ public class MovieManagementSystem
         }
     }
 
+    /**
+     * Close the connection.
+     */
     public synchronized void close()
     {
         if (database.isOpen())
@@ -65,9 +83,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Add a new movie to the database.
      * 
      * @param newMovie
-     * @return
+     *            the movie information to add.
+     * @return the index of the newly added movie or -1 if the insert failed.
      */
     public synchronized long addMovie(Movie newMovie)
     {
@@ -132,9 +152,12 @@ public class MovieManagementSystem
     }
 
     /**
+     * Update a movie in the database.
      * 
      * @param movie
-     * @return
+     *            the movie we wish to update along with the updated
+     *            information.
+     * @return the index of the updated movie or -1 if the update failed.
      */
     private synchronized int updateMovie(Movie movie)
     {
@@ -187,9 +210,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Remove a movie from the database.
      * 
      * @param movie
-     * @return
+     *            the movie we wish to remove.
+     * @return whether or not the movie was removed.
      */
     public synchronized boolean removeMovie(Movie movie)
     {
@@ -224,6 +249,14 @@ public class MovieManagementSystem
         return movieRemoved;
     }
 
+    /**
+     * Remove all of the associations between the categories in the system and a
+     * particular movie.
+     * 
+     * @param movie
+     *            the move to remove the associations of.
+     * @return whether or not the associations were removed.
+     */
     private synchronized boolean removeAllAssociation(Movie movie)
     {
         boolean associationRemoved = false;
@@ -265,8 +298,10 @@ public class MovieManagementSystem
     }
 
     /**
+     * Get a list of all the movies in the system.
      * 
-     * @return
+     * @return an ArrayList of all the movies in the system or an empty list if
+     *         there aren't any movies.
      */
     public synchronized List<Movie> getAllMovies()
     {
@@ -292,6 +327,14 @@ public class MovieManagementSystem
         return movies;
     }
 
+    /**
+     * Get a list of all the movies that are in a category.
+     * 
+     * @param movieCategory
+     *            the category which we want to know the movies associated.
+     * @return an ArrayList of all the movies in the category or an empty list
+     *         if there aren't any.
+     */
     public List<Movie> getAllMoviesInCategory(MovieCategory movieCategory)
     {
         List<Movie> moviesInCategory = new ArrayList<Movie>();
@@ -338,9 +381,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Get a particular movie based on title.
      * 
      * @param movieTitle
-     * @return
+     *            the movies title.
+     * @return the movie or null if it doesn't exist.
      */
     public Movie getMovie(String movieTitle)
     {
@@ -361,6 +406,13 @@ public class MovieManagementSystem
         return movie;
     }
 
+    /**
+     * Get a movie based on its primary id key.
+     * 
+     * @param id
+     *            the primary id of the movie.
+     * @return the movie or null if it doesn't exist.
+     */
     private Movie getMovie(int id)
     {
         String[] selectionArgs = { String.valueOf(id) };
@@ -381,9 +433,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Get a category by its title.
      * 
      * @param categoryTitle
-     * @return
+     *            the title of the category.
+     * @return the Category or null if it doesn't exist.
      */
     public MovieCategory getCategory(String categoryTitle)
     {
@@ -406,9 +460,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Add a Category to the system.
      * 
      * @param movieCategory
-     * @return
+     *            the category to add.
+     * @return the categories insert id or -1 if it failed to insert.
      */
     public synchronized long addCategory(MovieCategory movieCategory)
     {
@@ -452,9 +508,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Remove a Category from the system.
      * 
      * @param movieCategory
-     * @return
+     *            the Category to remove.
+     * @return whether or not the Category was removed.
      */
     public synchronized boolean removeCategory(MovieCategory movieCategory)
     {
@@ -504,6 +562,13 @@ public class MovieManagementSystem
         return categoryRemoved;
     }
 
+    /**
+     * Add the movies from the list to the unsorted category if they are
+     * orphaned. AKA if they do not belong to any categories.
+     * 
+     * @param moviesToCheck
+     *            the list of movies to check and update.
+     */
     private void addToUnsortedIfOrphaned(List<Movie> moviesToCheck)
     {
         for (int index = 0; index < moviesToCheck.size(); index++)
@@ -512,6 +577,13 @@ public class MovieManagementSystem
         }
     }
 
+    /**
+     * Add a movie to the unsorted category if it is an orphaned. AKA if it does
+     * not belong to any categories.
+     * 
+     * @param moviesToCheck
+     *            the movie to check and update.
+     */
     private void addToUnsortedIfOrphaned(Movie movieToCheck)
     {
         MovieCategory unsortedCategory = getCategory("Unsorted");
@@ -531,8 +603,10 @@ public class MovieManagementSystem
     }
 
     /**
+     * Get all the Categories in the system.
      * 
-     * @return
+     * @return an ArrayList of all the Categories in the system or an empty list
+     *         if there aren't any.
      */
     public synchronized List<MovieCategory> getAllCategories()
     {
@@ -558,10 +632,13 @@ public class MovieManagementSystem
     }
 
     /**
+     * Add a movie to a category.
      * 
      * @param movie
+     *            the movie to add.
      * @param movieCategory
-     * @return
+     *            the Category to add it to.
+     * @return whether it was added to the category or not.
      */
     public synchronized boolean addMovieToMovieCategory(Movie movie,
             MovieCategory movieCategory)
@@ -614,9 +691,13 @@ public class MovieManagementSystem
     }
 
     /**
+     * Remove the association between a movie and a category.
      * 
      * @param movie
-     * @return
+     *            the movie.
+     * @param movieCategory
+     *            the category.
+     * @return whether the association was removed or not.
      */
     public synchronized boolean removeAssociation(Movie movie,
             MovieCategory movieCategory)
@@ -671,9 +752,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Get the number of movies that belong to a particular Category.
      * 
      * @param categoryId
-     * @return
+     *            the ID of the Category.
+     * @return the number of movies in the category.
      */
     public synchronized int getNumMoviesInCategory(int categoryId)
     {
@@ -695,9 +778,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Get the number of Categories that a Movie belongs to.
      * 
      * @param movieId
-     * @return
+     *            the ID of the Movie.
+     * @return the number of Categories that a Movie belongs to.
      */
     public synchronized int getNumCategoriesForMovie(int movieId)
     {
@@ -762,9 +847,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Convert a cursor object to a movie.
      * 
      * @param cursor
-     * @return
+     *            cursor result from a database query.
+     * @return the Movie that the cursor represents.
      */
     private Movie cursorToMovie(Cursor cursor)
     {
@@ -786,9 +873,11 @@ public class MovieManagementSystem
     }
 
     /**
+     * Convert a cursor object to a Category.
      * 
      * @param cursor
-     * @return
+     *            cursor result from a database query.
+     * @return the Category that the cursor represents.
      */
     private MovieCategory cursorToMovieCategory(Cursor cursor)
     {

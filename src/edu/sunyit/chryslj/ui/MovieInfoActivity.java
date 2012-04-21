@@ -20,6 +20,13 @@ import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
+/**
+ * This Activity shows the Movie Information to the user. The user can edit any
+ * of the information from this screen as well as delete the movie if they wish.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieInfoActivity extends Activity implements
         SeekBar.OnSeekBarChangeListener
 {

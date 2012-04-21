@@ -15,6 +15,13 @@ import edu.sunyit.chryslj.ws.MovieLookup;
 import edu.sunyit.chryslj.ws.RottenTomatoesMovieLookup;
 import edu.sunyit.chryslj.ws.UPCDatabaseMovieLookup;
 
+/**
+ * This activity runs the UPCADecorder to obtain the bar code from the image
+ * data.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class BarcodeActivity extends Activity
 {
     // This class would make a good candidate for an additional thread.
@@ -102,15 +109,13 @@ public class BarcodeActivity extends Activity
                 Log.e(TAG,
                         "Encountered an InvalidImageException. " +
                                 e.getMessage());
-                Toast.makeText(getApplication(),
-                        "Encountered an InvalidImageException. Try again!",
+                Toast.makeText(getApplication(), "Error: " + e.getMessage(),
                         Toast.LENGTH_LONG).show();
             }
             catch (IOException e)
             {
                 Log.e(TAG, "Encountered an IOException. " + e.getMessage());
-                Toast.makeText(getApplication(),
-                        "Encountered an IOException. Try again!",
+                Toast.makeText(getApplication(), "Error: " + e.getMessage(),
                         Toast.LENGTH_LONG).show();
             }
         }

@@ -22,6 +22,14 @@ import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.MovieCategory;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
+/**
+ * This Activity displays the Category Information to the user. It allows the
+ * user to select movies currently in the category and remove them or add new
+ * ones.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieCategoryInfoActivity extends Activity implements
         AdapterView.OnItemClickListener
 {

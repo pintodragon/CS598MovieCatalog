@@ -33,6 +33,10 @@ public class CameraHandler extends Handler
         currentState = State.START;
     }
 
+    /**
+     * Handler the messages being sent around for the camera. This includes
+     * starting the preview, calling auto focus and taking the picture.
+     */
     @Override
     public void handleMessage(Message message)
     {
@@ -73,9 +77,12 @@ public class CameraHandler extends Handler
         }
     }
 
+    /**
+     * If the current state is START then draw the overlay and start the
+     * preview.
+     */
     private void previewRunning()
     {
-        Log.d(TAG, "Preview Running was run!");
         if (currentState == State.START)
         {
             Log.d(TAG, "Draw overlay");

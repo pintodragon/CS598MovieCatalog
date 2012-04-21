@@ -5,6 +5,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import edu.sunyit.chryslj.movie.enums.Genre;
 
+/**
+ * This class defines the genre table. It contains methods and fields for
+ * creating and upgrading the table.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class GenreTable implements DatabaseTable
 {
     public static final String TABLE_GENRES = "genres";

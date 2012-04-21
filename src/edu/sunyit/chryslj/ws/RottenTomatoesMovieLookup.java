@@ -23,6 +23,16 @@ import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.enums.Genre;
 import edu.sunyit.chryslj.movie.enums.Rating;
 
+/**
+ * This is the Rotten Tomatoes MovieLookup implementation. This is used to
+ * gather more information about a particular movie based on the title of the
+ * movie. This uses the Rotten Tomatoes API which involves service calls to JSON
+ * supported interfaces. The JSON results are then parsed to obtain the movie
+ * information.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class RottenTomatoesMovieLookup implements MovieLookup
 {
     private static final String TAG = RottenTomatoesMovieLookup.class
@@ -75,11 +85,6 @@ public class RottenTomatoesMovieLookup implements MovieLookup
         return movie;
     }
 
-    /**
-     * 
-     * @param queryParam
-     * @return
-     */
     private String performTitleQuery(String queryParam)
     {
         String rottenMovieId = null;
@@ -122,14 +127,6 @@ public class RottenTomatoesMovieLookup implements MovieLookup
         return rottenMovieId;
     }
 
-    /**
-     * 
-     * @param entity
-     * @return
-     * @throws IllegalStateException
-     * @throws IOException
-     * @throws JSONException
-     */
     private String parseTitleJSONResponse(HttpEntity entity)
             throws IllegalStateException, IOException, JSONException
     {
@@ -149,12 +146,6 @@ public class RottenTomatoesMovieLookup implements MovieLookup
         return movie.getString("id");
     }
 
-    /**
-     * 
-     * @param movie
-     * @param rottenId
-     * @return
-     */
     private Movie performMovieQuery(Movie movie, String rottenId)
     {
         String queryString = rotten_movie_url + rottenId + ".json?" + api_key;
@@ -193,15 +184,6 @@ public class RottenTomatoesMovieLookup implements MovieLookup
         return movie;
     }
 
-    /**
-     * 
-     * @param movie
-     * @param entity
-     * @return
-     * @throws IllegalStateException
-     * @throws IOException
-     * @throws JSONException
-     */
     private Movie parseJSONResponse(Movie movie, HttpEntity entity)
             throws IllegalStateException, IOException, JSONException
     {
@@ -255,14 +237,6 @@ public class RottenTomatoesMovieLookup implements MovieLookup
         return outputString.toString();
     }
 
-    /**
-     * Parse through the object gathering the information we can about the
-     * movie.
-     * 
-     * @param movie
-     * @param movieObject
-     * @return
-     */
     private Movie gatherInfoAboutMovie(Movie movie, JSONObject movieObject)
     {
         // Get the movies MPAA rating.

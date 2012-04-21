@@ -1,5 +1,11 @@
 package edu.sunyit.chryslj.movie.enums;
 
+/**
+ * An enum representing the supported MediaFormat types.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public enum MediaFormat
 {
     VHS(0, "VHS", "Video Home System"),

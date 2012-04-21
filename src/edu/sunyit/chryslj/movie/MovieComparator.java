@@ -2,6 +2,12 @@ package edu.sunyit.chryslj.movie;
 
 import java.util.Comparator;
 
+/**
+ * A Comparator used to compare different parts of a movie based on a key.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieComparator implements Comparator<Movie>
 {
     private String compareKey = "";

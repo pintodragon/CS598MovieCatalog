@@ -20,6 +20,15 @@ import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.MovieComparator;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
+/**
+ * This Activity displays a list of Movies to the user. This list contains all
+ * the movies currently in the system. It does offer a spinner at the top for a
+ * user to select how they want the movies sorted. A user can also add a new
+ * Movie manually or via the camera.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieListActivity extends ListActivity implements
         OnItemClickListener, OnItemSelectedListener
 {

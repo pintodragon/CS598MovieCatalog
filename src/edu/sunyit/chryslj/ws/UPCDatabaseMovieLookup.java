@@ -15,6 +15,21 @@ import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.enums.MediaFormat;
 
+/**
+ * This is the UPC Database MovieLookup implementation. This is used to gather
+ * more information about a particular movie based on the bar code of the movie.
+ * This uses XML RPC calls to obtain the Movie title and MediaFormat from the
+ * UPCDatabase.com. This is a not for commercial use database of UPC codes with
+ * some very basic information about products.
+ * 
+ * NOTE: This uses the org.xmlrpc.android project which is an external library
+ * that I had to include as part of the source to get to work. The original code
+ * was developed as an android application that was not able to be imported nor
+ * used via android intents.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class UPCDatabaseMovieLookup implements MovieLookup
 {
     private static final String TAG = UPCDatabaseMovieLookup.class

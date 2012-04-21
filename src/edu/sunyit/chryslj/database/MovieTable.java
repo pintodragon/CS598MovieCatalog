@@ -2,6 +2,13 @@ package edu.sunyit.chryslj.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * This class defines the movie table. It contains methods and fields for
+ * creating and upgrading the table.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieTable implements DatabaseTable
 {
     public static final String TABLE_MOVIES = "movies";

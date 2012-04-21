@@ -2,6 +2,12 @@ package edu.sunyit.chryslj.movie;
 
 import java.io.Serializable;
 
+/**
+ * A Serializable instance of the category that we store in the category table.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieCategory implements Serializable
 {
     private static final long serialVersionUID = 2238873589530985224L;

@@ -1,5 +1,11 @@
 package edu.sunyit.chryslj.movie.enums;
 
+/**
+ * An enum representing the supported Genre types.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public enum Genre
 {
     ACTION(0, "Action"),

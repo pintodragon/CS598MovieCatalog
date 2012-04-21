@@ -21,6 +21,15 @@ import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.MovieCategory;
 import edu.sunyit.chryslj.movie.MovieManagementSystem;
 
+/**
+ * This Activity displays a list of Categories to the user. A user can press and
+ * hold on a Category to get a menu to show or delete the Category. They can
+ * also just click a Category to view it. New Categories can be added from this
+ * screen as well.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class MovieCategoryListActivity extends ListActivity implements
         AdapterView.OnItemClickListener
 {

@@ -10,6 +10,14 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
 
+/**
+ * This is the overlay used by the camera preview to add the guide box and
+ * scanner bar. The scanner bar does nothing other than help the user line up
+ * the image scan.
+ * 
+ * @author Justin Chrysler
+ * 
+ */
 public class OverlayView extends SurfaceView
 {
     private static final String TAG = OverlayView.class.getSimpleName();
@@ -19,7 +27,9 @@ public class OverlayView extends SurfaceView
     public static final int X_OFFSET = 190;
     public static final int Y_OFFSET = 75;
 
-    private Point previewSize = new Point(800, 480);
+    // Default preview size is 800x480 in landscape mode.
+    private Point previewSize = new Point(
+            800, 480);
 
     public OverlayView(Context context, AttributeSet attrs)
     {
@@ -27,6 +37,9 @@ public class OverlayView extends SurfaceView
         Log.d(TAG, "Overlay Created!");
     }
 
+    /**
+     * Draw our guide box and scan bar.
+     */
     @Override
     public void onDraw(Canvas canvas)
     {
@@ -37,7 +50,8 @@ public class OverlayView extends SurfaceView
         int recY2 = previewSize.y - Y_OFFSET;
         Log.d(TAG, "preview x: " + previewSize.x + " preview y: " +
                 previewSize.y);
-        Rect guide = new Rect(recX1, recY1, recX2, recY2);
+        Rect guide = new Rect(
+                recX1, recY1, recX2, recY2);
         Paint paint = new Paint();
         paint.setAlpha(0);
         paint.setColor(Color.WHITE);
@@ -56,6 +70,7 @@ public class OverlayView extends SurfaceView
      * Called any time the surface changes on the camera.
      * 
      * @param previewSize
+     *            the preview size of the camera.
      */
     public void setPreviewSize(Point previewSize)
     {
