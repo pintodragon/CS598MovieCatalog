@@ -16,6 +16,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.camera.AutoFocusCallbackImpl;
 import edu.sunyit.chryslj.camera.CameraHandler;
@@ -160,6 +161,13 @@ public class CameraPreviewActivity extends Activity implements
      */
     public void sendPictureToReader(int width, int height, byte[] data)
     {
+        // Display message that we are starting to decode.
+        Toast.makeText(
+                getApplication(),
+                "Starting to decode and look up the movie via the barcode."
+                        + " This may take a few seconds.", Toast.LENGTH_LONG)
+                .show();
+
         Intent returnIntent = new Intent();
         returnIntent.putExtra(getString(R.string.ycrcb_image_data), data);
         returnIntent.putExtra(getString(R.string.ycrcb_image_width), width);

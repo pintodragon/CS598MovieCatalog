@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Application Level Strings -->
-    <string name="app_name">CS598MovieCatalog</string>
-    <string name="main_title">CSC 598 Movie Catalog Project</string>
+    <string name="app_name">Got Movie?</string>
+    <string name="main_title">Got Movie?</string>
     <string name="main_movie_list">Movie List</string>
     <string name="main_category_list">Category List</string>
     <string name="app_quit">Quit</string>

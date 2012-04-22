@@ -54,12 +54,6 @@ public class BarcodeActivity extends Activity
                     intent.getIntExtra(getString(R.string.ycrcb_image_height),
                             0);
 
-            // Display message that we are starting to decode.
-            Toast.makeText(
-                    getApplication(),
-                    "Starting to decode and look up the movie via the barcode."
-                            + " This may take a few seconds.",
-                    Toast.LENGTH_LONG).show();
             String barcode;
             try
             {
