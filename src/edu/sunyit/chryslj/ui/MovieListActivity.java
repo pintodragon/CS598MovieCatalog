@@ -5,7 +5,10 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import edu.sunyit.chryslj.R;
 import edu.sunyit.chryslj.movie.Movie;
 import edu.sunyit.chryslj.movie.MovieComparator;
@@ -98,9 +102,21 @@ public class MovieListActivity extends ListActivity implements
                 startActivityForResult(intent, R.id.MOVIE_INFO);
                 break;
             case R.id.movie_add_camera:
-                intent = new Intent();
-                intent.setClass(view.getContext(), CameraPreviewActivity.class);
-                startActivityForResult(intent, R.id.TAKE_PICTURE_REQUEST);
+                if (isNetworkAvailable())
+                {
+                    intent = new Intent();
+                    intent.setClass(view.getContext(),
+                            CameraPreviewActivity.class);
+                    startActivityForResult(intent, R.id.TAKE_PICTURE_REQUEST);
+                }
+                else
+                {
+                    Toast.makeText(
+                            getApplication(),
+                            "No network connection. Unable to look up movie"
+                                    + " information.", Toast.LENGTH_SHORT)
+                            .show();
+                }
                 break;
         }
     }
@@ -275,5 +291,19 @@ public class MovieListActivity extends ListActivity implements
     public void onNothingSelected(AdapterView<?> parent)
     {
         // Do nothing.
+    }
+
+    /**
+     * Check to see if we have a network connection.
+     * 
+     * @return true if there is a network connection.
+     */
+    private boolean isNetworkAvailable()
+    {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo =
+                connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 }
