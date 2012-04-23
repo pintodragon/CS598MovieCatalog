@@ -165,7 +165,7 @@ public class CameraPreviewActivity extends Activity implements
         Toast.makeText(
                 getApplication(),
                 "Starting to decode and look up the movie via the barcode."
-                        + " This may take a few seconds.", Toast.LENGTH_LONG)
+                        + " This may take a few seconds.", Toast.LENGTH_SHORT)
                 .show();
 
         Intent returnIntent = new Intent();

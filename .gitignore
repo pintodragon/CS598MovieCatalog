@@ -4,6 +4,7 @@
 bin/
 *.class
 ~$*.docx
+~$*.pptx
 ~*.tmp
 status.txt
 res/raw/*.properties

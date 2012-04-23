@@ -98,7 +98,7 @@ public class MovieCategoryInfoActivity extends Activity implements
             {
                 Log.e(TAG, "There is no Category to display.");
                 Toast.makeText(getApplication(),
-                        "There is no Category to display.", Toast.LENGTH_LONG)
+                        "There is no Category to display.", Toast.LENGTH_SHORT)
                         .show();
                 finish();
             }
@@ -281,7 +281,7 @@ public class MovieCategoryInfoActivity extends Activity implements
                             Toast.makeText(
                                     getApplication(),
                                     "There are no movies in the system to select!",
-                                    Toast.LENGTH_LONG).show();
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -344,7 +344,7 @@ public class MovieCategoryInfoActivity extends Activity implements
         movieManagementSystem.close();
 
         Toast.makeText(getApplication(), toastText.toString(),
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

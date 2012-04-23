@@ -49,7 +49,7 @@ public class MovieComparator implements Comparator<Movie>
             int genre1 = obj1.getGenre().getId();
             int genre2 = obj2.getGenre().getId();
 
-            compareValue = genre2 - genre1;
+            compareValue = genre1 - genre2;
         }
         else if (compareKey.equals("Format"))
         {

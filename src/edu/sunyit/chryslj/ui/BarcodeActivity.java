@@ -95,7 +95,7 @@ public class BarcodeActivity extends Activity
                 else
                 {
                     Toast.makeText(getApplication(), "The barcode is invalid.",
-                            Toast.LENGTH_LONG);
+                            Toast.LENGTH_SHORT);
                 }
             }
             catch (InvalidImageException e)
@@ -104,13 +104,13 @@ public class BarcodeActivity extends Activity
                         "Encountered an InvalidImageException. " +
                                 e.getMessage());
                 Toast.makeText(getApplication(), "Error: " + e.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_SHORT).show();
             }
             catch (IOException e)
             {
                 Log.e(TAG, "Encountered an IOException. " + e.getMessage());
                 Toast.makeText(getApplication(), "Error: " + e.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_SHORT).show();
             }
         }
 

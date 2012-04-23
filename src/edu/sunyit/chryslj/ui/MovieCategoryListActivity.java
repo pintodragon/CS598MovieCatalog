@@ -236,7 +236,7 @@ public class MovieCategoryListActivity extends ListActivity implements
                 toastText.append(" already exists!");
             }
             Toast.makeText(getApplication(), toastText.toString(),
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
 
             movieManagementSystem.close();
         }
@@ -316,7 +316,7 @@ public class MovieCategoryListActivity extends ListActivity implements
         }
 
         Toast.makeText(getApplication(), toastMessage.toString(),
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_SHORT).show();
 
         movieManagementSystem.close();
     }
